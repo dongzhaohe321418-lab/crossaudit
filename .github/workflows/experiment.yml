@@ -1,0 +1,52 @@
+name: "Seeded-defect pilot: run auditor arms"
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ["experiment/RUN_TRIGGER"]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: experiment
+  cancel-in-progress: false
+
+jobs:
+  arm:
+    strategy:
+      max-parallel: 1        # serialize so both arms can commit results
+      matrix:
+        arm: [anthropic, openai]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Resolve pinned model ID
+        id: model
+        run: |
+          if [ "${{ matrix.arm }}" = "anthropic" ]; then
+            echo "id=${{ vars.EXP_MODEL_ANTHROPIC || 'claude-sonnet-4-5' }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "id=${{ vars.EXP_MODEL_OPENAI || 'gpt-5.1' }}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Run arm over corpus
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          cd experiment
+          python3 run_arm.py --arm "${{ matrix.arm }}" \
+            --model "${{ steps.model.outputs.id }}" \
+            --out "results/${{ matrix.arm }}"
+
+      - name: Commit raw outputs (append-only)
+        run: |
+          git config user.name crossaudit-experiment
+          git config user.email crossaudit-experiment@users.noreply.github.com
+          git pull --rebase
+          git add experiment/results/
+          git diff --cached --quiet || git commit -m "experiment: raw outputs, arm=${{ matrix.arm }}, model=${{ steps.model.outputs.id }}"
+          git push

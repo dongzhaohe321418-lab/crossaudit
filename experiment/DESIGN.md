@@ -61,3 +61,22 @@ secrets `ANTHROPIC_API_KEY` / `OPENAI_API_KEY`, and commits raw outputs to
 `experiment/results/<arm>/`. Trigger: `workflow_dispatch`, or a push touching
 `experiment/RUN_TRIGGER`. Scoring (`score.py`) runs locally/CI after both arms land and
 writes `experiment/results/SCORECARD.md`.
+
+## Amendment 1 (2026-07-30, pre-execution)
+
+API credentials are not yet available. Execution order amended, committed BEFORE any arm runs:
+
+1. **Arm `dcl`** (new baseline): the reference deterministic check layer (`checks/`) run
+   over the corpus. Expected by construction: catches D-classes, blind to L-classes —
+   the baseline row that quantifies what the model layers must add.
+2. **Arm `anthropic-subagent`**: executed now via fresh-context Claude subagents (one per
+   increment, no shared memory, auditor blind to the existence of seeding), model ID
+   recorded verbatim. Deviation from the registered protocol: sampling temperature is the
+   session default, not pinned to 0. A pinned temperature-0 API rerun into a separate
+   results directory is planned when credentials arrive; both will be reported.
+3. **Arm `openai`**: deferred until `OPENAI_API_KEY` exists; runs via the committed
+   workflow unchanged.
+
+The defect key remains sealed until arms (1) and (2) outputs are committed; the `openai`
+arm will run against the then-public key, which is acceptable for a *capability* pilot
+(the auditor process has no channel to the key) and is disclosed here.
