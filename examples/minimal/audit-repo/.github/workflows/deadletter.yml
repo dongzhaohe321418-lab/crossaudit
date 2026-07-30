@@ -1,0 +1,20 @@
+name: "CrossAudit: dead-letter escalation"
+
+on:
+  schedule:
+    - cron: "17 */6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  sweep:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Escalate cycles stuck >6h (R2 §7)
+        env:
+          GH_TOKEN: ${{ secrets.AUDIT_TO_SCIENCE_TOKEN || secrets.CROSSAUDIT_DISPATCH_TOKEN }}
+        run: |
+          cd controller && python3 deadletter.py 21600

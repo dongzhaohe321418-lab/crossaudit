@@ -24,7 +24,7 @@ jobs:
           ref: ${{ env.SHA }}
           path: science
           fetch-depth: 2
-          token: ${{ secrets.CROSSAUDIT_DISPATCH_TOKEN }}
+          token: ${{ secrets.AUDIT_TO_SCIENCE_TOKEN || secrets.CROSSAUDIT_DISPATCH_TOKEN }}
 
       - name: Dependencies
         run: pip install --quiet pyyaml
@@ -44,9 +44,14 @@ jobs:
         id: dcl
         run: |
           set +e
-          # I7: derive the audited scope from the SHA itself; the dispatch payload
-          # is untrusted caller input and is ignored for scoping.
-          git -C science diff --name-only HEAD^ HEAD -- experiments/ > changed.txt || true
+          # R2 §5: audit the full push range (before..after) when 'before' is known;
+          # fall back to the commit itself. Payload is untrusted for scoping either way.
+          BEFORE="${{ github.event.client_payload.before }}"
+          if [ -n "$BEFORE" ] && git -C science cat-file -e "$BEFORE" 2>/dev/null; then
+            git -C science diff --name-only "$BEFORE" HEAD -- experiments/ > changed.txt || true
+          else
+            git -C science diff --name-only HEAD^ HEAD -- experiments/ > changed.txt || true
+          fi
           [ -s changed.txt ] || git -C science show --name-only --format= HEAD -- experiments/ > changed.txt
           # shellcheck disable=SC2046
           python checks/run_checks.py --science-root science \
@@ -68,22 +73,35 @@ jobs:
             --out "reports/${SHA}.md" $EXTRA
           # runner derives the true round from reports/index.jsonl and writes receipt.json
 
-      - name: Commit report + receipt to the ledger (I2, I7)
+      - name: Commit cycle artefacts to the ledger (I2, I7; append-only)
         id: ledger
         run: |
           git config user.name "crossaudit-bot"
           git config user.email "crossaudit-bot@users.noreply.github.com"
-          cp receipt.json "reports/${SHA}.receipt.json"
-          git add reports/
-          git commit -m "audit: ${SCIENCE_REPO}@${SHA:0:7} — $(cat verdict.txt)"
+          git add cycles/ controller/state.json 2>/dev/null || git add cycles/
+          git commit -m "cycle: ${SCIENCE_REPO}@${SHA:0:7} — $(cat verdict.txt)"
           git push
           echo "report_commit=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
+      - name: "R2 §3: post admission status onto the science commit (the real gate hook)"
+        env:
+          GH_TOKEN: ${{ secrets.AUDIT_TO_SCIENCE_TOKEN || secrets.CROSSAUDIT_DISPATCH_TOKEN }}
+        run: |
+          V=$(cat verdict.txt)
+          STATE=failure; DESC="CrossAudit: $V"
+          [ "$V" = "PASS" ] && STATE=success
+          gh api "repos/${SCIENCE_REPO}/statuses/$(git -C science rev-parse HEAD)" \
+            -f state="$STATE" -f context="crossaudit/admission" \
+            -f description="$DESC" \
+            -f target_url="https://github.com/${GITHUB_REPOSITORY}/commit/${{ steps.ledger.outputs.report_commit }}"
+          # With branch protection requiring context 'crossaudit/admission', merges and
+          # protected deploys now actually block on this status — admission, not summary.
+
       - name: Dispatch verdict back to the Science Repo
         env:
-          GH_TOKEN: ${{ secrets.CROSSAUDIT_DISPATCH_TOKEN }}
+          GH_TOKEN: ${{ secrets.AUDIT_TO_SCIENCE_TOKEN || secrets.CROSSAUDIT_DISPATCH_TOKEN }}
         run: |
-          REPORT_URL="https://github.com/${GITHUB_REPOSITORY}/blob/main/reports/${SHA}.md"
+          REPORT_URL="https://github.com/${GITHUB_REPOSITORY}/blob/${{ steps.ledger.outputs.report_commit }}/$(cat cycle_dir.txt)/report.md"
           gh api "repos/${SCIENCE_REPO}/dispatches" \
             -f event_type=crossaudit-verdict \
             -f "client_payload[verdict]=$(cat verdict.txt)" \

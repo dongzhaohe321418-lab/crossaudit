@@ -1,0 +1,28 @@
+name: "CrossAudit: dispute → re-audit"
+
+on:
+  push:
+    branches: [main]
+    paths: ["disputes/*.md"]
+
+permissions:
+  contents: read
+
+jobs:
+  dispute:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch re-audit with the dispute attached
+        env:
+          GH_TOKEN: ${{ secrets.SCIENCE_TO_AUDIT_TOKEN || secrets.CROSSAUDIT_DISPATCH_TOKEN }}
+        run: |
+          pip install --quiet pyyaml
+          AUDIT_REPO=$(python3 -c "import yaml; print(yaml.safe_load(open('crossaudit.yml'))['audit']['repo'])")
+          DISPUTE=$(git diff --name-only HEAD^ HEAD -- disputes/ | head -1)
+          # Disputed sha = dispute filename stem; the audit side re-derives everything else.
+          gh api "repos/${AUDIT_REPO}/dispatches" \
+            -f event_type=crossaudit-run \
+            -f "client_payload[science_repo]=${GITHUB_REPOSITORY}" \
+            -f "client_payload[sha]=$(basename "$DISPUTE" .md)" \
+            -f "client_payload[dispute]=${DISPUTE}"

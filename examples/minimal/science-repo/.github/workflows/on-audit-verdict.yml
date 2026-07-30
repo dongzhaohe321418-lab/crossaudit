@@ -22,7 +22,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: "I8 (partial): anchor the receipt before acting — fail closed"
+      - uses: actions/checkout@v4      # this repo pinned at the audited SHA
+        with:
+          ref: ${{ env.SHA }}
+          path: audited
+
+      - name: "I8: fetch, verify, and consume the receipt — fail closed"
         run: |
           set -e
           pip install --quiet pyyaml
@@ -35,13 +40,22 @@ jobs:
           git init -q /tmp/anchor && git -C /tmp/anchor fetch --depth 1 \
             "https://github.com/${AUDIT_REPO_CFG}.git" "$REPORT_COMMIT" \
             || { echo "::error::commit ${REPORT_COMMIT} not fetchable from ${AUDIT_REPO_CFG} — fail closed"; exit 1; }
-          # Read the receipt from the fetched commit itself, not from a mutable branch.
-          RECEIPT=$(git -C /tmp/anchor show "FETCH_HEAD:reports/${SHA}.receipt.json" 2>/dev/null) \
-            || { echo "::error::receipt for ${SHA} absent at ${REPORT_COMMIT} — fail closed"; exit 1; }
-          echo "$RECEIPT" | python3 -c "import json,os,sys; r=json.load(sys.stdin); assert r['sha']==os.environ['SHA'], 'receipt/payload sha mismatch'; assert r['verdict']==os.environ['VERDICT'], 'receipt/payload verdict mismatch'; print('receipt bound: sha+verdict match; constitution', r['constitution_hash'][:12])"
-          # NOTE (audited limitation): this anchors and matches the receipt; it does not yet
-          # gate a protected action — no required check / branch protection is attached in the
-          # demo. See ROADMAP-R2.md. Summaries below are notifications, not admission.
+          # Materialise the audit ledger at the fetched commit and verify EVERYTHING.
+          git -C /tmp/anchor checkout -q FETCH_HEAD -- . 2>/dev/null || true
+          if [ "$VERDICT" = "PASS" ]; then
+            python3 /tmp/anchor/controller/verify_receipt.py \
+              --receipt "/tmp/anchor/cycles/${SHA}/receipt.json" \
+              --science-root audited --audit-root /tmp/anchor \
+              --expect-repo "$GITHUB_REPOSITORY" --expect-sha "$SHA" \
+              || { echo "::error::receipt verification failed — fail closed"; exit 1; }
+          else
+            test -f "/tmp/anchor/cycles/${SHA}/receipt.json" \
+              || test -f "/tmp/anchor/cycles/${SHA}-r${ROUND}/receipt.json" \
+              || { echo "::error::no receipt for ${SHA} at ${REPORT_COMMIT} — fail closed"; exit 1; }
+          fi
+          # Admission itself is enforced by the 'crossaudit/admission' commit status the
+          # audit side posts, made binding via branch protection (see docs). This step
+          # guarantees no downstream hook fires on an unverifiable callback.
 
       - name: Read max_rounds from crossaudit.yml
         id: cfg

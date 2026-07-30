@@ -199,16 +199,25 @@ def main() -> int:
                if l.strip()] if args.changed else []
     # I7: artifact manifest derived from the checked-out tree, never from payload.
     import hashlib
+    import time
     manifest = {}
     for rel in changed:
         fp = args.science_root / rel
-        manifest[rel] = hashlib.sha256(fp.read_bytes()).hexdigest() if fp.is_file() else "ABSENT"
-    # I5 hardening: round derived from the audit ledger, not a generator trailer.
-    inc_key = hashlib.sha256("\n".join(sorted(changed)).encode()).hexdigest()[:12]
-    index = args.out.parent / "index.jsonl"
-    prior = sum(1 for l in index.read_text().splitlines()
-                if json.loads(l)["increment_key"] == inc_key) if index.exists() else 0
-    args.round = str(prior + 1)
+        manifest[rel] = (hashlib.sha256(fp.read_bytes()).hexdigest()
+                         if fp.is_file() and not fp.is_symlink() else "ABSENT")
+    # R2 §1: controller-managed cycle identity and rounds (commit-graph based).
+    resolved_sha = sh("git", "-C", str(args.science_root), "rev-parse", "HEAD") or args.sha
+    tree_sha = sh("git", "-C", str(args.science_root), "rev-parse", "HEAD^{tree}") or ""
+    parent_sha = sh("git", "-C", str(args.science_root), "rev-parse", "HEAD^") or None
+    args.sha = resolved_sha
+    sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "controller"))
+    try:
+        import state as controller_state  # noqa: PLC0415
+        cycle = controller_state.open_or_advance(args.science_repo, resolved_sha, parent_sha)
+    except Exception:  # controller absent in minimal setups: degrade, disclose
+        cycle = {"cycle_id": "no-controller", "round": 1}
+    args.round = str(cycle["round"])
+    inc_key = cycle["cycle_id"]
 
     llm_reply, llm_invalid = None, None
     if not args.offline:
@@ -231,10 +240,6 @@ def main() -> int:
         except Exception as exc:
             llm_invalid = f"auditor call failed: {exc!r}"
 
-    # Resolve the ACTUAL audited commit; never trust the passed ref string (I7).
-    resolved_sha = sh("git", "-C", str(args.science_root), "rev-parse", "HEAD")
-    if resolved_sha:
-        args.sha = resolved_sha
     # Verdict synthesis. I4: DCL blockers dominate. I3: invalid reply escalates.
     # Truncated or unreadable inputs can never yield PASS (I8: fail closed).
     bounds_exceeded = locals().get("bounds_exceeded", 0)
@@ -250,23 +255,55 @@ def main() -> int:
         # I8: an offline stub must NOT mint a conforming PASS — no model audit ran.
         verdict = "DCL_ONLY"
 
-    args.out.parent.mkdir(parents=True, exist_ok=True)
-    args.out.write_text(render_report(args, constitution_hash, dcl,
-                                      llm_reply, llm_invalid, verdict))
-    # I7: receipt binds sha, manifest, versions, auditor identity, and verdict.
+    # R2 §4: append-only cycle directory; a rerun never overwrites.
+    cycles_root = Path("cycles")
+    cycle_dir = cycles_root / args.sha
+    if cycle_dir.exists():
+        cycle_dir = cycles_root / f"{args.sha}-r{args.round}"
+    if cycle_dir.exists():
+        print(f"cycle dir {cycle_dir} already exists — refusing to overwrite", file=sys.stderr)
+        return 3
+    cycle_dir.mkdir(parents=True)
+    # Two-phase: write report + evidence first, hash them, then bind the receipt.
+    report_path = cycle_dir / "report.md"
+    report_path.write_text(render_report(args, constitution_hash, dcl,
+                                         llm_reply, llm_invalid, verdict))
+    (cycle_dir / "checks.json").write_text(json.dumps(dcl, indent=2))
+    raw_record = {
+        "started_at": int(time.time()),
+        "endpoint": args.endpoint if not args.offline else None,
+        "model": os.environ.get("AUDITOR_MODEL", "offline-stub"),
+        "temperature": 0,
+        "system_prompt_sha256": hashlib.sha256(SYSTEM_PROMPT.encode()).hexdigest(),
+        "raw_reply": llm_reply, "invalid_reason": llm_invalid,
+    }
+    (cycle_dir / "raw_exchange.json").write_text(json.dumps(raw_record, indent=2))
+    dcl_files = sorted(Path("checks").glob("*.py"))
     receipt = {
-        "sha": args.sha, "round": int(args.round), "increment_key": inc_key,
-        "manifest": manifest, "constitution_hash": constitution_hash,
+        "science_repo": args.science_repo,
+        "sha": args.sha, "tree": tree_sha,
+        "round": int(args.round), "cycle_id": inc_key,
+        "manifest": manifest,
+        "constitution_hash": constitution_hash,
+        "dcl_source_sha256": hashlib.sha256(
+            b"".join(p.read_bytes() for p in dcl_files)).hexdigest(),
+        "prompt_sha256": hashlib.sha256(
+            (prompt if not args.offline else "offline").encode()).hexdigest(),
+        "report_sha256": hashlib.sha256(report_path.read_bytes()).hexdigest(),
         "auditor_model": os.environ.get("AUDITOR_MODEL", "offline-stub"),
         "audit_integrity": ("AUDITOR_INVALID_ESCALATION_REQUIRED" if llm_invalid else "OK"),
         "input_bounds_exceeded": bounds_exceeded,
-        "verdict": verdict, "report": str(args.out),
-        "sections_applied": (llm_reply or {}).get("sections_applied", []),
+        "verdict": verdict,
     }
-    Path("receipt.json").write_text(json.dumps(receipt, indent=2))
-    with open(index, "a") as fh:
-        fh.write(json.dumps({"increment_key": inc_key, "round": int(args.round),
-                             "sha": args.sha, "verdict": verdict}) + "\n")
+    (cycle_dir / "receipt.json").write_text(json.dumps(receipt, indent=2, sort_keys=True))
+    receipt_hash = hashlib.sha256((cycle_dir / "receipt.json").read_bytes()).hexdigest()
+    try:
+        controller_state.record_verdict(inc_key, args.sha, verdict, receipt_hash,
+                                        int(os.environ.get("MAX_ROUNDS", "3")))
+    except Exception:
+        pass
+    Path("receipt.json").write_text((cycle_dir / "receipt.json").read_text())
+    Path("cycle_dir.txt").write_text(str(cycle_dir))
     Path("verdict.txt").write_text(verdict)
     print(f"verdict: {verdict}; round: {args.round}; report: {args.out}")
     return 0
