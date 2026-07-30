@@ -1,0 +1,79 @@
+<!DOCTYPE html><html><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1"><title>CrossAudit 公众号文章</title></head>
+<body style="max-width:677px;margin:0 auto;padding:20px 16px;font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','PingFang SC','Microsoft YaHei',sans-serif;background:#fff;">
+<h1 style="font-size:22px;font-weight:bold;color:#1a1a1a;margin:28px 0 18px;line-height:1.4;">AI 科学家，不能自己给自己的作业打分</h1>
+<blockquote style="border-left:4px solid #d1d5db;background:#f8fafc;padding:12px 16px;margin:0 0 18px;color:#555;font-size:15px;line-height:1.8;">
+<p style="font-size:16px;color:#3f3f3f;line-height:1.85;margin:0 0 18px;text-align:justify;">备选标题：
+・当 AI 开始做科研：谁来审它的稿？
+・我给我的 AI 科学家，请了一位"外校监考官"</p>
+</blockquote>
+<hr />
+<p style="font-size:16px;color:#3f3f3f;line-height:1.85;margin:0 0 18px;text-align:justify;"><strong style="color:#1a1a1a;">导语：</strong> 2026 年，AI 写的论文已经登上顶刊，AI 驱动的实验室在自动合成新材料。但一个安静的问题始终悬在头顶：AI 产出的科研，由谁来把关？目前主流答案令人不安——由它自己，或它的"同门师兄弟"。本文介绍一个任何研究者都能在一个下午搭起来的解法：CrossAudit，一个跨厂商、以 Git 为账本的自动审计环。</p>
+<hr />
+<h2 style="font-size:18px;font-weight:bold;color:#1a1a1a;margin:36px 0 14px;padding-left:10px;border-left:4px solid #4F46E5;line-height:1.5;">一、AI 真的在做科研了</h2>
+<p style="font-size:16px;color:#3f3f3f;line-height:1.85;margin:0 0 18px;text-align:justify;">先交代背景。过去两年，"AI 科学家"从概念变成了日常事实。</p>
+<p style="font-size:16px;color:#3f3f3f;line-height:1.85;margin:0 0 18px;text-align:justify;">Sakana AI 的 The AI Scientist 能独立完成"提出想法 → 写代码 → 跑实验 → 写论文"的完整闭环，相关成果已发表于 Nature；Google DeepMind 的 AI co-scientist 让一群 agent 以"锦标赛辩论"的方式互相批判假设，在药物再利用等课题上拿出了经专家验证的结果；再往实验台那头看，卡内基梅隆的 Coscientist 和伯克利的 A-Lab 早已让 AI 直接操纵仪器做化学合成。Nature 甚至专门发文，呼吁期刊与资助机构为"AI 科学家时代"调整制度。</p>
+<p style="font-size:16px;color:#3f3f3f;line-height:1.85;margin:0 0 18px;text-align:justify;">我自己的课题（计算化学方向）也早已跑在这样的管线上：一个基于 Claude 的科研 agent 负责规划实验、把任务提交到阿里云超算、把每一步实验增量 push 到 GitHub 仓库。算力在云端，数据在 GitHub，任何一环坏掉都有冗余。</p>
+<p style="font-size:16px;color:#3f3f3f;line-height:1.85;margin:0 0 18px;text-align:justify;">生产端的问题，基本解决了。真正没解决的，是<strong style="color:#1a1a1a;">质检端</strong>。</p>
+<h2 style="font-size:18px;font-weight:bold;color:#1a1a1a;margin:36px 0 14px;padding-left:10px;border-left:4px solid #4F46E5;line-height:1.5;">二、房间里的大象：审稿人和作者是"双胞胎"</h2>
+<p style="font-size:16px;color:#3f3f3f;line-height:1.85;margin:0 0 18px;text-align:justify;">现有的 AI 科学家系统并非没有质检。AI Scientist 内置了"自动审稿人"，co-scientist 有专门的 Reflection agent 负责挑刺。听起来很像同行评议，对吧？</p>
+<p style="font-size:16px;color:#3f3f3f;line-height:1.85;margin:0 0 18px;text-align:justify;">但请注意一个细节：<strong style="color:#1a1a1a;">这些审稿 agent 和被审的作者 agent，出自同一个模型，或同一家厂商的同一条训练管线。</strong></p>
+<p style="font-size:16px;color:#3f3f3f;line-height:1.85;margin:0 0 18px;text-align:justify;">这就是我称之为"同源偏差"的问题。打个比方：让一位作者的双胞胎兄弟来做匿名审稿。两人读同样的书长大，方法论的盲点完全重合——最需要被质疑的那个假设，恰恰是两个人都觉得"这还用问吗"的那个。审稿流程走完了，走得很体面，但真正的漏洞没人碰。</p>
+<p style="font-size:16px;color:#3f3f3f;line-height:1.85;margin:0 0 18px;text-align:justify;">这不只是比喻。NeurIPS 2024 的一项研究（Panickssery 等，《LLM Evaluators Recognize and Favor Their Own Generations》）用对照实验证明：大模型评审者能认出"这是我写的"，并系统性地给自己的输出打高分——而且识别能力越强，偏袒越严重，两者存在因果关系。另一项广被引用的 MT-Bench 研究则记录了 LLM 评审的一整套毛病：位置偏好、废话偏好、自我增强。</p>
+<p style="font-size:16px;color:#3f3f3f;line-height:1.85;margin:0 0 18px;text-align:justify;">机制上也不难理解。同一条训练管线意味着：共享的语料 → 共享的知识缺口；共享的推理习惯 → 共享的犯错方式。生成者最容易犯的错，恰好落在审计者的视野盲区里。<strong style="color:#1a1a1a;">制衡，形同虚设。</strong></p>
+<h2 style="font-size:18px;font-weight:bold;color:#1a1a1a;margin:36px 0 14px;padding-left:10px;border-left:4px solid #4F46E5;line-height:1.5;">三、解法其实很朴素：跨厂商 + 全程留痕 + 该找人时找人</h2>
+<p style="font-size:16px;color:#3f3f3f;line-height:1.85;margin:0 0 18px;text-align:justify;">我给自己管线搭的审计系统叫 <strong style="color:#1a1a1a;">CrossAudit</strong>，核心就三条承诺：</p>
+<p style="font-size:16px;color:#3f3f3f;line-height:1.85;margin:0 0 18px;text-align:justify;"><strong style="color:#1a1a1a;">第一，异源制衡。</strong> 生成者用 Claude，审计者就必须换一家——比如 GPT 系的模型。不同厂商，不同训练管线，盲区不重叠。审计者依据一份由人类撰写、版本化管理的规则手册（我叫它"宪法"）逐条审查，每条发现都必须引用具体规则编号。</p>
+<p style="font-size:16px;color:#3f3f3f;line-height:1.85;margin:0 0 18px;text-align:justify;"><strong style="color:#1a1a1a;">第二，Git 是账本。</strong> 实验增量是 commit，审计报告是 commit，裁定、异议、上报，全部是 commit。整个监督史可以被任何第三方重放、diff、引用。审计依据哪一版规则？宪法文件的 commit 哈希写在报告里，永远有答案。这恰恰是那些平台型 AI 科学家做不到的——它们的监督痕迹埋在私有日志里。</p>
+<p style="font-size:16px;color:#3f3f3f;line-height:1.85;margin:0 0 18px;text-align:justify;"><strong style="color:#1a1a1a;">第三，分级人机协作。</strong> 不是每步都请示人类（那自动化就没意义了），也不是完全不管（那是裸奔）。规则分两级：<code style="background:#f1f5f9;color:#4F46E5;padding:1px 5px;border-radius:3px;font-size:14px;font-family:Menlo,Consolas,monospace;">BLOCKER</code>（硬伤：数据自相矛盾、单位错误、来源缺失）阻断流程；<code style="background:#f1f5f9;color:#4F46E5;padding:1px 5px;border-radius:3px;font-size:14px;font-family:Menlo,Consolas,monospace;">ADVISORY</code>（方法学建议）只记录、不阻断。只有当硬伤在限定轮数内谈不拢、或任何一方明确说"这事我判不了"，才会开一个 GitHub Issue，把人请出场。</p>
+<p style="font-size:16px;color:#3f3f3f;line-height:1.85;margin:0 0 18px;text-align:justify;">还有一条承重墙，值得单独说：<strong style="color:#1a1a1a;">确定性优先。</strong> 在任何大模型开口之前，一层纯脚本的校验先跑：schema 完整吗？单位量纲对吗？收敛了吗？这些检查不含任何"智能"，也正因此，它们的失误模式和任何大模型都不相关。它们的结论，<strong style="color:#1a1a1a;">任何 LLM 无权推翻</strong>。为什么需要这层？因为跨厂商只能去掉"模型各自的怪癖"，去不掉"两家共同继承的文献错误"——当公开文献本身就错时，Claude 和 GPT 可能一起错得很自信。脚本，是唯一不读文献的裁判。</p>
+<h2 style="font-size:18px;font-weight:bold;color:#1a1a1a;margin:36px 0 14px;padding-left:10px;border-left:4px solid #4F46E5;line-height:1.5;">四、走一遍流程</h2>
+<p style="font-size:16px;color:#3f3f3f;line-height:1.85;margin:0 0 18px;text-align:justify;">（此处插入架构图）</p>
+<p style="font-size:16px;color:#3f3f3f;line-height:1.85;margin:0 0 18px;text-align:justify;">一个实验增量的一生，六步：</p>
+<ol style="margin:0 0 18px;padding-left:24px;">
+<li style="font-size:16px;color:#3f3f3f;line-height:1.85;margin:0 0 8px;">生成者把实验增量 push 到科研仓库（超算上的计算照常跑，审计永不打断计算）；</li>
+<li style="font-size:16px;color:#3f3f3f;line-height:1.85;margin:0 0 8px;">push 自动触发审计仓库，锁定这个 commit；</li>
+<li style="font-size:16px;color:#3f3f3f;line-height:1.85;margin:0 0 8px;">确定性脚本先审——硬伤直接判 <code style="background:#f1f5f9;color:#4F46E5;padding:1px 5px;border-radius:3px;font-size:14px;font-family:Menlo,Consolas,monospace;">BLOCKED</code>；</li>
+<li style="font-size:16px;color:#3f3f3f;line-height:1.85;margin:0 0 8px;">脚本放行后，异源审计者依宪法逐条审查，提交结构化报告（规则编号 + 宪法版本哈希）；</li>
+<li style="font-size:16px;color:#3f3f3f;line-height:1.85;margin:0 0 8px;">裁定回传：通过则继续；被阻断则生成者要么修订、要么按规则编号提出异议；</li>
+<li style="font-size:16px;color:#3f3f3f;line-height:1.85;margin:0 0 8px;">修订环路最多三轮——谈不拢就自动开 Issue 上报人类，且只挂起这一个增量。</li>
+</ol>
+<p style="font-size:16px;color:#3f3f3f;line-height:1.85;margin:0 0 18px;text-align:justify;">第 6 步那个"最多三轮"看似不起眼，其实是防"震荡"的关键：没有它，两个 AI 可以互相"纠正"到天荒地老，每一轮都言之凿凿，合起来却在原地打转。</p>
+<p style="font-size:16px;color:#3f3f3f;line-height:1.85;margin:0 0 18px;text-align:justify;">值得补一句：被阻断的生成者不是只能认错。它可以<strong style="color:#1a1a1a;">按规则编号提出异议</strong>——"我认为 CA-DATA-002 这条判错了，理由如下"。审计者要么撤回（理由记录在案），要么坚持；坚持到第三轮还谈不拢的争议，自动升级给人类。为什么要给 AI 申诉权？因为审计者同样会犯错：一个被默默服从的误判，和一个被漏掉的真错误，对科研质量的伤害是同一量级的。</p>
+<h2 style="font-size:18px;font-weight:bold;color:#1a1a1a;margin:36px 0 14px;padding-left:10px;border-left:4px solid #4F46E5;line-height:1.5;">五、宪法：整个系统的质量上限</h2>
+<p style="font-size:16px;color:#3f3f3f;line-height:1.85;margin:0 0 18px;text-align:justify;">跨厂商解决的是"谁来审"，宪法解决的是"按什么审"——而后者才是上限所在。审计者的水平，永远不会超过它手里那本规则手册。</p>
+<p style="font-size:16px;color:#3f3f3f;line-height:1.85;margin:0 0 18px;text-align:justify;">写宪法有一条铁律：<strong style="color:#1a1a1a;">每条规则必须"可判定"</strong>。什么意思？对比一下：</p>
+<blockquote style="border-left:4px solid #d1d5db;background:#f8fafc;padding:12px 16px;margin:0 0 18px;color:#555;font-size:15px;line-height:1.8;">
+<p style="font-size:16px;color:#3f3f3f;line-height:1.85;margin:0 0 18px;text-align:justify;">❌ 坏规则："方法学应当合理。"
+——听着专业，实际上不可执行。审计者面对它只能装模作样，久而久之就学会了糊弄。</p>
+<p style="font-size:16px;color:#3f3f3f;line-height:1.85;margin:0 0 18px;text-align:justify;">✅ 好规则："results.json 中每个数值必须带非空的 unit 和 source 字段；缺一项即为 BLOCKER。"
+——任何一个称职的读者（人或模型）对着文件就能给出"过 / 不过"，不需要额外发挥。</p>
+</blockquote>
+<p style="font-size:16px;color:#3f3f3f;line-height:1.85;margin:0 0 18px;text-align:justify;">写不成可判定形式的关切，要么降级为 <code style="background:#f1f5f9;color:#4F46E5;padding:1px 5px;border-radius:3px;font-size:14px;font-family:Menlo,Consolas,monospace;">ADVISORY</code>（意见，不拦路），要么干脆写成脚本挪进确定性校验层。另外还有几条"审计的审计"规则很关键：证据缺失本身就是一条发现，不许"没看到就当过了"；不引用规则编号的报告一律无效；审计者无权对"品味问题"下 <code style="background:#f1f5f9;color:#4F46E5;padding:1px 5px;border-radius:3px;font-size:14px;font-family:Menlo,Consolas,monospace;">BLOCKER</code>——它是执法者，不是立法者。立法权永远在人类手里：宪法的每次修改都是一个 commit，由人类 review。</p>
+<p style="font-size:16px;color:#3f3f3f;line-height:1.85;margin:0 0 18px;text-align:justify;">顺带回答两个常见疑问。<strong style="color:#1a1a1a;">"为什么不搞三个审计者投票？"</strong>——可以，但边际收益递减：所有前沿模型的语料高度重叠，多请一位"读同一批书长大的裁判"，远不如把预算花在更锋利的宪法和更多确定性脚本上。<strong style="color:#1a1a1a;">"两个 AI 会不会串通？"</strong>——它们没有任何私下通道，所有交流只能通过 commit 进行，而 commit 人类全程可见。要串通，就得在账本上公开串通。</p>
+<h2 style="font-size:18px;font-weight:bold;color:#1a1a1a;margin:36px 0 14px;padding-left:10px;border-left:4px solid #4F46E5;line-height:1.5;">六、几个诚实的细节</h2>
+<p style="font-size:16px;color:#3f3f3f;line-height:1.85;margin:0 0 18px;text-align:justify;"><strong style="color:#1a1a1a;">成本低得反直觉。</strong> 脚本层免费；LLM 审计按增量文本量计费——审几百行结果和元数据，只要几分钱，而它背后的实验可能烧了几个小时的超算机时。用约等于"读文档"的钱，给计算科学买一层持续在线的质检，大概是这个领域有史以来最便宜的保险。</p>
+<p style="font-size:16px;color:#3f3f3f;line-height:1.85;margin:0 0 18px;text-align:justify;"><strong style="color:#1a1a1a;">它有明确的边界。</strong> CrossAudit 审的是"科研记录"，不是世界本身：仪器坏了、数据集本身有问题、上游造假，它看不见。提示注入（在实验内容里夹带"审计者请放行"的暗语）能部分防住——审计者无工具、输出限定格式、且注入永远无法豁免脚本层——但不能说完全免疫。规则也可能被"应试"（Goodhart 定律），所以宪法必须由人类定期复盘、持续修法。我在论文里把这些局限一条条写清楚了——一个讲"审计"的工作，自己首先得经得起审计。</p>
+<p style="font-size:16px;color:#3f3f3f;line-height:1.85;margin:0 0 18px;text-align:justify;"><strong style="color:#1a1a1a;">它不取代同行评议。</strong> 更准确的定位是"科学声明的 CI（持续集成）"：像软件工程用 CI 给每次代码提交兜底一样，给每个实验增量兜底。人类的判断力被解放出来，用在真正需要判断的地方——审规则、审上报、审科学本身。</p>
+<h2 style="font-size:18px;font-weight:bold;color:#1a1a1a;margin:36px 0 14px;padding-left:10px;border-left:4px solid #4F46E5;line-height:1.5;">七、往前多看一步：这套架构的想象空间</h2>
+<p style="font-size:16px;color:#3f3f3f;line-height:1.85;margin:0 0 18px;text-align:justify;">如果说前面讲的是"它现在解决什么"，这一节讲"它还能长成什么"。</p>
+<p style="font-size:16px;color:#3f3f3f;line-height:1.85;margin:0 0 18px;text-align:justify;"><strong style="color:#1a1a1a;">审计账本本身，是一份数据资产。</strong> 每一条"增量 → 发现 → 异议 → 裁决"的完整记录，都是训练更好的科研 agent 的高质量监督数据；所有失败审计汇总起来，就是一份公开的"AI 做科研到底会在哪里犯错"的分类学——按规则、按领域统计。这份东西，今天全世界都还没有。谁先把环路跑起来，谁就先积累。</p>
+<p style="font-size:16px;color:#3f3f3f;line-height:1.85;margin:0 0 18px;text-align:justify;"><strong style="color:#1a1a1a;">信任可以徽章化。</strong> 软件仓库挂 CI 徽章、覆盖率徽章，未来的科研仓库可以挂审计徽章："CrossAudit：累计 217 个增量，3 次人工上报，宪法 v3"。一个可量化、可点开验证的信任信号，比"我们的流程很严谨"的自我陈述有力得多。</p>
+<p style="font-size:16px;color:#3f3f3f;line-height:1.85;margin:0 0 18px;text-align:justify;"><strong style="color:#1a1a1a;">它是"一个人带一队 AI"的管理结构。</strong> Agent 越来越便宜，瓶颈正在从算力转向人的注意力。CrossAudit 做的事，本质是把人的监督成本从"正比于增量数"压到"正比于上报数"——这正是"一位研究者同时督导多条 agent 管线"成为可能的前提。管理学里这叫例外管理（management by exception），它是人类组织规模化的老答案，如今轮到人机组织用一遍。</p>
+<p style="font-size:16px;color:#3f3f3f;line-height:1.85;margin:0 0 18px;text-align:justify;"><strong style="color:#1a1a1a;">宪法可以变成社区公共品。</strong> 宪法是一个可 fork、可 PR 的文件。完全可以想象：计算化学社区维护一份公版宪法，期刊发布自己的宪法并接受"附带审计账本"的投稿，资助机构把"有公开监督账本"写进条款——这些制度接口，Nature 正在呼吁，而 CrossAudit 恰好是现成的技术承接。再往外走一步：凡是"AI 产出离散增量、质量部分可规则化"的场景——AI 写的代码、金融分析、法律文书——这套环路原样适用。科研只是它的第一个落点。</p>
+<h2 style="font-size:18px;font-weight:bold;color:#1a1a1a;margin:36px 0 14px;padding-left:10px;border-left:4px solid #4F46E5;line-height:1.5;">八、为什么我把它开源了</h2>
+<p style="font-size:16px;color:#3f3f3f;line-height:1.85;margin:0 0 18px;text-align:justify;">CI 当年能赢，不是因为它证明了程序正确（它没有），而是因为<strong style="color:#1a1a1a;">任何一个开发者不需要任何人批准，一个下午就能用上它</strong>。</p>
+<p style="font-size:16px;color:#3f3f3f;line-height:1.85;margin:0 0 18px;text-align:justify;">CrossAudit 照着这个路径设计：不依赖任何平台，两个 GitHub 仓库、两个模型 API key，就能跑起来。仓库里有完整的协议文档、宪法模板、确定性校验脚本和一对 fork 即用的示例仓库；论文（英文 position paper）把六条协议不变量、威胁模型和局限性写全了。</p>
+<ul style="margin:0 0 18px;padding-left:24px;">
+<li style="font-size:16px;color:#3f3f3f;line-height:1.85;margin:0 0 8px;">GitHub：<code style="background:#f1f5f9;color:#4F46E5;padding:1px 5px;border-radius:3px;font-size:14px;font-family:Menlo,Consolas,monospace;">github.com/dongzhaohe321418-lab/crossaudit</code>（MIT 协议）</li>
+<li style="font-size:16px;color:#3f3f3f;line-height:1.85;margin:0 0 8px;">论文：arXiv 链接见 repo README</li>
+</ul>
+<p style="font-size:16px;color:#3f3f3f;line-height:1.85;margin:0 0 18px;text-align:justify;">如果你也在跑任何形式的"AI 做科研"——哪怕只是让大模型帮你处理数据——欢迎把这套环路搬过去：换掉宪法里的领域规则、换掉校验脚本，其余原样能用。</p>
+<p style="font-size:16px;color:#3f3f3f;line-height:1.85;margin:0 0 18px;text-align:justify;">一句话总结这件事：</p>
+<blockquote style="border-left:4px solid #d1d5db;background:#f8fafc;padding:12px 16px;margin:0 0 18px;color:#555;font-size:15px;line-height:1.8;">
+<p style="font-size:16px;color:#3f3f3f;line-height:1.85;margin:0 0 18px;text-align:justify;"><strong style="color:#1a1a1a;">AI 科学家不能自己给自己的作业打分。现在，它不必了。</strong></p>
+</blockquote>
+<hr />
+<p style="font-size:16px;color:#3f3f3f;line-height:1.85;margin:0 0 18px;text-align:justify;"><em style="color:#555;">参考文献（正文提及）：Lu et al., The AI Scientist, arXiv:2408.06292 及 Nature (2026)；Gottweis et al., Towards an AI co-scientist, arXiv:2502.18864；Panickssery et al., NeurIPS 2024, arXiv:2404.13076；Zheng et al., NeurIPS 2023, arXiv:2306.05685；Boiko et al., Nature 624 (2023)；Szymanski et al., Nature 624 (2023)；Baker, Nature 533 (2016).</em></p>
+<p style="font-size:13px;color:#999;margin-top:30px;">（排版说明：整体复制本页内容粘贴进微信公众号编辑器即可，样式已内联；在“此处插入架构图”处手动上传 crossaudit-architecture.png。）</p>
+</body></html>
