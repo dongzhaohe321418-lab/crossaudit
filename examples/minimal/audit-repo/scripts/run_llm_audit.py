@@ -56,24 +56,29 @@ def sh(*cmd: str, cwd: str | None = None) -> str:
     return subprocess.run(cmd, cwd=cwd, capture_output=True, text=True, check=False).stdout.strip()
 
 
-def gather_increment(science_root: Path, changed: list[str]) -> str:
-    """Concatenate changed files as fenced DATA blocks, size-bounded."""
-    blocks, total = [], 0
+def gather_increment(science_root: Path, changed: list[str]) -> tuple[str, int]:
+    """Concatenate changed files as fenced DATA blocks, size-bounded.
+    Returns (text, bounds_exceeded_count) — truncation must escalate (I8), not pass."""
+    blocks, total, bounded = [], 0, 0
     for rel in changed:
         p = science_root / rel
-        if not p.is_file():
-            blocks.append(f"--- FILE {rel} ---\n<missing at audited SHA>")
+        if not p.is_file() or p.is_symlink():
+            blocks.append(f"--- FILE {rel} ---\n<missing or symlink at audited SHA>")
+            bounded += 1
             continue
         try:
             text = p.read_text(errors="replace")[:MAX_FILE_CHARS]
         except OSError as exc:
             text = f"<unreadable: {exc}>"
+        if len(text) == MAX_FILE_CHARS:
+            bounded += 1
         total += len(text)
         if total > MAX_TOTAL_CHARS:
             blocks.append(f"--- FILE {rel} ---\n<omitted: total size bound reached>")
+            bounded += 1
             continue
         blocks.append(f"--- FILE {rel} ---\n{text}")
-    return "\n\n".join(blocks)
+    return "\n\n".join(blocks), bounded
 
 
 def call_auditor(api_key: str, model: str, endpoint: str, prompt: str) -> dict:
@@ -213,10 +218,11 @@ def main() -> int:
             print("online mode needs AUDITOR_API_KEY and AUDITOR_MODEL "
                   "(or pass --offline)", file=sys.stderr)
             return 2
+        increment_text, bounds_exceeded = gather_increment(args.science_root, changed)
         prompt = (f"CONSTITUTION @ {constitution_hash}:\n{constitution}\n\n"
                   f"DETERMINISTIC CHECK OUTPUT (non-overridable):\n"
                   f"{json.dumps(dcl, indent=2)}\n\n"
-                  f"INCREMENT DATA:\n{gather_increment(args.science_root, changed)}")
+                  f"INCREMENT DATA:\n{increment_text}")
         try:
             llm_reply = call_auditor(api_key, model, args.endpoint, prompt)
             llm_invalid = validate_reply(llm_reply, known_rules)
@@ -225,11 +231,19 @@ def main() -> int:
         except Exception as exc:
             llm_invalid = f"auditor call failed: {exc!r}"
 
+    # Resolve the ACTUAL audited commit; never trust the passed ref string (I7).
+    resolved_sha = sh("git", "-C", str(args.science_root), "rev-parse", "HEAD")
+    if resolved_sha:
+        args.sha = resolved_sha
     # Verdict synthesis. I4: DCL blockers dominate. I3: invalid reply escalates.
+    # Truncated or unreadable inputs can never yield PASS (I8: fail closed).
+    bounds_exceeded = locals().get("bounds_exceeded", 0)
     if dcl["total_hard_failures"] > 0:
         verdict = "BLOCKED"
     elif llm_invalid:
         verdict = "ESCALATE"
+    elif bounds_exceeded:
+        verdict = "ESCALATE"  # model did not see everything; cannot mint PASS
     elif llm_reply:
         verdict = llm_reply["verdict"]
     else:
@@ -244,6 +258,8 @@ def main() -> int:
         "sha": args.sha, "round": int(args.round), "increment_key": inc_key,
         "manifest": manifest, "constitution_hash": constitution_hash,
         "auditor_model": os.environ.get("AUDITOR_MODEL", "offline-stub"),
+        "audit_integrity": ("AUDITOR_INVALID_ESCALATION_REQUIRED" if llm_invalid else "OK"),
+        "input_bounds_exceeded": bounds_exceeded,
         "verdict": verdict, "report": str(args.out),
         "sections_applied": (llm_reply or {}).get("sections_applied", []),
     }

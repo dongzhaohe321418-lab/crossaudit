@@ -26,6 +26,7 @@ jobs:
       - name: Dispatch crossaudit-run to the Audit Repo
         env:
           GH_TOKEN: ${{ secrets.CROSSAUDIT_DISPATCH_TOKEN }}
+          CHANGED: ${{ steps.changed.outputs.paths }}
         run: |
           pip install --quiet pyyaml
           AUDIT_REPO=$(python3 -c "import yaml; print(yaml.safe_load(open('crossaudit.yml'))['audit']['repo'])")
@@ -33,4 +34,4 @@ jobs:
             -f event_type=crossaudit-run \
             -f "client_payload[science_repo]=${GITHUB_REPOSITORY}" \
             -f "client_payload[sha]=${GITHUB_SHA}" \
-            -f "client_payload[changed]=${{ steps.changed.outputs.paths }}"
+            -f "client_payload[changed]=${CHANGED}"

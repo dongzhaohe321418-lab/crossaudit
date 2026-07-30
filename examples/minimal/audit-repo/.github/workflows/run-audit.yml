@@ -65,7 +65,7 @@ jobs:
             --science-repo "$SCIENCE_REPO" --sha "$SHA" --round "$ROUND" \
             --constitution AUDIT_RULES.md --checks checks.json \
             --changed changed.txt \
-            --out "reports/${SHA:0:7}.md" $EXTRA
+            --out "reports/${SHA}.md" $EXTRA
           # runner derives the true round from reports/index.jsonl and writes receipt.json
 
       - name: Commit report + receipt to the ledger (I2, I7)
@@ -73,7 +73,7 @@ jobs:
         run: |
           git config user.name "crossaudit-bot"
           git config user.email "crossaudit-bot@users.noreply.github.com"
-          cp receipt.json "reports/${SHA:0:7}.receipt.json"
+          cp receipt.json "reports/${SHA}.receipt.json"
           git add reports/
           git commit -m "audit: ${SCIENCE_REPO}@${SHA:0:7} — $(cat verdict.txt)"
           git push
@@ -83,7 +83,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.CROSSAUDIT_DISPATCH_TOKEN }}
         run: |
-          REPORT_URL="https://github.com/${GITHUB_REPOSITORY}/blob/main/reports/${SHA:0:7}.md"
+          REPORT_URL="https://github.com/${GITHUB_REPOSITORY}/blob/main/reports/${SHA}.md"
           gh api "repos/${SCIENCE_REPO}/dispatches" \
             -f event_type=crossaudit-verdict \
             -f "client_payload[verdict]=$(cat verdict.txt)" \

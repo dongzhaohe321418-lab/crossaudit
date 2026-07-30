@@ -22,15 +22,26 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: "I8: verify the receipt exists in the audit ledger before acting"
+      - name: "I8 (partial): anchor the receipt before acting — fail closed"
         run: |
           set -e
-          if [ -z "$REPORT_COMMIT" ] || [ -z "$AUDIT_REPO" ]; then
-            echo "::error::verdict callback carries no report_commit — fail closed"; exit 1; fi
-          git ls-remote "https://github.com/${AUDIT_REPO}.git" | grep -q "^${REPORT_COMMIT}" \
-            || git fetch --depth 1 "https://github.com/${AUDIT_REPO}.git" "$REPORT_COMMIT" \
-            || { echo "::error::report commit ${REPORT_COMMIT} not reachable in ${AUDIT_REPO} — fail closed"; exit 1; }
-          echo "receipt anchored at ${AUDIT_REPO}@${REPORT_COMMIT:0:7}"
+          pip install --quiet pyyaml
+          # Audit repo comes from pinned config, NEVER from the callback payload.
+          AUDIT_REPO_CFG=$(python3 -c "import yaml; print(yaml.safe_load(open('crossaudit.yml'))['audit']['repo'])")
+          [ "$AUDIT_REPO" = "$AUDIT_REPO_CFG" ] \
+            || { echo "::error::payload audit_repo '$AUDIT_REPO' != configured '$AUDIT_REPO_CFG' — fail closed"; exit 1; }
+          echo "$REPORT_COMMIT" | grep -qE '^[0-9a-f]{40}$' \
+            || { echo "::error::report_commit is not a full 40-hex SHA — fail closed"; exit 1; }
+          git init -q /tmp/anchor && git -C /tmp/anchor fetch --depth 1 \
+            "https://github.com/${AUDIT_REPO_CFG}.git" "$REPORT_COMMIT" \
+            || { echo "::error::commit ${REPORT_COMMIT} not fetchable from ${AUDIT_REPO_CFG} — fail closed"; exit 1; }
+          # Read the receipt from the fetched commit itself, not from a mutable branch.
+          RECEIPT=$(git -C /tmp/anchor show "FETCH_HEAD:reports/${SHA}.receipt.json" 2>/dev/null) \
+            || { echo "::error::receipt for ${SHA} absent at ${REPORT_COMMIT} — fail closed"; exit 1; }
+          echo "$RECEIPT" | python3 -c "import json,os,sys; r=json.load(sys.stdin); assert r['sha']==os.environ['SHA'], 'receipt/payload sha mismatch'; assert r['verdict']==os.environ['VERDICT'], 'receipt/payload verdict mismatch'; print('receipt bound: sha+verdict match; constitution', r['constitution_hash'][:12])"
+          # NOTE (audited limitation): this anchors and matches the receipt; it does not yet
+          # gate a protected action — no required check / branch protection is attached in the
+          # demo. See ROADMAP-R2.md. Summaries below are notifications, not admission.
 
       - name: Read max_rounds from crossaudit.yml
         id: cfg
