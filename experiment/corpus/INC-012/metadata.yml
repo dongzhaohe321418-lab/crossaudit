@@ -1,0 +1,14 @@
+objective: "Pilot increment: counterpoise-corrected binding energy of the water dimer at PBE0/cc-pVDZ. Synthetic corpus item."
+inputs:
+  - geometries/012.xyz
+  - scripts/run_012.py
+method:
+  functional: "PBE0"
+  basis_set: "cc-pVDZ"
+  corrections:
+    - counterpoise
+  thresholds:
+    scf: 1e-06
+environment: "container:demo/psi4:1.9"
+exclusions: []
+rerun: "python run_012.py"

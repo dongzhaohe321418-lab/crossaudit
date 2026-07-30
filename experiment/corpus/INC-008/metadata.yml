@@ -1,0 +1,15 @@
+objective: "Pilot increment: counterpoise-corrected binding energy of the HF dimer at B3LYP/def2-SVP. Synthetic corpus item."
+inputs:
+  - geometries/008.xyz
+  - scripts/run_008.py
+method:
+  functional: "B3LYP"
+  basis_set: "def2-SVP"
+  corrections:
+    - counterpoise
+  thresholds:
+    scf: 1e-06
+code_version: "c008beef"
+environment: "container:demo/psi4:1.9"
+exclusions: []
+rerun: "python run_008.py"

@@ -1,0 +1,267 @@
+{
+  "INC-001": [
+    {
+      "class": "L4",
+      "description": "source script not among declared inputs",
+      "location": "results.json quantities[0].source"
+    },
+    {
+      "class": "L5",
+      "description": "prose claims repulsive; JSON value is negative (attractive)",
+      "location": "SUMMARY vs results binding_energy sign"
+    },
+    {
+      "class": "L6",
+      "description": "prose claims converged/final; convergence block says false",
+      "location": "SUMMARY vs convergence.converged"
+    }
+  ],
+  "INC-002": [],
+  "INC-003": [],
+  "INC-004": [],
+  "INC-005": [],
+  "INC-006": [],
+  "INC-007": [
+    {
+      "class": "D3",
+      "description": "achieved exceeds threshold",
+      "location": "results.json convergence"
+    },
+    {
+      "class": "L4",
+      "description": "source script not among declared inputs",
+      "location": "results.json quantities[0].source"
+    }
+  ],
+  "INC-008": [
+    {
+      "class": "D1",
+      "description": "provenance removed from binding_energy",
+      "location": "results.json quantities[0].source"
+    },
+    {
+      "class": "L2",
+      "description": "summary admits dropped runs; exclusions list empty",
+      "location": "SUMMARY vs metadata.exclusions"
+    },
+    {
+      "class": "L6",
+      "description": "prose claims converged/final; convergence block says false",
+      "location": "SUMMARY vs convergence.converged"
+    }
+  ],
+  "INC-009": [
+    {
+      "class": "D2",
+      "description": "distance carries an energy unit",
+      "location": "results.json quantities[1].unit"
+    },
+    {
+      "class": "L6",
+      "description": "prose claims converged/final; convergence block says false",
+      "location": "SUMMARY vs convergence.converged"
+    }
+  ],
+  "INC-010": [],
+  "INC-011": [],
+  "INC-012": [
+    {
+      "class": "D4",
+      "description": "required field removed",
+      "location": "metadata.yml code_version"
+    }
+  ],
+  "INC-013": [
+    {
+      "class": "L1",
+      "description": "summary claims wB97X-D, metadata says PBE",
+      "location": "SUMMARY vs metadata.method.functional"
+    },
+    {
+      "class": "L2",
+      "description": "summary admits dropped runs; exclusions list empty",
+      "location": "SUMMARY vs metadata.exclusions"
+    },
+    {
+      "class": "L6",
+      "description": "prose claims converged/final; convergence block says false",
+      "location": "SUMMARY vs convergence.converged"
+    }
+  ],
+  "INC-014": [
+    {
+      "class": "D2",
+      "description": "distance carries an energy unit",
+      "location": "results.json quantities[1].unit"
+    },
+    {
+      "class": "L1",
+      "description": "summary claims wB97X-D, metadata says PBE",
+      "location": "SUMMARY vs metadata.method.functional"
+    }
+  ],
+  "INC-015": [
+    {
+      "class": "D1",
+      "description": "provenance removed from binding_energy",
+      "location": "results.json quantities[0].source"
+    },
+    {
+      "class": "L1",
+      "description": "summary claims PBE, metadata says B3LYP",
+      "location": "SUMMARY vs metadata.method.functional"
+    },
+    {
+      "class": "L3",
+      "description": "cross-basis comparison (def2-SVP vs def2-TZVP) stated without caveat",
+      "location": "SUMMARY final sentence"
+    }
+  ],
+  "INC-016": [
+    {
+      "class": "L6",
+      "description": "prose claims converged/final; convergence block says false",
+      "location": "SUMMARY vs convergence.converged"
+    },
+    {
+      "class": "L3",
+      "description": "cross-basis comparison (def2-TZVP vs def2-SVP) stated without caveat",
+      "location": "SUMMARY final sentence"
+    },
+    {
+      "class": "L4",
+      "description": "source script not among declared inputs",
+      "location": "results.json quantities[0].source"
+    }
+  ],
+  "INC-017": [
+    {
+      "class": "D1",
+      "description": "provenance removed from binding_energy",
+      "location": "results.json quantities[0].source"
+    },
+    {
+      "class": "L3",
+      "description": "cross-basis comparison (def2-SVP vs def2-TZVP) stated without caveat",
+      "location": "SUMMARY final sentence"
+    }
+  ],
+  "INC-018": [
+    {
+      "class": "D4",
+      "description": "required field removed",
+      "location": "metadata.yml code_version"
+    }
+  ],
+  "INC-019": [
+    {
+      "class": "D2",
+      "description": "distance carries an energy unit",
+      "location": "results.json quantities[1].unit"
+    },
+    {
+      "class": "L5",
+      "description": "prose claims repulsive; JSON value is negative (attractive)",
+      "location": "SUMMARY vs results binding_energy sign"
+    }
+  ],
+  "INC-020": [
+    {
+      "class": "D1",
+      "description": "provenance removed from binding_energy",
+      "location": "results.json quantities[0].source"
+    },
+    {
+      "class": "L5",
+      "description": "prose claims repulsive; JSON value is negative (attractive)",
+      "location": "SUMMARY vs results binding_energy sign"
+    }
+  ],
+  "INC-021": [
+    {
+      "class": "L2",
+      "description": "summary admits dropped runs; exclusions list empty",
+      "location": "SUMMARY vs metadata.exclusions"
+    }
+  ],
+  "INC-022": [
+    {
+      "class": "L1",
+      "description": "summary claims PBE, metadata says PBE0",
+      "location": "SUMMARY vs metadata.method.functional"
+    },
+    {
+      "class": "L4",
+      "description": "source script not among declared inputs",
+      "location": "results.json quantities[0].source"
+    },
+    {
+      "class": "L5",
+      "description": "prose claims repulsive; JSON value is negative (attractive)",
+      "location": "SUMMARY vs results binding_energy sign"
+    }
+  ],
+  "INC-023": [
+    {
+      "class": "D2",
+      "description": "distance carries an energy unit",
+      "location": "results.json quantities[1].unit"
+    },
+    {
+      "class": "L5",
+      "description": "prose claims repulsive; JSON value is negative (attractive)",
+      "location": "SUMMARY vs results binding_energy sign"
+    },
+    {
+      "class": "L4",
+      "description": "source script not among declared inputs",
+      "location": "results.json quantities[0].source"
+    }
+  ],
+  "INC-024": [],
+  "INC-025": [
+    {
+      "class": "D1",
+      "description": "provenance removed from binding_energy",
+      "location": "results.json quantities[0].source"
+    },
+    {
+      "class": "L1",
+      "description": "summary claims PBE, metadata says PBE0",
+      "location": "SUMMARY vs metadata.method.functional"
+    }
+  ],
+  "INC-026": [
+    {
+      "class": "L2",
+      "description": "summary admits dropped runs; exclusions list empty",
+      "location": "SUMMARY vs metadata.exclusions"
+    },
+    {
+      "class": "L5",
+      "description": "prose claims repulsive; JSON value is negative (attractive)",
+      "location": "SUMMARY vs results binding_energy sign"
+    }
+  ],
+  "INC-027": [],
+  "INC-028": [],
+  "INC-029": [
+    {
+      "class": "L5",
+      "description": "prose claims repulsive; JSON value is negative (attractive)",
+      "location": "SUMMARY vs results binding_energy sign"
+    },
+    {
+      "class": "L2",
+      "description": "summary admits dropped runs; exclusions list empty",
+      "location": "SUMMARY vs metadata.exclusions"
+    }
+  ],
+  "INC-030": [
+    {
+      "class": "L4",
+      "description": "source script not among declared inputs",
+      "location": "results.json quantities[0].source"
+    }
+  ]
+}

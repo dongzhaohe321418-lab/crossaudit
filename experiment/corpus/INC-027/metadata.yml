@@ -1,0 +1,15 @@
+objective: "Pilot increment: counterpoise-corrected binding energy of the benzene--water complex at PBE/cc-pVDZ. Synthetic corpus item."
+inputs:
+  - geometries/027.xyz
+  - scripts/run_027.py
+method:
+  functional: "PBE"
+  basis_set: "cc-pVDZ"
+  corrections:
+    - counterpoise
+  thresholds:
+    scf: 1e-06
+code_version: "c027beef"
+environment: "container:demo/psi4:1.9"
+exclusions: []
+rerun: "python run_027.py"

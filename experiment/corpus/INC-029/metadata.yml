@@ -1,0 +1,15 @@
+objective: "Pilot increment: counterpoise-corrected binding energy of the methane--water complex at wB97X-D/def2-SVP. Synthetic corpus item."
+inputs:
+  - geometries/029.xyz
+  - scripts/run_029.py
+method:
+  functional: "wB97X-D"
+  basis_set: "def2-SVP"
+  corrections:
+    - counterpoise
+  thresholds:
+    scf: 1e-06
+code_version: "c029beef"
+environment: "container:demo/psi4:1.9"
+exclusions: []
+rerun: "python run_029.py"

@@ -1,0 +1,1 @@
+We compute the counterpoise-corrected binding energy of the HF dimer at B3LYP/def2-SVP, obtaining -5.68 kcal/mol at an intermolecular distance of 2.67 angstrom. SCF convergence reached 2.44e-07 Ha against a 1e-06 Ha threshold. Two outlier runs were dropped from the average as unstable. The binding energy is converged and final.

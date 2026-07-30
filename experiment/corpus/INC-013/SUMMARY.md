@@ -1,0 +1,1 @@
+We compute the counterpoise-corrected binding energy of the methane--water complex at wB97X-D/def2-SVP, obtaining -3.06 kcal/mol at an intermolecular distance of 3.08 angstrom. SCF convergence reached 1.97e-07 Ha against a 1e-06 Ha threshold. Two outlier runs were dropped from the average as unstable. The binding energy is converged and final.

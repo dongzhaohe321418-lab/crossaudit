@@ -1,0 +1,1 @@
+We compute the counterpoise-corrected binding energy of the benzene--water complex at PBE/def2-TZVP, obtaining -6.03 kcal/mol at an intermolecular distance of 2.69 angstrom. SCF convergence reached 1.30e-07 Ha against a 1e-06 Ha threshold. All runs are reported; none were excluded. This is 0.65 kcal/mol stronger than our earlier def2-SVP value, confirming the trend.

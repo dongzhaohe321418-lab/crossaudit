@@ -1,0 +1,1 @@
+We compute the counterpoise-corrected binding energy of the formic acid dimer at PBE/cc-pVDZ, obtaining -4.54 kcal/mol at an intermolecular distance of 3.21 angstrom. SCF convergence reached 4.83e-07 Ha against a 1e-06 Ha threshold. All runs are reported; none were excluded.

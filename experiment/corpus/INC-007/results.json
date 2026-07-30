@@ -1,0 +1,22 @@
+{
+  "quantities": [
+    {
+      "name": "binding_energy",
+      "value": -5.0,
+      "unit": "kcal/mol",
+      "source": "legacy_fit.py@2f7201f"
+    },
+    {
+      "name": "intermolecular_distance",
+      "value": 2.76,
+      "unit": "angstrom",
+      "source": "run_007.py@c007beef"
+    }
+  ],
+  "convergence": {
+    "converged": true,
+    "threshold": 1e-06,
+    "achieved": 4.9999999999999996e-06,
+    "unit": "hartree"
+  }
+}

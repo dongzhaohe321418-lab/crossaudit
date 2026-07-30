@@ -1,0 +1,15 @@
+objective: "Pilot increment: counterpoise-corrected binding energy of the benzene--water complex at B3LYP/def2-TZVP. Synthetic corpus item."
+inputs:
+  - geometries/019.xyz
+  - scripts/run_019.py
+method:
+  functional: "B3LYP"
+  basis_set: "def2-TZVP"
+  corrections:
+    - counterpoise
+  thresholds:
+    scf: 1e-06
+code_version: "c019beef"
+environment: "container:demo/psi4:1.9"
+exclusions: []
+rerun: "python run_019.py"

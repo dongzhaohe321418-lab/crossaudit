@@ -1,0 +1,1 @@
+We compute the counterpoise-corrected binding energy of the water dimer at PBE/def2-SVP, obtaining -3.13 kcal/mol at an intermolecular distance of 2.91 angstrom. SCF convergence reached 5.17e-08 Ha against a 1e-06 Ha threshold. Two outlier runs were dropped from the average as unstable.

@@ -1,0 +1,15 @@
+objective: "Pilot increment: counterpoise-corrected binding energy of the benzene--water complex at PBE/def2-TZVP. Synthetic corpus item."
+inputs:
+  - geometries/005.xyz
+  - scripts/run_005.py
+method:
+  functional: "PBE"
+  basis_set: "def2-TZVP"
+  corrections:
+    - counterpoise
+  thresholds:
+    scf: 1e-06
+code_version: "c005beef"
+environment: "container:demo/psi4:1.9"
+exclusions: []
+rerun: "python run_005.py"

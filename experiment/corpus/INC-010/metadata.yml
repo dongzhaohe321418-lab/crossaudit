@@ -1,0 +1,15 @@
+objective: "Pilot increment: counterpoise-corrected binding energy of the HF dimer at PBE/def2-TZVP. Synthetic corpus item."
+inputs:
+  - geometries/010.xyz
+  - scripts/run_010.py
+method:
+  functional: "PBE"
+  basis_set: "def2-TZVP"
+  corrections:
+    - counterpoise
+  thresholds:
+    scf: 1e-06
+code_version: "c010beef"
+environment: "container:demo/psi4:1.9"
+exclusions: []
+rerun: "python run_010.py"
