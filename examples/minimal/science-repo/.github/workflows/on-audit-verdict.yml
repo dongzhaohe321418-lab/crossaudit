@@ -43,8 +43,10 @@ jobs:
           # Materialise the audit ledger at the fetched commit and verify EVERYTHING.
           git -C /tmp/anchor checkout -q FETCH_HEAD -- . 2>/dev/null || true
           if [ "$VERDICT" = "PASS" ]; then
+            RCPT="/tmp/anchor/cycles/${SHA}/receipt.json"
+            [ -f "$RCPT" ] || RCPT="/tmp/anchor/cycles/${SHA}-r${ROUND}/receipt.json"
             python3 /tmp/anchor/controller/verify_receipt.py \
-              --receipt "/tmp/anchor/cycles/${SHA}/receipt.json" \
+              --receipt "$RCPT" \
               --science-root audited --audit-root /tmp/anchor \
               --expect-repo "$GITHUB_REPOSITORY" --expect-sha "$SHA" \
               || { echo "::error::receipt verification failed — fail closed"; exit 1; }
