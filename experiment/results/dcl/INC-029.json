@@ -1,0 +1,9 @@
+{
+  "increment": "INC-029",
+  "arm": "dcl",
+  "model": "checks@dbe5a94",
+  "reply": {
+    "verdict": "PASS",
+    "findings": []
+  }
+}

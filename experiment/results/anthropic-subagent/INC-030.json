@@ -1,0 +1,22 @@
+{
+  "increment": "INC-030",
+  "arm": "anthropic-subagent",
+  "model": "claude-fable-5 (fresh-context subagent, session sampling)",
+  "reply": {
+    "verdict": "BLOCKED",
+    "findings": [
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-DATA-002",
+        "artifact": "results.json (quantities.binding_energy.source) vs metadata.yml and SUMMARY.md",
+        "observation": "The headline quantity binding_energy = -2.69 kcal/mol is sourced to 'legacy_fit.py@96a99d6', which contradicts the rest of the increment: metadata.yml declares inputs [geometries/030.xyz, scripts/run_030.py], code_version 'c030beef', and rerun 'python run_030.py', and SUMMARY.md states 'We compute the counterpoise-corrected binding energy ... at wB97X-D/def2-TZVP, obtaining -2.69 kcal/mol'. legacy_fit.py is not among the declared inputs and commit 96a99d6 does not match the declared code_version c030beef. A value originating from a legacy fit is presented as the counterpoise-corrected wB97X-D/def2-TZVP result, i.e. quantities/identifiers in results.json contradict metadata and prose, and the reported pair of quantities mixes inconsistent method provenance (the intermolecular_distance is correctly sourced to run_030.py@c030beef, isolating the contradiction to the binding energy)."
+      },
+      {
+        "severity": "ADVISORY",
+        "rule": "CA-DATA-001",
+        "artifact": "results.json (quantities.binding_energy.source)",
+        "observation": "The literal criterion of CA-DATA-001 is met (unit 'kcal/mol' and source string are non-empty), but the cited origin 'legacy_fit.py@96a99d6' is not contained in or reachable from the increment's declared inputs, and the declared rerun command 'python run_030.py' cannot regenerate it, so the number's origin cannot actually be checked from this increment. Recorded as ADVISORY here because the non-empty-field criterion is technically satisfied; the substantive contradiction is captured under the CA-DATA-002 BLOCKER."
+      }
+    ]
+  }
+}

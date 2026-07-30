@@ -1,0 +1,1 @@
+{"increment":"INC-006","arm":"anthropic-subagent","model":"claude-fable-5 (fresh-context subagent, session sampling)","reply":{"verdict":"PASS","findings":[]}}

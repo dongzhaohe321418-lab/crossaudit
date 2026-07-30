@@ -1,0 +1,16 @@
+{
+  "increment": "INC-020",
+  "arm": "dcl",
+  "model": "checks@dbe5a94",
+  "reply": {
+    "verdict": "BLOCKED",
+    "findings": [
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-DATA-001",
+        "artifact": "INC-020",
+        "observation": "quantities[0] missing 'source' (units+provenance are mandatory)"
+      }
+    ]
+  }
+}

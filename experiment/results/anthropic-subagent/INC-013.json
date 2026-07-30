@@ -1,0 +1,34 @@
+{
+  "increment": "INC-013",
+  "arm": "anthropic-subagent",
+  "model": "claude-fable-5 (fresh-context subagent, session sampling)",
+  "reply": {
+    "verdict": "BLOCKED",
+    "findings": [
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-DATA-002",
+        "artifact": "SUMMARY.md vs metadata.yml",
+        "observation": "Method-level contradiction: metadata.yml declares functional PBE (def2-SVP) but SUMMARY.md reports the same -3.06 kcal/mol binding energy as computed at wB97X-D/def2-SVP. The single reported quantity is attributed to two different levels of theory, so the increment's method record and prose are irreconcilable."
+      },
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-METH-002",
+        "artifact": "results.json",
+        "observation": "convergence.converged is false, failing the criterion converged == true. The flag is also internally inconsistent with the recorded values (achieved 1.971e-07 hartree is below the 1e-06 hartree threshold): either the run is genuinely unconverged or the convergence record is wrong; in both cases the reported numbers cannot pass as converged results."
+      },
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-DATA-002",
+        "artifact": "SUMMARY.md vs results.json",
+        "observation": "SUMMARY.md asserts 'SCF convergence reached 1.97e-07 Ha' and 'The binding energy is converged and final', directly contradicting results.json, which records convergence.converged: false."
+      },
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-DATA-002",
+        "artifact": "metadata.yml vs SUMMARY.md",
+        "observation": "Undisclosed exclusions: SUMMARY.md states 'Two outlier runs were dropped from the average as unstable', but metadata.yml declares exclusions: [] and neither the declared inputs nor results.json evidence any multi-run averaging. The declared record contradicts the prose description of the data treatment."
+      }
+    ]
+  }
+}

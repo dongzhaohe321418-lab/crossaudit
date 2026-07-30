@@ -1,0 +1,16 @@
+{
+  "increment": "INC-010",
+  "arm": "anthropic-subagent",
+  "model": "claude-fable-5 (fresh-context subagent, session sampling)",
+  "reply": {
+    "verdict": "PASS",
+    "findings": [
+      {
+        "severity": "ADVISORY",
+        "rule": "CA-DATA-001",
+        "artifact": "results.json",
+        "observation": "Quantity 'intermolecular_distance' (3.25 angstrom) meets the criterion (non-empty unit and source), but neither metadata.yml nor SUMMARY.md defines which atom pair or reference points it denotes. Under the most common convention for the HF dimer (F...F separation, ~2.7-2.8 angstrom near equilibrium) the value would be anomalously long, while other definitions (e.g., F...H(free) or H...H) could accommodate it. The ambiguity limits external checkability of the number; no rule criterion is violated, so this is recorded as ADVISORY only. All other checks pass: units/provenance present and sources among declared inputs at the stated code_version (CA-DATA-001); metadata, results, and prose agree on method, values, threshold, and correctly rounded achieved convergence (CA-DATA-002); converged=true with 8.807e-07 hartree below the 1e-06 hartree threshold, consistent with prose (CA-METH-002); metadata states objective, inputs, method, code_version, environment (CA-REPRO-001); declared empty exclusions match the prose claim that no runs were excluded; no cross-method-level comparisons are made."
+      }
+    ]
+  }
+}

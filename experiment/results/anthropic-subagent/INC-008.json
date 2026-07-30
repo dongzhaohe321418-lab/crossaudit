@@ -1,0 +1,34 @@
+{
+  "increment": "INC-008",
+  "arm": "anthropic-subagent",
+  "model": "claude-fable-5 (fresh-context subagent, session sampling)",
+  "reply": {
+    "verdict": "BLOCKED",
+    "findings": [
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-METH-002",
+        "artifact": "results.json",
+        "observation": "convergence.converged is false, failing the criterion that converged == true. The flag is also internally inconsistent: achieved 2.44e-07 hartree is below the 1e-06 hartree threshold, yet the run is declared unconverged, so the convergence record cannot be trusted as stated."
+      },
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-DATA-002",
+        "artifact": "SUMMARY.md vs results.json",
+        "observation": "Prose states 'The binding energy is converged and final', directly contradicting results.json which records convergence.converged: false."
+      },
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-DATA-002",
+        "artifact": "SUMMARY.md vs metadata.yml",
+        "observation": "Prose states 'Two outlier runs were dropped from the average as unstable', but metadata.yml declares exclusions: []. The exclusion of runs is undisclosed in metadata, and no run-level provenance for the averaged set is provided anywhere in the increment."
+      },
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-DATA-001",
+        "artifact": "results.json",
+        "observation": "The binding_energy entry (-5.68 kcal/mol) has a unit but no source field, so its provenance is missing; the criterion requires each numeric entry to carry non-empty unit and source. (intermolecular_distance is compliant: source run_008.py@c008beef matches declared input scripts/run_008.py and code_version c008beef.)"
+      }
+    ]
+  }
+}

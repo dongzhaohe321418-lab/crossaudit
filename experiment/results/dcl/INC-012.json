@@ -1,0 +1,16 @@
+{
+  "increment": "INC-012",
+  "arm": "dcl",
+  "model": "checks@dbe5a94",
+  "reply": {
+    "verdict": "BLOCKED",
+    "findings": [
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-REPRO-001",
+        "artifact": "INC-012",
+        "observation": "metadata.yml missing required field 'code_version'"
+      }
+    ]
+  }
+}

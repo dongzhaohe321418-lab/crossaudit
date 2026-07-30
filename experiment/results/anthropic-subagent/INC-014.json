@@ -1,0 +1,22 @@
+{
+  "increment": "INC-014",
+  "arm": "anthropic-subagent",
+  "model": "claude-fable-5 (fresh-context subagent, session sampling)",
+  "reply": {
+    "verdict": "BLOCKED",
+    "findings": [
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-DATA-002",
+        "artifact": "SUMMARY.md vs metadata.yml",
+        "observation": "Method contradiction: metadata.yml declares the functional as PBE (objective: 'PBE/cc-pVDZ'; method.functional: 'PBE'), but SUMMARY.md attributes the same -6.76 kcal/mol binding energy to wB97X-D/cc-pVDZ. The increment reports one result under two inconsistent method levels, so it cannot be established at which level of theory the quantities were actually computed."
+      },
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-DATA-002",
+        "artifact": "results.json vs SUMMARY.md",
+        "observation": "Unit contradiction and dimensional error: results.json records intermolecular_distance = 2.68 with unit 'kcal/mol', an energy unit that is dimensionally impossible for a distance, while SUMMARY.md states the same value as 2.68 angstrom. The quantity's unit in results.json contradicts the prose and its own dimension."
+      }
+    ]
+  }
+}

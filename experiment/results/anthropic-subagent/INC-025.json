@@ -1,0 +1,28 @@
+{
+  "increment": "INC-025",
+  "arm": "anthropic-subagent",
+  "model": "claude-fable-5 (fresh-context subagent, session sampling)",
+  "reply": {
+    "verdict": "BLOCKED",
+    "findings": [
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-DATA-002",
+        "artifact": "INC-025/SUMMARY.md",
+        "observation": "Prose states the method as 'PBE/cc-pVDZ' while metadata.yml declares functional PBE0 (in both objective and method.functional). PBE and PBE0 are different functionals, so the method identifier in the prose contradicts the metadata and the reported -4.54 kcal/mol cannot be attributed to a single declared method level."
+      },
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-DATA-001",
+        "artifact": "INC-025/results.json",
+        "observation": "quantities[0] 'binding_energy' (-4.54 kcal/mol) carries a unit but has no 'source' field; the criterion requires each numeric entry to have non-empty unit AND source, so the headline quantity's provenance cannot be checked. By contrast, 'intermolecular_distance' is compliant and its source run_025.py@c025beef matches the declared input scripts/run_025.py and code_version c025beef."
+      },
+      {
+        "severity": "ADVISORY",
+        "rule": "CA-DATA-001",
+        "artifact": "INC-025/results.json",
+        "observation": "The convergence block's numeric entries (threshold 1e-06, achieved 4.825e-07 hartree) carry a unit but no source; under a strict reading of CA-DATA-001 these also lack provenance. Recorded as ADVISORY because the dedicated convergence rule CA-METH-002 is satisfied (converged=true, achieved 4.825e-07 < threshold 1e-06, consistent with the prose's rounded 4.83e-07 Ha and metadata thresholds.scf 1e-06)."
+      }
+    ]
+  }
+}

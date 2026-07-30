@@ -1,0 +1,16 @@
+{
+  "increment": "INC-007",
+  "arm": "dcl",
+  "model": "checks@dbe5a94",
+  "reply": {
+    "verdict": "BLOCKED",
+    "findings": [
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-METH-002",
+        "artifact": "INC-007",
+        "observation": "achieved (4.9999999999999996e-06) does not meet threshold (1e-06)"
+      }
+    ]
+  }
+}

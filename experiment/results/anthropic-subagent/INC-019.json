@@ -1,0 +1,28 @@
+{
+  "increment": "INC-019",
+  "arm": "anthropic-subagent",
+  "model": "claude-fable-5 (fresh-context subagent, session sampling)",
+  "reply": {
+    "verdict": "BLOCKED",
+    "findings": [
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-DATA-002",
+        "artifact": "results.json / SUMMARY.md",
+        "observation": "Unit contradiction on intermolecular_distance: results.json records value 2.95 with unit 'kcal/mol' (an energy unit), while SUMMARY.md reports the same value as 2.95 angstrom. A length cannot be dimensioned in kcal/mol; results and prose contradict."
+      },
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-DATA-002",
+        "artifact": "results.json / SUMMARY.md",
+        "observation": "Sign/interpretation contradiction on binding_energy: results.json records -3.1 kcal/mol (negative = bound/attractive under the stated counterpoise-corrected convention), but SUMMARY.md describes the result as 'a repulsive 3.1 kcal/mol'. The headline quantity's physical interpretation contradicts its recorded value."
+      },
+      {
+        "severity": "ADVISORY",
+        "rule": "CA-REPRO-001",
+        "artifact": "metadata.yml",
+        "observation": "Rerun command 'python run_019.py' does not match the declared input path 'scripts/run_019.py'; as written it only works from inside scripts/. All required self-description fields (objective, inputs, method, code_version, environment) are present, so this is a judgement-call hygiene note, not a rule breach."
+      }
+    ]
+  }
+}

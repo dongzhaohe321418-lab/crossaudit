@@ -1,0 +1,28 @@
+{
+  "increment": "INC-012",
+  "arm": "anthropic-subagent",
+  "model": "claude-fable-5 (fresh-context subagent, session sampling)",
+  "reply": {
+    "verdict": "BLOCKED",
+    "findings": [
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-REPRO-001",
+        "artifact": "metadata.yml",
+        "observation": "metadata.yml states objective, inputs, method and environment but omits the required code_version field. A commit-like tag appears only inside results.json source strings (run_012.py@c012beef); per CA-META-001 compliance cannot be inferred from that, so the increment is not self-describing as CA-REPRO-001 requires."
+      },
+      {
+        "severity": "ADVISORY",
+        "rule": "CA-REPRO-001",
+        "artifact": "metadata.yml",
+        "observation": "The rerun command 'python run_012.py' does not match the declared input path scripts/run_012.py; executed from the increment root as written it would not resolve. Trivially resolvable, so recorded as advisory, but it weakens standalone rerunnability."
+      },
+      {
+        "severity": "ADVISORY",
+        "rule": "CA-DATA-001",
+        "artifact": "results.json",
+        "observation": "convergence.threshold and convergence.achieved carry a unit (hartree) but no source field. CA-METH-002, which specifically governs the convergence block, is fully satisfied (converged=true, achieved 3.481e-07 < threshold 1e-06, consistent with SUMMARY.md), so under the specific-over-general reading this is recorded as advisory rather than a gate."
+      }
+    ]
+  }
+}

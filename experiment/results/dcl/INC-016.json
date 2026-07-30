@@ -1,0 +1,16 @@
+{
+  "increment": "INC-016",
+  "arm": "dcl",
+  "model": "checks@dbe5a94",
+  "reply": {
+    "verdict": "BLOCKED",
+    "findings": [
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-METH-002",
+        "artifact": "INC-016",
+        "observation": "convergence.converged is not true \u2014 unconverged numbers are not results"
+      }
+    ]
+  }
+}

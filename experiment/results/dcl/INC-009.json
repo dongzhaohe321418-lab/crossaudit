@@ -1,0 +1,22 @@
+{
+  "increment": "INC-009",
+  "arm": "dcl",
+  "model": "checks@dbe5a94",
+  "reply": {
+    "verdict": "BLOCKED",
+    "findings": [
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-DOM-001",
+        "artifact": "INC-009",
+        "observation": "'intermolecular_distance' looks like length but carries energy unit 'kcal/mol' \u2014 dimensional inconsistency"
+      },
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-METH-002",
+        "artifact": "INC-009",
+        "observation": "convergence.converged is not true \u2014 unconverged numbers are not results"
+      }
+    ]
+  }
+}

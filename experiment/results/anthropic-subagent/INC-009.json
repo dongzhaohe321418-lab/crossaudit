@@ -1,0 +1,28 @@
+{
+  "increment": "INC-009",
+  "arm": "anthropic-subagent",
+  "model": "claude-fable-5 (fresh-context subagent, session sampling)",
+  "reply": {
+    "verdict": "BLOCKED",
+    "findings": [
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-METH-002",
+        "artifact": "results.json:convergence",
+        "observation": "convergence.converged is false, failing the criterion that converged == true. The record is also internally inconsistent: achieved 3.753e-07 hartree is below the 1e-06 hartree threshold, yet the flag says false, so the convergence status cannot be trusted in either direction. An unconverged quantity may not be reported as a result."
+      },
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-DATA-002",
+        "artifact": "SUMMARY.md vs results.json:convergence",
+        "observation": "SUMMARY.md asserts 'The binding energy is converged and final', directly contradicting results.json, which declares converged: false. Prose and results must not contradict."
+      },
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-DATA-002",
+        "artifact": "results.json:quantities[intermolecular_distance] vs SUMMARY.md",
+        "observation": "intermolecular_distance (3.06) is recorded with unit 'kcal/mol', an energy unit that is dimensionally impossible for a distance, while SUMMARY.md reports the same value as '3.06 angstrom'. The results file contradicts the prose on the unit of a reported quantity."
+      }
+    ]
+  }
+}
