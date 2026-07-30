@@ -10,7 +10,15 @@ from pathlib import Path
 
 ROOT = Path(__file__).parent
 
-# Which rule families count as catching which defect class (lenient tier).
+# Frozen map: as committed at registration (216bdc9), BEFORE any outputs existed.
+FROZEN_MAP = {
+    "D1": ("CA-DATA-001",), "D2": ("CA-DATA-001", "CA-DOM"), "D3": ("CA-METH-002",),
+    "D4": ("CA-REPRO-001",),
+    "L1": ("CA-DATA-002",), "L2": ("CA-DATA-002", "CA-DATA-003"), "L3": ("CA-DOM", "CA-DATA-002"),
+    "L4": ("CA-DATA-001", "CA-DATA-002"), "L5": ("CA-DATA-002",), "L6": ("CA-METH-002", "CA-DATA-002"),
+}
+# Adjudicated map: post-hoc corrections logged in scoring/adjudication.jsonl AFTER
+# raw outputs were committed. Exploratory, not confirmatory.
 RULE_MAP = {
     "D1": ("CA-DATA-001",),
     "D2": ("CA-DATA-001", "CA-DOM", "CA-DATA-002"),  # adjudicated
@@ -34,9 +42,15 @@ def main() -> None:
     assert hashlib.sha256(key_text.encode()).hexdigest() == seal, "SEAL MISMATCH — abort"
     key = json.loads(key_text)
 
-    lines = ["# Seeded-Defect Pilot — Scorecard", "",
-             f"Seal verified: `{seal[:16]}…`", ""]
-    for arm_dir in sorted((ROOT / "results").iterdir()):
+    lines = ["# Seeded-Defect Pilot — Scorecard (dual-map report)", "",
+             f"Key hash verified against corpus/defect_key.sha256: `{seal[:16]}…`",
+             "NOTE (audit 2026-07-30): the key file was inadvertently public from the",
+             "registration commit onward and is derivable from the public seeded generator;",
+             "'sealed' is therefore NOT claimed. FROZEN = scoring map as committed before",
+             "outputs; ADJUDICATED = post-hoc map per scoring/adjudication.jsonl (exploratory).", ""]
+    for map_name, MAP in (("FROZEN", FROZEN_MAP), ("ADJUDICATED", RULE_MAP)):
+      lines.append(f"# --- {map_name} scoring map ---")
+      for arm_dir in sorted((ROOT / "results").iterdir()):
         if not arm_dir.is_dir():
             continue
         outs = {json.loads(p.read_text())["increment"]: json.loads(p.read_text())
@@ -61,7 +75,7 @@ def main() -> None:
                 cls = d["class"]
                 per_class[cls][2] += 1
                 rule_hit = any(any(fam.lower() in str(f.get("rule", "")).lower()
-                                   for fam in RULE_MAP[cls]) for f in findings)
+                                   for fam in MAP[cls]) for f in findings)
                 loc_hit = rule_hit and any(t in blob for t in LOC_TOKENS[cls])
                 caught_l += rule_hit
                 caught_s += loc_hit
