@@ -42,3 +42,12 @@ without euphemism, what must exist before the reference implementation may claim
 Until these land, the honest description of the public implementation is: **targets
 I1–I8; implements deterministic checks, reply validation, receipts, and anchored
 callbacks; does not yet enforce receipt-verified fail-closed admission.**
+
+
+## Status after commit 96c012b
+
+✅ done: 1, 2, 4, 8 · ◐ partial: 3 (status posted; protection is a deployer toggle),
+5 (range done; dep-closure/containment open), 6 (digests+parsed; raw bodies open),
+7 (dispute+deadletter; integrity-escalation open), 9 (scorer done; execution blocked
+on operator keys/escrow) · Locally tested: DCL_ONLY→deny, PASS→admit+consume,
+replay→deny, tamper→deny, controller round derivation.

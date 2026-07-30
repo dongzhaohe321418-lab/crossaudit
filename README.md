@@ -104,3 +104,14 @@ A position paper is in preparation (arXiv link will appear here). Until then, pl
 ## License
 
 [MIT](LICENSE) © 2026 Zhaohe Dong
+
+## Deployment note: making admission binding
+
+The audit side posts a commit status `crossaudit/admission` on every audited science
+commit. To turn notification into **enforcement**, enable branch protection on the
+science repo's protected branch and mark `crossaudit/admission` as a required status
+check; production/publication jobs should additionally verify a receipt via
+`controller/verify_receipt.py --admit`. Use two distinct fine-grained tokens:
+`SCIENCE_TO_AUDIT_TOKEN` (dispatch to audit repo) and `AUDIT_TO_SCIENCE_TOKEN`
+(statuses + dispatch back). The legacy single `CROSSAUDIT_DISPATCH_TOKEN` still works
+but shares credentials across the trust boundary — see `ROADMAP-R2.md` §8.
