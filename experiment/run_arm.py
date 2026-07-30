@@ -70,6 +70,7 @@ def main() -> int:
                             for p in sorted(inc_dir.iterdir()))
         prompt = (f"CONSTITUTION:\n{RULES}\n\nINCREMENT {inc_dir.name} DATA:\n{files}\n\n"
                   f"Audit this increment now.")
+        raw = ""
         for attempt in range(4):
             try:
                 raw = call(args.arm, args.model, prompt)
@@ -85,8 +86,15 @@ def main() -> int:
         if reply.get("verdict") == "ERROR" and first:
             sys.exit(f"first call failed — check model ID / key / quota: {reply.get('error')}")
         first = False
+        import hashlib
         out_file.write_text(json.dumps(
             {"increment": inc_dir.name, "arm": args.arm, "model": args.model,
+             "provenance": {
+                 "prompt_sha256": hashlib.sha256(prompt.encode()).hexdigest(),
+                 "system_sha256": hashlib.sha256(SYSTEM.encode()).hexdigest(),
+                 "raw_response_sha256": hashlib.sha256(raw.encode()).hexdigest() if raw else None,
+                 "temperature": 0, "endpoint_family": args.arm,
+             },
              "reply": reply}, indent=2))
         print(f"{inc_dir.name}: {reply.get('verdict')} "
               f"({len(reply.get('findings', []))} findings)")

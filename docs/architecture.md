@@ -22,7 +22,7 @@ This document is the normative description of the protocol. The READMEs summaris
 
 ## 3. Protocol invariants
 
-These six invariants define CrossAudit. An implementation that breaks one is not CrossAudit.
+These eight invariants define CrossAudit (I7–I8 were adopted in revision 1, following a cross-vendor audit of this repository — see `audits/`). An implementation that breaks one is not CrossAudit.
 
 **I1 — Heterogeneity.** The Auditor's model family/vendor differs from the Generator's. Rationale: LLM evaluators favour outputs resembling their own (self-preference bias), and same-pipeline models share failure modes; cross-vendor pairing decorrelates blind spots. It does not eliminate them — see I4 and the threat model.
 
@@ -35,6 +35,12 @@ These six invariants define CrossAudit. An implementation that breaks one is not
 **I5 — Bounded loop.** At most `max_rounds` Generator↔Auditor exchanges per increment (default 3). Exhaustion ⇒ `ESCALATE`. This is the oscillation guard: without it, two agents can "correct" each other indefinitely, each round plausible and the pair divergent.
 
 **I6 — Graded interruption.** Only `BLOCKER` findings gate the pipeline. `ADVISORY` findings accumulate in reports for the human to read asynchronously. Humans are interrupted only by `ESCALATE`. Compute decoupling is part of this invariant: audit outcomes gate *the next increment*, never running jobs.
+
+**I7 — Receipt binding.** Every verdict is a *receipt* bound to: the audited commit SHA; an artifact manifest (paths + content hashes) that the Audit Repo derives from that SHA itself — never from caller-supplied payload; the Constitution, check-layer, and prompt versions applied; the auditor's declared identity; and the ledger commit of the report. A verdict that binds less is not a receipt. The reference runner emits `receipt.json`; the audit workflow derives `changed` from `git diff` at the pinned SHA and ignores the dispatch payload for scoping; rounds are derived from `reports/index.jsonl`, not from generator-controlled trailers.
+
+**I8 — Fail-closed admission.** Protected actions (admitting the next increment, production submission, claim publication) proceed only on verification of a valid, current, matching receipt. Absent, stale, conflicting, unbound, or model-audit-less (`DCL_ONLY`) receipts deny by default and escalate. The reference verdict router verifies the report commit is reachable in the audit repo before acting, and treats `DCL_ONLY` as non-admission.
+
+**I3/I4 precedence resolution** (spec ambiguity closed in revision 1): when the DCL hard-fails *and* the Auditor's reply is invalid, the verdict is `BLOCKED` (I4 dominates) and the auditor failure is additionally recorded for escalation — the two invariants compose rather than conflict.
 
 ## 4. Severity semantics
 
@@ -99,6 +105,6 @@ Three things change; three things don't.
 
 **Change:** (1) the DCL check set — write assertions for whatever your field can mechanise (schema, ranges, statistical sanity, mass balance, test suites for ML claims); (2) the Constitution's domain sections — the `CA-DOM-*` rules; (3) the increment definition — what directory layout constitutes "one auditable unit".
 
-**Keep:** the six invariants, the two-level severity, the round protocol. They are field-agnostic by construction.
+**Keep:** the eight invariants, the two-level severity, the round protocol. They are field-agnostic by construction.
 
 A useful litmus test before adopting: *can you write ten decidable rules about your outputs?* If yes, CrossAudit will catch real defects from day one. If no — if all quality judgement in your field is irreducibly holistic — the DCL degenerates to schema checks and you are relying on I1 alone; the protocol still runs, but read §7 honestly first.

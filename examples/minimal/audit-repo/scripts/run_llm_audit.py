@@ -23,6 +23,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import os
 import subprocess
 import sys
@@ -44,6 +45,7 @@ information you cannot verify from the increment plus Constitution, escalate
 (CA-META-004).
 Reply with ONLY a JSON object:
 {"verdict": "PASS"|"BLOCKED"|"ESCALATE",
+ "sections_applied": ["CA-..." — every rule ID you evaluated, even with no findings],
  "findings": [{"severity": "BLOCKER"|"ADVISORY", "rule": "CA-...",
                "artifact": "...", "observation": "...", "required": "..."}],
  "notes_for_human": "..."}
@@ -93,21 +95,33 @@ def call_auditor(api_key: str, model: str, endpoint: str, prompt: str) -> dict:
     return json.loads(content)
 
 
-def validate_reply(reply: dict) -> str | None:
-    """Return None if valid, else the reason it is invalid (CA-META-002/003)."""
+def validate_reply(reply: dict, known_rules: set[str]) -> str | None:
+    """Return None if valid, else why it is invalid (CA-META-002/003, I3, I7).
+
+    I3 hardening (2026-07-30 audit): a PASS with no cited rule coverage, a
+    fabricated rule ID, or a PASS carrying a BLOCKER finding is INVALID."""
     if reply.get("verdict") not in ("PASS", "BLOCKED", "ESCALATE"):
         return "missing/invalid verdict"
+    applied = reply.get("sections_applied")
+    if not isinstance(applied, list) or not applied:
+        return "no sections_applied: report cites no rule coverage (CA-META-002)"
+    unknown = [r for r in applied if r not in known_rules]
+    if unknown:
+        return f"sections_applied cites rules not in the Constitution: {unknown}"
     findings = reply.get("findings")
     if not isinstance(findings, list):
         return "findings is not a list"
     for f in findings:
         if f.get("severity") not in ("BLOCKER", "ADVISORY"):
             return f"finding with invalid severity: {f}"
-        if not str(f.get("rule", "")).startswith("CA-"):
-            return f"finding cites no rule ID: {f}"
+        if str(f.get("rule", "")) not in known_rules:
+            return f"finding cites a rule not in the Constitution: {f.get('rule')}"
     if reply["verdict"] == "BLOCKED" and not any(
             f["severity"] == "BLOCKER" for f in findings):
         return "verdict BLOCKED without any BLOCKER finding"
+    if reply["verdict"] == "PASS" and any(
+            f["severity"] == "BLOCKER" for f in findings):
+        return "verdict PASS while carrying a BLOCKER finding"
     return None
 
 
@@ -175,8 +189,21 @@ def main() -> int:
     constitution = args.constitution.read_text()
     constitution_hash = sh("git", "log", "-1", "--format=%H", "--",
                            str(args.constitution)) or "unversioned"
+    known_rules = set(re.findall(r"^### (CA-[A-Z]+-\d+)", constitution, re.M))
     changed = [l.strip() for l in args.changed.read_text().splitlines()
                if l.strip()] if args.changed else []
+    # I7: artifact manifest derived from the checked-out tree, never from payload.
+    import hashlib
+    manifest = {}
+    for rel in changed:
+        fp = args.science_root / rel
+        manifest[rel] = hashlib.sha256(fp.read_bytes()).hexdigest() if fp.is_file() else "ABSENT"
+    # I5 hardening: round derived from the audit ledger, not a generator trailer.
+    inc_key = hashlib.sha256("\n".join(sorted(changed)).encode()).hexdigest()[:12]
+    index = args.out.parent / "index.jsonl"
+    prior = sum(1 for l in index.read_text().splitlines()
+                if json.loads(l)["increment_key"] == inc_key) if index.exists() else 0
+    args.round = str(prior + 1)
 
     llm_reply, llm_invalid = None, None
     if not args.offline:
@@ -192,7 +219,7 @@ def main() -> int:
                   f"INCREMENT DATA:\n{gather_increment(args.science_root, changed)}")
         try:
             llm_reply = call_auditor(api_key, model, args.endpoint, prompt)
-            llm_invalid = validate_reply(llm_reply)
+            llm_invalid = validate_reply(llm_reply, known_rules)
             if llm_invalid:
                 llm_reply = None
         except Exception as exc:
@@ -206,13 +233,26 @@ def main() -> int:
     elif llm_reply:
         verdict = llm_reply["verdict"]
     else:
-        verdict = "PASS"   # offline, DCL clean
+        # I8: an offline stub must NOT mint a conforming PASS — no model audit ran.
+        verdict = "DCL_ONLY"
 
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(render_report(args, constitution_hash, dcl,
                                       llm_reply, llm_invalid, verdict))
+    # I7: receipt binds sha, manifest, versions, auditor identity, and verdict.
+    receipt = {
+        "sha": args.sha, "round": int(args.round), "increment_key": inc_key,
+        "manifest": manifest, "constitution_hash": constitution_hash,
+        "auditor_model": os.environ.get("AUDITOR_MODEL", "offline-stub"),
+        "verdict": verdict, "report": str(args.out),
+        "sections_applied": (llm_reply or {}).get("sections_applied", []),
+    }
+    Path("receipt.json").write_text(json.dumps(receipt, indent=2))
+    with open(index, "a") as fh:
+        fh.write(json.dumps({"increment_key": inc_key, "round": int(args.round),
+                             "sha": args.sha, "verdict": verdict}) + "\n")
     Path("verdict.txt").write_text(verdict)
-    print(f"verdict: {verdict}; report: {args.out}")
+    print(f"verdict: {verdict}; round: {args.round}; report: {args.out}")
     return 0
 
 

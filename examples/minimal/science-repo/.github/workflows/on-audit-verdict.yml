@@ -12,6 +12,8 @@ env:
   VERDICT: ${{ github.event.client_payload.verdict }}
   ROUND: ${{ github.event.client_payload.round }}
   REPORT_URL: ${{ github.event.client_payload.report_url }}
+  REPORT_COMMIT: ${{ github.event.client_payload.report_commit }}
+  AUDIT_REPO: ${{ github.event.client_payload.audit_repo }}
   SHA: ${{ github.event.client_payload.sha }}
 
 jobs:
@@ -20,11 +22,31 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: "I8: verify the receipt exists in the audit ledger before acting"
+        run: |
+          set -e
+          if [ -z "$REPORT_COMMIT" ] || [ -z "$AUDIT_REPO" ]; then
+            echo "::error::verdict callback carries no report_commit — fail closed"; exit 1; fi
+          git ls-remote "https://github.com/${AUDIT_REPO}.git" | grep -q "^${REPORT_COMMIT}" \
+            || git fetch --depth 1 "https://github.com/${AUDIT_REPO}.git" "$REPORT_COMMIT" \
+            || { echo "::error::report commit ${REPORT_COMMIT} not reachable in ${AUDIT_REPO} — fail closed"; exit 1; }
+          echo "receipt anchored at ${AUDIT_REPO}@${REPORT_COMMIT:0:7}"
+
       - name: Read max_rounds from crossaudit.yml
         id: cfg
         run: |
           pip install --quiet pyyaml
           echo "max_rounds=$(python3 -c "import yaml; print(yaml.safe_load(open('crossaudit.yml'))['loop']['max_rounds'])")" >> "$GITHUB_OUTPUT"
+
+      - name: "DCL_ONLY → no model audit ran; admission denied by default (I8)"
+        if: env.VERDICT == 'DCL_ONLY'
+        run: |
+          {
+            echo "## CrossAudit: DCL_ONLY ⚠️"
+            echo "Deterministic checks passed but NO model audit ran (no auditor key)."
+            echo "Fail-closed: the increment is NOT admitted. Configure AUDITOR_API_KEY,"
+            echo "or a human may override by commenting on the ledger."
+          } >> "$GITHUB_STEP_SUMMARY"
 
       - name: "PASS → generator proceeds"
         if: env.VERDICT == 'PASS'

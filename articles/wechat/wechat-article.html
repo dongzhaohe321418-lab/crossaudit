@@ -61,9 +61,11 @@
 <p style="font-size:16px;color:#3f3f3f;line-height:1.85;margin:0 0 18px;text-align:justify;"><strong style="color:#1a1a1a;">信任可以徽章化。</strong> 软件仓库挂 CI 徽章、覆盖率徽章，未来的科研仓库可以挂审计徽章："CrossAudit：累计 217 个增量，3 次人工上报，宪法 v3"。一个可量化、可点开验证的信任信号，比"我们的流程很严谨"的自我陈述有力得多。</p>
 <p style="font-size:16px;color:#3f3f3f;line-height:1.85;margin:0 0 18px;text-align:justify;"><strong style="color:#1a1a1a;">它是"一个人带一队 AI"的管理结构。</strong> Agent 越来越便宜，瓶颈正在从算力转向人的注意力。CrossAudit 做的事，本质是把人的监督成本从"正比于增量数"压到"正比于上报数"——这正是"一位研究者同时督导多条 agent 管线"成为可能的前提。管理学里这叫例外管理（management by exception），它是人类组织规模化的老答案，如今轮到人机组织用一遍。</p>
 <p style="font-size:16px;color:#3f3f3f;line-height:1.85;margin:0 0 18px;text-align:justify;"><strong style="color:#1a1a1a;">宪法可以变成社区公共品。</strong> 宪法是一个可 fork、可 PR 的文件。完全可以想象：计算化学社区维护一份公版宪法，期刊发布自己的宪法并接受"附带审计账本"的投稿，资助机构把"有公开监督账本"写进条款——这些制度接口，Nature 正在呼吁，而 CrossAudit 恰好是现成的技术承接。再往外走一步：凡是"AI 产出离散增量、质量部分可规则化"的场景——AI 写的代码、金融分析、法律文书——这套环路原样适用。科研只是它的第一个落点。</p>
-<h2 style="font-size:18px;font-weight:bold;color:#1a1a1a;margin:36px 0 14px;padding-left:10px;border-left:4px solid #4F46E5;line-height:1.5;">八、为什么我把它开源了</h2>
+<h2 style="font-size:18px;font-weight:bold;color:#1a1a1a;margin:36px 0 14px;padding-left:10px;border-left:4px solid #4F46E5;line-height:1.5;">八、彩蛋：它审了它自己的论文</h2>
+<p style="font-size:16px;color:#3f3f3f;line-height:1.85;margin:0 0 18px;text-align:justify;">这个框架发布当天发生了一件最有说服力的事：一个异源审计 agent 对我们自己的仓库和论文做了一次完整审计，裁定 <strong style="color:#1a1a1a;">BLOCK</strong>——抓出了预注册封条失效（一个写错路径的 .gitignore 让缺陷答案从第一天就是公开的）、事后修改计分规则、以及若干过度表述。我们逐条认账、逐条修正，审计报告和处置记录全部进了 Git 账本；论文按"探索性结果"重写。生成、审计、阻断、认账、修正——这条环在它自己的论文上转完了第一整圈。你现在打开仓库，能逐 commit 重放这场审计的全过程。</p>
+<h2 style="font-size:18px;font-weight:bold;color:#1a1a1a;margin:36px 0 14px;padding-left:10px;border-left:4px solid #4F46E5;line-height:1.5;">九、为什么我把它开源了</h2>
 <p style="font-size:16px;color:#3f3f3f;line-height:1.85;margin:0 0 18px;text-align:justify;">CI 当年能赢，不是因为它证明了程序正确（它没有），而是因为<strong style="color:#1a1a1a;">任何一个开发者不需要任何人批准，一个下午就能用上它</strong>。</p>
-<p style="font-size:16px;color:#3f3f3f;line-height:1.85;margin:0 0 18px;text-align:justify;">CrossAudit 照着这个路径设计：不依赖任何平台，两个 GitHub 仓库、两个模型 API key，就能跑起来。仓库里有完整的协议文档、宪法模板、确定性校验脚本和一对 fork 即用的示例仓库；论文（英文 position paper）把六条协议不变量、威胁模型和局限性写全了。</p>
+<p style="font-size:16px;color:#3f3f3f;line-height:1.85;margin:0 0 18px;text-align:justify;">CrossAudit 照着这个路径设计：不依赖任何平台，两个 GitHub 仓库、两个模型 API key，就能跑起来。仓库里有完整的协议文档、宪法模板、确定性校验脚本和一对 fork 即用的示例仓库；论文（英文 position paper）把八条协议不变量、威胁模型和局限性写全了——其中第七、第八条（回执绑定、默认拒绝准入）不是我们自己想出来的，而是这套系统上线当天被一次跨厂商审计"打"出来的。</p>
 <ul style="margin:0 0 18px;padding-left:24px;">
 <li style="font-size:16px;color:#3f3f3f;line-height:1.85;margin:0 0 8px;">GitHub：<code style="background:#f1f5f9;color:#4F46E5;padding:1px 5px;border-radius:3px;font-size:14px;font-family:Menlo,Consolas,monospace;">github.com/dongzhaohe321418-lab/crossaudit</code>（MIT 协议）</li>
 <li style="font-size:16px;color:#3f3f3f;line-height:1.85;margin:0 0 8px;">论文：arXiv 链接见 repo README</li>
@@ -75,5 +77,5 @@
 </blockquote>
 <hr />
 <p style="font-size:16px;color:#3f3f3f;line-height:1.85;margin:0 0 18px;text-align:justify;"><em style="color:#555;">参考文献（正文提及）：Lu et al., The AI Scientist, arXiv:2408.06292 及 Nature (2026)；Gottweis et al., Towards an AI co-scientist, arXiv:2502.18864；Panickssery et al., NeurIPS 2024, arXiv:2404.13076；Zheng et al., NeurIPS 2023, arXiv:2306.05685；Boiko et al., Nature 624 (2023)；Szymanski et al., Nature 624 (2023)；Baker, Nature 533 (2016).</em></p>
-<p style="font-size:13px;color:#999;margin-top:30px;">（排版说明：整体复制本页内容粘贴进微信公众号编辑器即可，样式已内联；在“此处插入架构图”处手动上传 crossaudit-architecture.png。）</p>
+<p style="font-size:13px;color:#999;margin-top:30px;">（排版说明：整体复制粘贴进公众号编辑器；在“此处插入架构图”处上传 crossaudit-architecture.png。）</p>
 </body></html>

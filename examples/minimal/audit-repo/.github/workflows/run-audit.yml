@@ -23,6 +23,7 @@ jobs:
           repository: ${{ env.SCIENCE_REPO }}
           ref: ${{ env.SHA }}
           path: science
+          fetch-depth: 2
           token: ${{ secrets.CROSSAUDIT_DISPATCH_TOKEN }}
 
       - name: Dependencies
@@ -43,7 +44,10 @@ jobs:
         id: dcl
         run: |
           set +e
-          echo '${{ github.event.client_payload.changed }}' | jq -r '.[]' > changed.txt
+          # I7: derive the audited scope from the SHA itself; the dispatch payload
+          # is untrusted caller input and is ignored for scoping.
+          git -C science diff --name-only HEAD^ HEAD -- experiments/ > changed.txt || true
+          [ -s changed.txt ] || git -C science show --name-only --format= HEAD -- experiments/ > changed.txt
           # shellcheck disable=SC2046
           python checks/run_checks.py --science-root science \
             --changed $(cat changed.txt) --output checks.json
@@ -61,24 +65,30 @@ jobs:
             --science-repo "$SCIENCE_REPO" --sha "$SHA" --round "$ROUND" \
             --constitution AUDIT_RULES.md --checks checks.json \
             --changed changed.txt \
-            --out "reports/${SHA:0:7}-round${ROUND}.md" $EXTRA
+            --out "reports/${SHA:0:7}.md" $EXTRA
+          # runner derives the true round from reports/index.jsonl and writes receipt.json
 
-      - name: Commit report to the ledger (I2)
+      - name: Commit report + receipt to the ledger (I2, I7)
+        id: ledger
         run: |
           git config user.name "crossaudit-bot"
           git config user.email "crossaudit-bot@users.noreply.github.com"
+          cp receipt.json "reports/${SHA:0:7}.receipt.json"
           git add reports/
-          git commit -m "audit: ${SCIENCE_REPO}@${SHA:0:7} round ${ROUND} — $(cat verdict.txt)"
+          git commit -m "audit: ${SCIENCE_REPO}@${SHA:0:7} — $(cat verdict.txt)"
           git push
+          echo "report_commit=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
       - name: Dispatch verdict back to the Science Repo
         env:
           GH_TOKEN: ${{ secrets.CROSSAUDIT_DISPATCH_TOKEN }}
         run: |
-          REPORT_URL="https://github.com/${GITHUB_REPOSITORY}/blob/main/reports/${SHA:0:7}-round${ROUND}.md"
+          REPORT_URL="https://github.com/${GITHUB_REPOSITORY}/blob/main/reports/${SHA:0:7}.md"
           gh api "repos/${SCIENCE_REPO}/dispatches" \
             -f event_type=crossaudit-verdict \
             -f "client_payload[verdict]=$(cat verdict.txt)" \
             -f "client_payload[sha]=${SHA}" \
-            -f "client_payload[round]=${ROUND}" \
+            -f "client_payload[round]=$(python3 -c "import json;print(json.load(open('receipt.json'))['round'])")" \
+            -f "client_payload[report_commit]=${{ steps.ledger.outputs.report_commit }}" \
+            -f "client_payload[audit_repo]=${GITHUB_REPOSITORY}" \
             -f "client_payload[report_url]=${REPORT_URL}"
