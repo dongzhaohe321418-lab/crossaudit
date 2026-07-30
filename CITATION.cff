@@ -4,6 +4,12 @@ title: "CrossAudit: A Git-Native, Cross-Vendor Audit Loop for Agentic Science"
 authors:
   - family-names: "Dong"
     given-names: "Zhaohe"
+    affiliation: "University of Cambridge"
+    email: "zd314@cam.ac.uk"
+  - family-names: "Chen"
+    given-names: "Yuhao"
+    affiliation: "University of Wisconsin-Madison"
+    email: "ychen2546@wisc.edu"
 type: software
 year: 2026
 url: "https://github.com/dongzhaohe321418-lab/crossaudit"
