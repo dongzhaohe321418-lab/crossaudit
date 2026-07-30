@@ -93,6 +93,7 @@ The two-repository split is separation of powers made mechanical: the Auditor ho
 
 \begin{figure}[t]
 \centering
+\resizebox{\textwidth}{!}{%
 \begin{tikzpicture}[
   font=\small\sffamily,
   every shadow/.style={shadow xshift=0.6pt, shadow yshift=-1.1pt, opacity=0.13},
@@ -111,26 +112,26 @@ The two-repository split is separation of powers made mechanical: the Auditor ho
 ]
 % ---------------- Generation lane ----------------
 \node[hpc] (hpc) {Cloud HPC\\[-1pt] \scriptsize decoupled compute --- never interrupted};
-\node[gen, below=6.5mm of hpc] (gen) {\textbf{Generator}\\[-1pt] \scriptsize research agent $\cdot$ vendor $A$};
-\node[repo, below=9mm of gen] (sci) {\textbf{Science Repo}\\[-1pt] \scriptsize experiment increments};
+\node[gen, below=8mm of hpc] (gen) {\textbf{Generator}\\[-1pt] \scriptsize research agent $\cdot$ vendor $A$};
+\node[repo, below=13mm of gen] (sci) {\textbf{Science Repo}\\[-1pt] \scriptsize experiment increments};
 % ---------------- Audit lane ----------------
-\node[det, right=32mm of hpc] (dcl) {\textbf{Deterministic checks}\\[-1pt] \scriptsize schema $\cdot$ units $\cdot$ convergence\\[-2pt] \scriptsize no LLM $\cdot$ non-overridable};
-\node[aud, below=6.5mm of dcl] (aur) {\textbf{Auditor}\\[-1pt] \scriptsize agent $\cdot$ vendor $B \neq A$\\[-2pt] \scriptsize applies the Constitution};
-\node[repo, below=9mm of aur] (led) {\textbf{Audit Ledger}\\[-1pt] \scriptsize Constitution $\cdot$ cycles\\[-2pt] \scriptsize reports $+$ receipts (\invariant{7})};
+\node[det, right=42mm of hpc] (dcl) {\textbf{Deterministic checks}\\[-1pt] \scriptsize schema $\cdot$ units $\cdot$ convergence\\[-2pt] \scriptsize no LLM $\cdot$ non-overridable};
+\node[aud, below=8mm of dcl] (aur) {\textbf{Auditor}\\[-1pt] \scriptsize agent $\cdot$ vendor $B \neq A$\\[-2pt] \scriptsize applies the Constitution};
+\node[repo, below=11mm of aur] (led) {\textbf{Audit Ledger}\\[-1pt] \scriptsize Constitution $\cdot$ cycles\\[-2pt] \scriptsize reports $+$ receipts (\invariant{7})};
 % ---------------- Bottom row ----------------
-\node[gate, below=17mm of sci] (gate) {\textbf{Admission gate} (\invariant{8})\\[-1pt] \scriptsize required status \texttt{crossaudit/admission}\\[-2pt] \scriptsize verified receipt or no admission --- fail closed};
-\node[hum, below=17mm of led] (hum) {\textbf{Human principal} --- final authority\\[-1pt] \scriptsize every cycle terminates: PASS,\\[-2pt] \scriptsize or bounded escalation to here};
+\node[gate, below=26mm of sci] (gate) {\textbf{Admission gate} (\invariant{8})\\[-1pt] \scriptsize required status \texttt{crossaudit/admission}\\[-2pt] \scriptsize verified receipt or no admission --- fail closed};
+\node[hum, below=26mm of led] (hum) {\textbf{Human principal} --- final authority\\[-1pt] \scriptsize every cycle terminates: PASS,\\[-2pt] \scriptsize or bounded escalation to here};
 % ---------------- Edges ----------------
 \draw[flow, densely dashed, draw=caviolet] (hpc) -- node[lbl]{jobs $\cdot$ data} (gen);
 \draw[main] (gen) -- node[lbl]{\textbf{1}\; push increment} (sci);
-\draw[main] (sci.north east) to[out=18, in=215] node[lbl, pos=0.42]{\textbf{2}\; dispatch @ resolved SHA} (dcl.south west);
+\draw[main] (sci.north east) to[out=15, in=218] node[lbl, pos=0.45, yshift=1mm]{\textbf{2}\; dispatch @ resolved SHA} (dcl.south west);
 \draw[main] (dcl) -- node[lbl]{\textbf{3}\; pass} (aur);
 \draw[flow] (dcl.east) to[out=-12, in=55] node[lbl, xshift=1mm]{hard fail $\Rightarrow$ BLOCKED} (led.north east);
 \draw[main] (aur) -- node[lbl]{\textbf{4}\; report $+$ receipt\\[-2pt]\scriptsize two-phase, append-only} (led);
-\draw[main] (led.west) to[out=185, in=-8] node[lbl, pos=0.5, align=center]{\textbf{5}~verdict: PASS $\cdot$ BLOCKED $\cdot$ ESCALATE\\[-2pt] verified against the fetched receipt} (sci.east);
-\draw[main] (led.south west) to[out=225, in=10] node[lbl, pos=0.52, yshift=-2mm]{\textbf{6}~status: pass / fail} (gate.east);
+\draw[main] (led.west) to[out=185, in=-8] node[lbl, pos=0.55, align=center, yshift=-2mm]{\textbf{5}~verdict: PASS $\cdot$ BLOCKED $\cdot$ ESCALATE\\[-2pt] verified against the fetched receipt} (sci.east);
+\draw[main] (led.south west) to[out=225, in=10] node[lbl, pos=0.55, yshift=-3mm]{\textbf{6}~status: pass / fail} (gate.east);
 \draw[flow, densely dashed, draw=cagreen!50!black] (gate) -- node[lbl]{protects \texttt{main} $\cdot$ production $\cdot$ publication} (sci);
-\draw[flow] (sci.west) to[out=155, in=205] node[lbl, align=center, xshift=-5mm]{BLOCKED $\to$ revise, or dispute\\[-2pt] \emph{once per finding}\\[-2pt] controller rounds $\leq$ \texttt{max\_rounds}} (gen.west);
+\draw[flow] (sci.west) to[out=155, in=205] node[lbl, align=center, xshift=-9mm]{BLOCKED $\to$ revise, or dispute\\[-2pt] \emph{once per finding}\\[-2pt] controller rounds $\leq$ \texttt{max\_rounds}} (gen.west);
 \draw[esc] (led.south) to[out=-90, in=90] node[lbl, pos=0.5, right=1.6mm, align=left]{\textbf{7}~to the human: ESCALATE $\cdot$\\[-2pt] rounds exhausted $\cdot$ 6\,h dead-letter} (hum.north);
 % ---------------- Lane frames ----------------
 \begin{scope}[on background layer]
@@ -139,7 +140,7 @@ The two-repository split is separation of powers made mechanical: the Auditor ho
   \node[draw=caorange!35, rounded corners=4pt, fill=cabgorange!28, fit=(dcl)(aur)(led), inner sep=4mm,
         label={[font=\scriptsize\sffamily\bfseries, text=caorange!70!black]north:Audit --- vendor $B \neq A$}] {};
 \end{scope}
-\end{tikzpicture}
+\end{tikzpicture}}
 \caption{The CrossAudit loop, revision 1. Numbered arrows follow one increment: deterministic checks precede any model (\invariant{4}); the audit side emits a two-phase report-plus-receipt into an append-only ledger (\invariant{7}); the verdict is verified against the fetched receipt, and a required commit status gates protected actions fail-closed (\invariant{8}); controller-managed rounds bound revision (\invariant{5}); humans are interrupted only by escalation or the dead-letter sweep (\invariant{6}). Termination is structural: within \texttt{max\_rounds} every cycle ends in admission or in human hands, disputes are one-shot per finding, and silent stalls are caught by the sweep.}
 \label{fig:arch}
 \end{figure}
