@@ -1,0 +1,40 @@
+{
+  "increment": "INC-027",
+  "arm": "openai",
+  "model": "gpt-5.1",
+  "reply": {
+    "verdict": "BLOCKED",
+    "findings": [
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-DATA-001",
+        "artifact": "results.json",
+        "observation": "Entry convergence.threshold is numeric but lacks required unit and source fields; CA-DATA-001 requires every reported quantity to carry non-empty unit and provenance."
+      },
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-DATA-001",
+        "artifact": "results.json",
+        "observation": "Entry convergence.achieved is numeric but lacks required source field; CA-DATA-001 requires every reported quantity to carry non-empty provenance."
+      },
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-REPRO-001",
+        "artifact": "metadata.yml",
+        "observation": "metadata.yml does not explicitly state the Constitution commit hash or similar invariant identifier; while objective, inputs, method, code_version, and environment are present, the governing document\u2019s hash required by invariant I3 is not recorded, so the increment is not fully self-describing with respect to its audit contract."
+      },
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-META-001",
+        "artifact": "experiments/INC-027/",
+        "observation": "No explicit log or artifact is provided to substantiate the stated SCF convergence value (2.56e-07 Ha) beyond the scalar in results.json; missing supporting evidence must be recorded as a finding rather than assumed compliant."
+      },
+      {
+        "severity": "ADVISORY",
+        "rule": "CA-DATA-002",
+        "artifact": "SUMMARY.md vs results.json",
+        "observation": "SUMMARY.md reports SCF convergence as 2.56e-07 Ha, while results.json records 2.563e-07 hartree; this minor rounding/precision difference is not a clear contradiction but should be harmonized for consistency."
+      }
+    ]
+  }
+}

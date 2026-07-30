@@ -1,0 +1,22 @@
+{
+  "increment": "INC-024",
+  "arm": "openai",
+  "model": "gpt-5.1",
+  "reply": {
+    "verdict": "BLOCKED",
+    "findings": [
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-DATA-001",
+        "artifact": "experiments/INC-024/results.json",
+        "observation": "The convergence block contains numeric fields `threshold` and `achieved` that lack `source` metadata; CA-DATA-001 requires each numeric entry in results.json to have non-empty `unit` and `source` provenance."
+      },
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-METH-002",
+        "artifact": "experiments/INC-024/results.json",
+        "observation": "The convergence object omits a `source` field and does not explicitly tie the reported SCF convergence values to a specific run or log, so the provenance of the convergence assessment is incomplete and the criterion for a fully stated convergence condition is not met."
+      }
+    ]
+  }
+}

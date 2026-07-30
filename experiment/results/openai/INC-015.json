@@ -1,0 +1,34 @@
+{
+  "increment": "INC-015",
+  "arm": "openai",
+  "model": "gpt-5.1",
+  "reply": {
+    "verdict": "BLOCKED",
+    "findings": [
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-DATA-001",
+        "artifact": "results.json",
+        "observation": "Quantity entry 'binding_energy' is missing a non-empty 'source' field; rule requires each numeric entry to have both unit and provenance."
+      },
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-DATA-002",
+        "artifact": "SUMMARY.md vs metadata.yml vs results.json",
+        "observation": "SUMMARY.md and results.json describe the calculation as PBE/def2-TZVP, while metadata.yml states the objective and method as B3LYP/def2-TZVP; this is an internal contradiction in the reported functional."
+      },
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-REPRO-001",
+        "artifact": "metadata.yml",
+        "observation": "metadata.yml does not explicitly state the objective inputs beyond file paths (no description of system/complex), and does not describe the environment beyond a container tag; however, the stricter requirement is satisfied, so this is noted only if interpreted narrowly. (If treated strictly, this could be advisory; not used to gate here)."
+      },
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-META-001",
+        "artifact": "results.json",
+        "observation": "Required provenance evidence for at least one numeric quantity (binding_energy.source) is absent; per CA-META-001, missing required artifacts/evidence must be reported as a finding rather than assumed compliant."
+      }
+    ]
+  }
+}

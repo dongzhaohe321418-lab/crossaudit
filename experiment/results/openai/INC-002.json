@@ -1,0 +1,28 @@
+{
+  "increment": "INC-002",
+  "arm": "openai",
+  "model": "gpt-5.1",
+  "reply": {
+    "verdict": "BLOCKED",
+    "findings": [
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-DATA-001",
+        "artifact": "experiments/INC-002/results.json",
+        "observation": "Convergence metadata includes numeric fields `threshold` and `achieved` that lack `unit` and `source` fields, violating the requirement that each numeric entry in results.json carry non-empty unit and provenance."
+      },
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-METH-002",
+        "artifact": "experiments/INC-002/results.json",
+        "observation": "Convergence block omits a `source` field and does not provide provenance for the convergence data; required convergence information is therefore incomplete as an artifact, so compliance with the rule cannot be established."
+      },
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-META-001",
+        "artifact": "experiments/INC-002/results.json",
+        "observation": "Required provenance for convergence-related numeric entries (e.g., `threshold`, `achieved`) is missing; this absence must be recorded as a defect rather than treated as implicit compliance."
+      }
+    ]
+  }
+}

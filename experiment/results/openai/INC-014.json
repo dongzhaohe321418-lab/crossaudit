@@ -1,0 +1,34 @@
+{
+  "increment": "INC-014",
+  "arm": "openai",
+  "model": "gpt-5.1",
+  "reply": {
+    "verdict": "BLOCKED",
+    "findings": [
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-DATA-001",
+        "artifact": "results.json: quantities[1].unit",
+        "observation": "The numeric entry for `intermolecular_distance` has unit `kcal/mol`, which is inconsistent with the dimensional meaning of a distance; this indicates the required unit information is not correctly provided."
+      },
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-DATA-002",
+        "artifact": "SUMMARY.md vs metadata.yml vs results.json",
+        "observation": "SUMMARY.md states the calculation was performed at wB97X-D/cc-pVDZ, while metadata.yml specifies PBE/cc-pVDZ as the functional; this is an internal contradiction about the method used."
+      },
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-DATA-002",
+        "artifact": "SUMMARY.md vs results.json.quantities[1].unit",
+        "observation": "SUMMARY.md reports an intermolecular distance of 2.68 angstrom, but results.json records the same numeric value with unit `kcal/mol`; this is an internal inconsistency between prose and recorded units."
+      },
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-METH-002",
+        "artifact": "results.json.convergence",
+        "observation": "Convergence block has `converged: true`, a numeric threshold and achieved value, but the `unit` field is a bare string `hartree` without explicit association to threshold/achieved; this leaves ambiguity about which quantities the unit applies to and does not fully specify units for each numeric convergence quantity as required for reliable checking."
+      }
+    ]
+  }
+}

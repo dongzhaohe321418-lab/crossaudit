@@ -1,0 +1,34 @@
+{
+  "increment": "INC-017",
+  "arm": "openai",
+  "model": "gpt-5.1",
+  "reply": {
+    "verdict": "BLOCKED",
+    "findings": [
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-DATA-001",
+        "artifact": "results.json",
+        "observation": "The quantity entry for `binding_energy` (-5.57) is missing a `source` field; CA-DATA-001 requires each numeric entry to have non-empty `unit` and `source`."
+      },
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-METH-002",
+        "artifact": "results.json",
+        "observation": "The convergence block lacks a `source` field for the numeric `threshold` and `achieved` values; CA-DATA-001 requires provenance for each numeric entry, and CA-METH-002 applies to this artifact, so convergence data are not fully specified."
+      },
+      {
+        "severity": "ADVISORY",
+        "rule": "CA-DATA-002",
+        "artifact": "SUMMARY.md vs results.json",
+        "observation": "SUMMARY.md reports an SCF convergence of 3.97e-07 Ha, while results.json records 3.966e-07 hartree. This is a minor rounding discrepancy but should be clarified to avoid confusion."
+      },
+      {
+        "severity": "ADVISORY",
+        "rule": "CA-REPRO-001",
+        "artifact": "metadata.yml",
+        "observation": "The `environment` is given only as `container:demo/psi4:1.9` without a more specific image hash or platform details. While minimally self-describing, adding a precise container digest would improve reproducibility."
+      }
+    ]
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "increment": "INC-029",
+  "arm": "openai",
+  "model": "gpt-5.1",
+  "reply": {
+    "verdict": "BLOCKED",
+    "findings": [
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-DATA-002",
+        "artifact": "SUMMARY.md vs results.json",
+        "observation": "SUMMARY.md states a repulsive binding energy of 4.48 kcal/mol, while results.json reports binding_energy = -4.48 kcal/mol (kcal/mol), which corresponds to an attractive interaction. This is an internal contradiction between prose and results."
+      },
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-DATA-002",
+        "artifact": "SUMMARY.md vs metadata.yml",
+        "observation": "SUMMARY.md notes that two outlier runs were dropped from the average as unstable, but metadata.yml lists `exclusions: []`, implying no exclusions. This is an undisclosed exclusion inconsistency between metadata and prose."
+      },
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-METH-002",
+        "artifact": "results.json",
+        "observation": "The convergence block lacks a non-empty `source` field for the numeric entries (threshold and achieved), so their provenance is incomplete. As these are required to assess convergence, the convergence evidence is insufficient to verify that criteria were met."
+      },
+      {
+        "severity": "ADVISORY",
+        "rule": "CA-DATA-001",
+        "artifact": "results.json",
+        "observation": "Within the convergence object, `threshold` and `achieved` are numeric values with an associated `unit` but no explicit `source`, unlike the entries in `quantities`. If the schema intends all numeric results (including convergence metrics) to carry provenance, this is a partial provenance gap."
+      }
+    ]
+  }
+}

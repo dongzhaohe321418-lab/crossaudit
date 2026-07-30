@@ -1,0 +1,40 @@
+{
+  "increment": "INC-001",
+  "arm": "openai",
+  "model": "gpt-5.1",
+  "reply": {
+    "verdict": "BLOCKED",
+    "findings": [
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-DATA-002",
+        "artifact": "SUMMARY.md vs results.json",
+        "observation": "SUMMARY.md states a repulsive binding energy of 3.65 kcal/mol, but results.json reports binding_energy.value = -3.65 kcal/mol, which corresponds to an attractive interaction. This is an internal contradiction between prose and results."
+      },
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-METH-002",
+        "artifact": "results.json",
+        "observation": "convergence.converged is false while SUMMARY.md claims \"SCF convergence reached 7.40e-07 Ha against a 1e-06 Ha threshold\" and that \"The binding energy is converged and final.\" The convergence block also shows achieved 7.403e-07 < threshold 1e-06, which is numerically converged but not marked as such. This violates the requirement that convergence.converged == true with consistent threshold and achieved value."
+      },
+      {
+        "severity": "ADVISORY",
+        "rule": "CA-DATA-001",
+        "artifact": "results.json",
+        "observation": "All numeric quantities in results.json (binding_energy, intermolecular_distance, convergence.threshold, convergence.achieved) have non-empty units and sources (for quantities) or units (for convergence), so this rule appears satisfied."
+      },
+      {
+        "severity": "ADVISORY",
+        "rule": "CA-REPRO-001",
+        "artifact": "metadata.yml",
+        "observation": "metadata.yml includes objective, inputs, method (functional, basis_set, corrections, thresholds), code_version, environment, and a rerun command, and explicitly lists no exclusions. It appears self-describing and consistent with the other artifacts aside from the binding energy sign and convergence flag issues already captured under CA-DATA-002 and CA-METH-002."
+      },
+      {
+        "severity": "ADVISORY",
+        "rule": "CA-META-001",
+        "artifact": "experiment INC-001",
+        "observation": "All referenced required artifacts (SUMMARY.md, metadata.yml, results.json) are present and readable; no missing-evidence issues beyond the noted contradictions."
+      }
+    ]
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "increment": "INC-030",
+  "arm": "openai",
+  "model": "gpt-5.1",
+  "reply": {
+    "verdict": "BLOCKED",
+    "findings": [
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-DATA-001",
+        "artifact": "experiments/INC-030/results.json",
+        "observation": "Numeric convergence fields `threshold` (1e-06) and `achieved` (6.13e-08) lack non-empty `source` metadata, violating the requirement that each numeric entry in results.json carries both `unit` and `source`."
+      },
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-META-001",
+        "artifact": "experiments/INC-030/",
+        "observation": "The Constitution\u2019s commit hash required by invariant I3 is not provided anywhere in the increment artifacts, so required provenance evidence is missing and must be recorded as a finding rather than assumed."
+      }
+    ]
+  }
+}

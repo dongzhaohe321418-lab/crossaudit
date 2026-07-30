@@ -1,0 +1,34 @@
+{
+  "increment": "INC-009",
+  "arm": "openai",
+  "model": "gpt-5.1",
+  "reply": {
+    "verdict": "BLOCKED",
+    "findings": [
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-DATA-001",
+        "artifact": "results.json: quantities[1].unit",
+        "observation": "The numeric entry for `intermolecular_distance` has unit `kcal/mol`, which is inconsistent with the distance described in SUMMARY.md (3.06 angstrom). This indicates the required unit metadata is effectively incorrect/incomplete for this quantity."
+      },
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-DATA-002",
+        "artifact": "SUMMARY.md vs results.json: convergence",
+        "observation": "SUMMARY.md states \"SCF convergence reached 3.75e-07 Ha against a 1e-06 Ha threshold\" and \"The binding energy is converged and final,\" but results.json has `convergence.converged == false` with `achieved: 3.753e-07`. The prose and results.json contradict each other on convergence status."
+      },
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-METH-002",
+        "artifact": "results.json: convergence",
+        "observation": "`convergence.converged` is `false` even though a threshold and achieved value are present. The rule requires `converged == true` for valid results; as written, the increment reports unconverged numbers."
+      },
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-META-001",
+        "artifact": "(expected) Constitution hash",
+        "observation": "The audit report must cite this Constitution file's commit hash per invariant I3, but the hash is not provided in the user-supplied Constitution text, so it cannot be included. This missing required evidence must be recorded as a finding rather than treated as a pass."
+      }
+    ]
+  }
+}

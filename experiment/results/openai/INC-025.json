@@ -1,0 +1,46 @@
+{
+  "increment": "INC-025",
+  "arm": "openai",
+  "model": "gpt-5.1",
+  "reply": {
+    "verdict": "BLOCKED",
+    "findings": [
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-DATA-001",
+        "artifact": "results.json:quantities[0]",
+        "observation": "Numeric entry 'binding_energy' has a value (-4.54) and unit ('kcal/mol') but missing required 'source' field."
+      },
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-DATA-001",
+        "artifact": "results.json:convergence",
+        "observation": "Convergence numeric entries ('threshold' and 'achieved') lack explicit 'source' fields, violating the requirement that each numeric entry has non-empty unit and source."
+      },
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-DATA-002",
+        "artifact": "SUMMARY.md vs metadata.yml vs results.json",
+        "observation": "SUMMARY.md and results.json describe the calculation as PBE/cc-pVDZ, while metadata.yml states the objective and method as PBE0/cc-pVDZ, creating a method-level contradiction."
+      },
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-METH-002",
+        "artifact": "results.json:convergence",
+        "observation": "Convergence block reports converged=true with threshold 1e-06 and achieved 4.825e-07 hartree, but there is no log or other evidence in the increment to verify consistency; per CA-META-001, this missing required evidence must be treated as a finding rather than assumed compliant."
+      },
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-REPRO-001",
+        "artifact": "metadata.yml",
+        "observation": "While objective, inputs, method, code_version, and environment are present, there is no explicit description of the form of inputs (e.g., charge/multiplicity or dimer/monomer specification) or how counterpoise correction is operationally applied, leaving the increment not fully self-describing for reproduction."
+      },
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-META-001",
+        "artifact": "logs/evidence (absent)",
+        "observation": "No computational logs or detailed run outputs are provided to substantiate SCF convergence values or the binding energy calculation; required evidence for verification is missing and must be recorded as a defect, not inferred."
+      }
+    ]
+  }
+}

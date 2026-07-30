@@ -1,0 +1,52 @@
+{
+  "increment": "INC-028",
+  "arm": "openai",
+  "model": "gpt-5.1",
+  "reply": {
+    "verdict": "BLOCKED",
+    "findings": [
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-DATA-001",
+        "artifact": "experiments/INC-028/results.json",
+        "observation": "Entry convergence.threshold is numeric but lacks required unit and source fields; CA-DATA-001 requires every reported quantity to carry non-empty unit and provenance."
+      },
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-DATA-001",
+        "artifact": "experiments/INC-028/results.json",
+        "observation": "Entry convergence.achieved is numeric but lacks required source field; CA-DATA-001 requires every reported quantity to carry non-empty provenance."
+      },
+      {
+        "severity": "ADVISORY",
+        "rule": "CA-DATA-002",
+        "artifact": "experiments/INC-028/",
+        "observation": "All reported quantities and methods (PBE0/cc-pVDZ, counterpoise correction, binding energy, intermolecular distance, SCF threshold and achieved value) are consistent across SUMMARY.md, metadata.yml, and results.json; no internal contradictions detected."
+      },
+      {
+        "severity": "ADVISORY",
+        "rule": "CA-METH-002",
+        "artifact": "experiments/INC-028/results.json",
+        "observation": "convergence.converged is true and the achieved value 3.55e-07 is tighter than the stated threshold 1e-06, with units of hartree matching the SCF context; convergence appears properly met."
+      },
+      {
+        "severity": "ADVISORY",
+        "rule": "CA-REPRO-001",
+        "artifact": "experiments/INC-028/metadata.yml",
+        "observation": "metadata.yml states objective, inputs, method (functional, basis set, corrections, thresholds), code_version, environment, and rerun command; exclusions are explicitly empty, so the increment is self-describing."
+      },
+      {
+        "severity": "ADVISORY",
+        "rule": "CA-META-001",
+        "artifact": "experiments/INC-028/",
+        "observation": "All referenced core artifacts (SUMMARY.md, metadata.yml, results.json) were present and readable; missing evidence was not an issue beyond the absent unit/source fields already recorded under CA-DATA-001."
+      },
+      {
+        "severity": "ADVISORY",
+        "rule": "CA-META-002",
+        "artifact": "audit-report",
+        "observation": "This audit report cites specific rule IDs from the provided Constitution; the Constitution text did not include an explicit commit hash, so none could be recorded."
+      }
+    ]
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "increment": "INC-020",
+  "arm": "openai",
+  "model": "gpt-5.1",
+  "reply": {
+    "verdict": "BLOCKED",
+    "findings": [
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-DATA-001",
+        "artifact": "results.json",
+        "observation": "Quantity entry with name 'binding_energy' is missing required 'source' field; CA-DATA-001 requires each numeric entry to have non-empty unit and source."
+      },
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-DATA-002",
+        "artifact": "SUMMARY.md vs results.json",
+        "observation": "SUMMARY.md states a repulsive binding energy of 5.73 kcal/mol, but results.json records value -5.73 kcal/mol with unit kcal/mol; sign inconsistency between prose and data violates internal consistency."
+      },
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-METH-002",
+        "artifact": "results.json",
+        "observation": "Convergence block lacks a provenance/source field for the reported threshold and achieved SCF convergence value, so the convergence evidence is incomplete and cannot be cross-checked against logs as required for reliable convergence declaration."
+      },
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-REPRO-001",
+        "artifact": "metadata.yml",
+        "observation": "Metadata omits explicit mention of the counterpoise correction in a structured way beyond a free-form 'corrections' list; no explicit description of how counterpoise was applied (monomer-in-dimer vs isolated, ghost functions, etc.), so the method is not fully self-describing for reproduction."
+      },
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-META-001",
+        "artifact": "logs (absent)",
+        "observation": "No SCF log or equivalent evidence is provided to substantiate the reported achieved convergence of 3.298e-07 Ha against 1e-06 Ha; missing required supporting artifact must be recorded as a finding rather than assumed compliant."
+      }
+    ]
+  }
+}

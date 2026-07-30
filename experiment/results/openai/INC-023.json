@@ -1,0 +1,28 @@
+{
+  "increment": "INC-023",
+  "arm": "openai",
+  "model": "gpt-5.1",
+  "reply": {
+    "verdict": "BLOCKED",
+    "findings": [
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-DATA-002",
+        "artifact": "SUMMARY.md vs results.json",
+        "observation": "SUMMARY.md states a \"repulsive 5.18 kcal/mol\" binding energy, but results.json reports binding_energy.value = -5.18 kcal/mol. The sign convention is inconsistent between prose and data."
+      },
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-DATA-001",
+        "artifact": "results.json: quantities[1] intermolecular_distance",
+        "observation": "The intermolecular_distance entry has unit \"kcal/mol\" but the SUMMARY.md describes it as a distance of 2.73 angstrom. The unit in results.json is inconsistent with the described physical quantity and lacks correct dimensionality."
+      },
+      {
+        "severity": "ADVISORY",
+        "rule": "CA-META-001",
+        "artifact": "Constitution hash",
+        "observation": "The report cannot cite a specific Constitution commit hash because it was not provided in the user-supplied Constitution text; this is noted as missing contextual evidence rather than inferred as compliant."
+      }
+    ]
+  }
+}

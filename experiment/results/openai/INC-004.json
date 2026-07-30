@@ -1,0 +1,28 @@
+{
+  "increment": "INC-004",
+  "arm": "openai",
+  "model": "gpt-5.1",
+  "reply": {
+    "verdict": "BLOCKED",
+    "findings": [
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-DATA-001",
+        "artifact": "experiments/INC-004/results.json",
+        "observation": "Entry convergence.threshold is numeric but lacks required unit and source fields; CA-DATA-001 requires every reported numeric quantity to carry non-empty unit and provenance."
+      },
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-DATA-001",
+        "artifact": "experiments/INC-004/results.json",
+        "observation": "Entry convergence.achieved is numeric but lacks required source field; CA-DATA-001 requires every reported numeric quantity to carry non-empty provenance."
+      },
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-META-001",
+        "artifact": "experiments/INC-004/",
+        "observation": "The Constitution commit hash required by invariant I3 is not provided anywhere in the increment artifacts; this missing required evidence must be recorded as a finding rather than assumed present."
+      }
+    ]
+  }
+}

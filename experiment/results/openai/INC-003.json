@@ -1,0 +1,34 @@
+{
+  "increment": "INC-003",
+  "arm": "openai",
+  "model": "gpt-5.1",
+  "reply": {
+    "verdict": "BLOCKED",
+    "findings": [
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-DATA-001",
+        "artifact": "experiments/INC-003/results.json",
+        "observation": "The convergence block contains numeric fields `threshold` and `achieved` that lack `source` metadata; CA-DATA-001 requires each numeric entry in results.json to have non-empty `unit` and `source` provenance."
+      },
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-METH-002",
+        "artifact": "experiments/INC-003/results.json",
+        "observation": "The convergence object omits a `source` field and does not explicitly associate the reported convergence metrics with the stated run (`run_003.py@c003beef`), so the provenance of the convergence data is incomplete and the criterion for clearly stated convergence evidence is not met."
+      },
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-META-001",
+        "artifact": "experiments/INC-003/",
+        "observation": "The Constitution requires each report to cite the Constitution commit hash (I3), but no hash is provided in the increment artifacts; this missing required evidence must be recorded as a finding rather than assumed compliant."
+      },
+      {
+        "severity": "ADVISORY",
+        "rule": "CA-DATA-002",
+        "artifact": "experiments/INC-003/",
+        "observation": "The SCF convergence value in results.json (3.513e-07 Ha) is consistent in magnitude with the prose in SUMMARY.md (3.51e-07 Ha) and the SCF threshold (1e-06 Ha), but the slight rounding difference should be explicitly documented if higher-precision values are used elsewhere."
+      }
+    ]
+  }
+}

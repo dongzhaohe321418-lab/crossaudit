@@ -1,0 +1,40 @@
+{
+  "increment": "INC-008",
+  "arm": "openai",
+  "model": "gpt-5.1",
+  "reply": {
+    "verdict": "BLOCKED",
+    "findings": [
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-DATA-001",
+        "artifact": "results.json",
+        "observation": "The quantity entry for `binding_energy` has no `source` field; CA-DATA-001 requires each numeric entry to have non-empty `unit` and `source`."
+      },
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-METH-002",
+        "artifact": "results.json",
+        "observation": "`convergence.converged` is `false` even though `achieved` (2.44e-07 Ha) is tighter than the stated `threshold` (1e-06 Ha), and SUMMARY.md claims \"SCF convergence reached 2.44e-07 Ha against a 1e-06 Ha threshold\" and that the binding energy is converged and final. This is an internal inconsistency and violates the requirement that convergence criteria be stated and met with `converged == true`."
+      },
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-DATA-002",
+        "artifact": "SUMMARY.md vs results.json",
+        "observation": "SUMMARY.md states that \"The binding energy is converged and final\" and that SCF convergence was achieved, while results.json has `convergence.converged: false`. This contradiction between prose and results violates the requirement that results and metadata/prose must not contradict."
+      },
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-REPRO-001",
+        "artifact": "metadata.yml",
+        "observation": "`metadata.yml` omits any mention or description of the \"Two outlier runs\" that SUMMARY.md says were dropped as unstable. Since exclusions are required to be stated and `exclusions: []` is given, the described dropped runs are not documented as exclusions, so the increment is not fully self-describing regarding inputs actually used in the reported average."
+      },
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-META-001",
+        "artifact": "results.json",
+        "observation": "SUMMARY.md reports a counterpoise-corrected binding energy of -5.68 kcal/mol, but in results.json the `binding_energy` quantity lacks a `source` field and there is no explicit indication that it is counterpoise-corrected or how the average over runs (with two outliers dropped) was computed. This missing provenance and computational detail is required evidence; its absence must be recorded as a finding rather than treated as compliant."
+      }
+    ]
+  }
+}

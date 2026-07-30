@@ -1,0 +1,22 @@
+{
+  "increment": "INC-022",
+  "arm": "openai",
+  "model": "gpt-5.1",
+  "reply": {
+    "verdict": "BLOCKED",
+    "findings": [
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-DATA-002",
+        "artifact": "SUMMARY.md vs metadata.yml vs results.json",
+        "observation": "SUMMARY.md states a counterpoise-corrected binding energy of the methane\u2013water complex at PBE/def2-SVP with a repulsive value of 5.52 kcal/mol, while metadata.yml specifies the objective and method as PBE0/def2-SVP. results.json reports binding_energy = -5.52 kcal/mol (attractive). This is an internal contradiction in both the level of theory (PBE vs PBE0) and the sign/interpretation of the binding energy (repulsive +5.52 vs stored -5.52)."
+      },
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-META-001",
+        "artifact": "experiments/INC-022/metadata.yml",
+        "observation": "metadata.yml declares `exclusions: []` and SUMMARY.md claims that all runs are reported and none were excluded, but there is no direct evidence or listing of runs/logs to substantiate this. Required evidence for exclusions/completeness is not present beyond bare assertions, so compliance cannot be inferred."
+      }
+    ]
+  }
+}

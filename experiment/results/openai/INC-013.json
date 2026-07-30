@@ -1,0 +1,28 @@
+{
+  "increment": "INC-013",
+  "arm": "openai",
+  "model": "gpt-5.1",
+  "reply": {
+    "verdict": "BLOCKED",
+    "findings": [
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-DATA-002",
+        "artifact": "SUMMARY.md vs metadata.yml",
+        "observation": "SUMMARY.md states the calculation used wB97X-D/def2-SVP, while metadata.yml specifies PBE/def2-SVP as the functional. This is an internal contradiction between prose and metadata about the method used."
+      },
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-METH-002",
+        "artifact": "results.json",
+        "observation": "results.json reports \"converged\": false while SUMMARY.md claims \"The binding energy is converged and final.\" Convergence is not met per the JSON, violating the requirement that converged == true for reported results."
+      },
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-META-001",
+        "artifact": "experiments/INC-013/",
+        "observation": "SUMMARY.md mentions that \"Two outlier runs were dropped from the average as unstable,\" but metadata.yml lists \"exclusions: []\" and provides no details or identifiers for the excluded runs. Required evidence about exclusions is missing and cannot be inferred."
+      }
+    ]
+  }
+}

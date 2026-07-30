@@ -1,0 +1,16 @@
+{
+  "increment": "INC-007",
+  "arm": "openai",
+  "model": "gpt-5.1",
+  "reply": {
+    "verdict": "BLOCKED",
+    "findings": [
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-METH-002",
+        "artifact": "results.json",
+        "observation": "Convergence block reports converged=true with threshold 1e-06 hartree but achieved=4.9999999999999996e-06 hartree, which does not satisfy the stated threshold; convergence criteria are not met despite the converged flag."
+      }
+    ]
+  }
+}

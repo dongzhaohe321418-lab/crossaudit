@@ -1,0 +1,40 @@
+{
+  "increment": "INC-026",
+  "arm": "openai",
+  "model": "gpt-5.1",
+  "reply": {
+    "verdict": "BLOCKED",
+    "findings": [
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-DATA-002",
+        "artifact": "SUMMARY.md vs results.json",
+        "observation": "SUMMARY.md states a repulsive binding energy of 4.29 kcal/mol, while results.json reports binding_energy value -4.29 kcal/mol (which corresponds to attractive). This is an internal contradiction between prose and results."
+      },
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-REPRO-001",
+        "artifact": "metadata.yml",
+        "observation": "metadata.yml field `exclusions` is an empty list, but SUMMARY.md states that two outlier runs were dropped from the average as unstable. Exclusions affecting the reported result are not documented in metadata, so the increment is not fully self-describing."
+      },
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-DATA-001",
+        "artifact": "results.json: convergence",
+        "observation": "In the convergence block, numeric fields `threshold` and `achieved` lack associated `source` metadata, and `threshold` lacks a `unit`. CA-DATA-001 requires each numeric entry to have non-empty `unit` and `source`."
+      },
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-METH-002",
+        "artifact": "results.json: convergence",
+        "observation": "Convergence block has `converged: true` with `threshold: 1e-06` and `achieved: 7.161e-07`, but the threshold has no unit while achieved is in hartree. Without a unit on the threshold, it is not demonstrably consistent with the achieved value, so the convergence criterion is not fully stated in the required structured form."
+      },
+      {
+        "severity": "ADVISORY",
+        "rule": "CA-META-001",
+        "artifact": "increment INC-026",
+        "observation": "No explicit Constitution commit hash is present in the increment artifacts; while not required of the increment itself, downstream reporting must ensure this hash is tracked to satisfy invariant I3."
+      }
+    ]
+  }
+}

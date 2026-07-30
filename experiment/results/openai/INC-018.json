@@ -1,0 +1,52 @@
+{
+  "increment": "INC-018",
+  "arm": "openai",
+  "model": "gpt-5.1",
+  "reply": {
+    "verdict": "BLOCKED",
+    "findings": [
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-DATA-001",
+        "artifact": "results.json.quantities[0].value",
+        "observation": "Numeric entry -4.79 has no explicit unit/source fields at the same level; only the parent object carries `unit` and `source`, which does not satisfy the rule that each numeric entry must have non-empty `unit` and `source`."
+      },
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-DATA-001",
+        "artifact": "results.json.quantities[1].value",
+        "observation": "Numeric entry 2.73 has no explicit unit/source fields at the same level; only the parent object carries `unit` and `source`, which does not satisfy the rule that each numeric entry must have non-empty `unit` and `source`."
+      },
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-DATA-001",
+        "artifact": "results.json.convergence.threshold",
+        "observation": "Numeric entry 1e-06 has no `unit` or `source` fields, violating the requirement that each numeric entry has non-empty `unit` and `source`."
+      },
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-DATA-001",
+        "artifact": "results.json.convergence.achieved",
+        "observation": "Numeric entry 1.773e-07 has no `source` field (only `unit` is present), violating the requirement that each numeric entry has non-empty `unit` and `source`."
+      },
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-METH-002",
+        "artifact": "results.json.convergence",
+        "observation": "Convergence block lacks a `source` for the numeric convergence metrics and does not provide a `source` for the threshold, so the convergence evidence is incomplete and does not meet the stated criterion for converged results."
+      },
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-REPRO-001",
+        "artifact": "metadata.yml",
+        "observation": "`metadata.yml` omits an explicit `code_version` field even though the rule requires objective, inputs, method, code_version, and environment to be stated."
+      },
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-META-001",
+        "artifact": "experiments/INC-018/",
+        "observation": "No additional logs or provenance artifacts beyond `SUMMARY.md`, `metadata.yml`, and `results.json` are provided to substantiate convergence and run provenance; this missing required evidence must be recorded as a finding rather than assumed compliant."
+      }
+    ]
+  }
+}

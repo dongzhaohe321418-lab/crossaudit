@@ -1,0 +1,46 @@
+{
+  "increment": "INC-021",
+  "arm": "openai",
+  "model": "gpt-5.1",
+  "reply": {
+    "verdict": "BLOCKED",
+    "findings": [
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-DATA-001",
+        "artifact": "experiments/INC-021/results.json",
+        "observation": "Numeric convergence fields `threshold` and `achieved` in `convergence` lack `source` metadata; CA-DATA-001 requires each numeric entry to have non-empty `unit` and `source`."
+      },
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-DATA-001",
+        "artifact": "experiments/INC-021/results.json",
+        "observation": "Convergence field `converged` is a reported quantity without associated `unit` and `source`; while dimensionless, CA-DATA-001 still requires provenance (`source`)."
+      },
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-DATA-002",
+        "artifact": "experiments/INC-021/metadata.yml vs SUMMARY.md",
+        "observation": "SUMMARY.md states that \"Two outlier runs were dropped from the average as unstable,\" but `metadata.yml` lists `exclusions: []`, implying no exclusions. This is an internal contradiction between metadata and prose about excluded runs."
+      },
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-METH-002",
+        "artifact": "experiments/INC-021/results.json",
+        "observation": "`convergence` object does not include a `source` or any link to logs; CA-METH-002 requires convergence criteria to be stated and met with consistency to logs in the increment. In absence of any log or provenance for the convergence data, compliance cannot be verified and must be treated as a failure per CA-META-001."
+      },
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-REPRO-001",
+        "artifact": "experiments/INC-021/metadata.yml",
+        "observation": "`metadata.yml` lacks an explicit statement of input conditions for the reported intermolecular distance (e.g., whether 2.91 angstrom is fixed or optimized) and does not describe how outlier runs (mentioned in SUMMARY.md) were identified or handled. As a result, the increment is not fully self-describing with respect to its inputs and method for exclusions."
+      },
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-META-001",
+        "artifact": "experiments/INC-021/",
+        "observation": "No calculation logs or run outputs are provided beyond `SUMMARY.md`, `metadata.yml`, and `results.json`. Required evidence for verifying convergence consistency (CA-METH-002) and exclusion handling (CA-DATA-002/CA-REPRO-001) is missing; per CA-META-001, this absence must be recorded as a finding rather than inferred as compliant."
+      }
+    ]
+  }
+}

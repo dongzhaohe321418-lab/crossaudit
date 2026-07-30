@@ -1,0 +1,22 @@
+{
+  "increment": "INC-011",
+  "arm": "openai",
+  "model": "gpt-5.1",
+  "reply": {
+    "verdict": "BLOCKED",
+    "findings": [
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-DATA-001",
+        "artifact": "experiments/INC-011/results.json",
+        "observation": "Numeric convergence fields `threshold` and `achieved` in `convergence` lack `source` metadata; CA-DATA-001 requires each numeric entry to have non-empty `unit` and `source`."
+      },
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-META-002",
+        "artifact": "AUDIT_REPORT",
+        "observation": "Constitution commit hash is not provided anywhere in the report, violating invariant I3 as required by CA-META-002."
+      }
+    ]
+  }
+}

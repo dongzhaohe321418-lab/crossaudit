@@ -1,0 +1,28 @@
+{
+  "increment": "INC-016",
+  "arm": "openai",
+  "model": "gpt-5.1",
+  "reply": {
+    "verdict": "BLOCKED",
+    "findings": [
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-METH-002",
+        "artifact": "results.json",
+        "observation": "`convergence.converged` is set to false even though the achieved SCF residual (2.138e-07 hartree) is tighter than the stated threshold (1e-06 hartree), and SUMMARY.md claims convergence was reached. This violates the requirement that convergence be both stated and met in results.json."
+      },
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-DATA-001",
+        "artifact": "results.json",
+        "observation": "The convergence section includes numeric entries (`threshold` and `achieved`) that lack explicit `unit` and `source` fields as required for every reported quantity. Only a single `unit` field is present at the convergence level and no provenance/source is given for these numbers."
+      },
+      {
+        "severity": "BLOCKER",
+        "rule": "CA-DATA-002",
+        "artifact": "SUMMARY.md vs results.json",
+        "observation": "SUMMARY.md states that SCF convergence was reached and that the binding energy is converged and final, whereas results.json has `convergence.converged` set to false. This is an internal contradiction between prose and structured results."
+      }
+    ]
+  }
+}
