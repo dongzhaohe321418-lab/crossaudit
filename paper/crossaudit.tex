@@ -8,7 +8,7 @@
 \usepackage{microtype}
 \usepackage[dvipsnames]{xcolor}
 \usepackage{tikz}
-\usetikzlibrary{positioning,fit,backgrounds,arrows.meta,calc,shapes.geometric}
+\usetikzlibrary{positioning,fit,backgrounds,arrows.meta,calc,shapes.geometric,shadows}
 \usepackage{booktabs}
 \usepackage{array}
 \usepackage{enumitem}
@@ -92,45 +92,52 @@ The two-repository split is separation of powers made mechanical: the Auditor ho
 \centering
 \begin{tikzpicture}[
   font=\small\sffamily,
-  node distance=7mm and 12mm,
-  box/.style={draw, rounded corners=2pt, align=center, inner sep=5pt, minimum height=9mm, line width=0.9pt},
-  repo/.style={box, cylinder, shape border rotate=90, aspect=0.12, draw=caindigo, fill=cabgindigo},
+  every shadow/.style={shadow xshift=0.6pt, shadow yshift=-1.1pt, opacity=0.13},
+  box/.style={draw, rounded corners=2.5pt, align=center, inner sep=6pt, minimum height=9mm, line width=1pt, drop shadow},
+  repo/.style={box, cylinder, shape border rotate=90, aspect=0.1, draw=caindigo, fill=cabgindigo},
   gen/.style={box, draw=cagreen, fill=cabggreen},
   aud/.style={box, draw=caorange, fill=cabgorange},
   det/.style={box, draw=caslate, fill=cabgslate},
   hum/.style={box, draw=cared, fill=cabgred, line width=1.2pt},
-  hpc/.style={box, draw=caviolet, fill=cabgviolet, dashed},
-  flow/.style={-{Stealth[length=2.6mm]}, line width=0.9pt, draw=caslate},
-  main/.style={flow, line width=1.4pt},
-  lbl/.style={fill=white, inner sep=1.5pt, font=\scriptsize\sffamily}
+  hpc/.style={box, draw=caviolet, fill=cabgviolet, densely dashed},
+  gate/.style={box, draw=cagreen!50!black, fill=cabggreen!70, line width=1.1pt},
+  flow/.style={-{Stealth[length=2.6mm]}, line width=1pt, draw=caslate},
+  main/.style={flow, line width=1.5pt},
+  esc/.style={flow, line width=1.3pt, draw=cared},
+  lbl/.style={fill=white, align=center, inner sep=2.2pt, font=\scriptsize\sffamily, rounded corners=1.5pt, draw=caslate!25, line width=0.4pt}
 ]
-% Left lane: generation
-\node[hpc] (hpc) {Cloud HPC\\ \scriptsize decoupled compute};
-\node[gen, below=of hpc] (gen) {\textbf{Generator}\\ \scriptsize research agent, vendor $A$};
-\node[repo, below=9mm of gen] (sci) {\textbf{Science Repo}\\ \scriptsize experiment increments};
-% Right lane: audit
-\node[det, right=34mm of hpc] (dcl) {\textbf{Deterministic checks}\\ \scriptsize schema $\cdot$ units $\cdot$ convergence\\ \scriptsize no LLM, non-overridable};
-\node[aud, below=of dcl] (audr) {\textbf{Auditor}\\ \scriptsize agent, vendor $B \neq A$};
-\node[repo, below=9mm of audr] (arepo) {\textbf{Audit Repo}\\ \scriptsize Constitution $+$ reports};
-% Human
-\node[hum, below=10mm of $(sci.south)!0.5!(arepo.south)$] (human) {\textbf{Human principal} --- final authority\\ \scriptsize escalation via issue tracker};
-% Edges
-\draw[flow, dashed, draw=caviolet] (hpc) -- node[lbl]{jobs, data} (gen);
-\draw[main] (gen) -- node[lbl]{(1) push} (sci);
-\draw[main] (sci.east) -- node[lbl]{(2) dispatch @ sha} ($(dcl.south west)!0.35!(dcl.south)$);
-\draw[main] (dcl) -- node[lbl]{(3) pass} (audr);
-\draw[flow] (dcl.east) to[out=-15,in=60] node[lbl, xshift=2mm]{hard fail $\Rightarrow$ BLOCKED} (arepo.north east);
-\draw[main] (audr) -- node[lbl]{(4) report: rule IDs $+$ hash} (arepo);
-\draw[main] (arepo.west) -- node[lbl]{(5) verdict} (sci.east |- arepo.west) -- (sci.south east);
-\draw[flow] (sci.west) to[out=150,in=210] node[lbl, align=center]{revise / dispute\\ $\leq$ \texttt{max\_rounds}} (gen.west);
-\draw[main, draw=cared] (arepo.south) |- node[lbl, pos=0.25, right=1.5mm, align=left]{(6) rounds exhausted\\ or ESCALATE} (human.east);
-% Lane frames
+% ---------------- Generation lane ----------------
+\node[hpc] (hpc) {Cloud HPC\\[-1pt] \scriptsize decoupled compute --- never interrupted};
+\node[gen, below=6.5mm of hpc] (gen) {\textbf{Generator}\\[-1pt] \scriptsize research agent $\cdot$ vendor $A$};
+\node[repo, below=9mm of gen] (sci) {\textbf{Science Repo}\\[-1pt] \scriptsize experiment increments};
+% ---------------- Audit lane ----------------
+\node[det, right=32mm of hpc] (dcl) {\textbf{Deterministic checks}\\[-1pt] \scriptsize schema $\cdot$ units $\cdot$ convergence\\[-2pt] \scriptsize no LLM $\cdot$ non-overridable};
+\node[aud, below=6.5mm of dcl] (aur) {\textbf{Auditor}\\[-1pt] \scriptsize agent $\cdot$ vendor $B \neq A$\\[-2pt] \scriptsize applies the Constitution};
+\node[repo, below=9mm of aur] (led) {\textbf{Audit Ledger}\\[-1pt] \scriptsize Constitution $\cdot$ cycles\\[-2pt] \scriptsize reports $+$ receipts (\invariant{7})};
+% ---------------- Bottom row ----------------
+\node[gate, below=17mm of sci] (gate) {\textbf{Admission gate} (\invariant{8})\\[-1pt] \scriptsize required status \texttt{crossaudit/admission}\\[-2pt] \scriptsize verified receipt or no admission --- fail closed};
+\node[hum, below=17mm of led] (hum) {\textbf{Human principal}\\[-1pt] \scriptsize escalations $\cdot$ dead-letter sweep\\[-2pt] \scriptsize final authority};
+% ---------------- Edges ----------------
+\draw[flow, densely dashed, draw=caviolet] (hpc) -- node[lbl]{jobs $\cdot$ data} (gen);
+\draw[main] (gen) -- node[lbl]{\textbf{1}\; push increment} (sci);
+\draw[main] (sci.north east) to[out=18, in=215] node[lbl, pos=0.42]{\textbf{2}\; dispatch @ resolved SHA} (dcl.south west);
+\draw[main] (dcl) -- node[lbl]{\textbf{3}\; pass} (aur);
+\draw[flow] (dcl.east) to[out=-12, in=55] node[lbl, xshift=1mm]{hard fail $\Rightarrow$ BLOCKED} (led.north east);
+\draw[main] (aur) -- node[lbl]{\textbf{4}\; report $+$ receipt\\[-2pt]\scriptsize two-phase, append-only} (led);
+\draw[main] (led.west) to[out=185, in=-8] node[lbl, pos=0.5]{\textbf{5}\; verdict --- verified against receipt} (sci.east);
+\draw[main] (led.south west) to[out=225, in=10] node[lbl, pos=0.52, yshift=-2mm]{\textbf{6}~status: pass / fail} (gate.east);
+\draw[flow, densely dashed, draw=cagreen!50!black] (gate) -- node[lbl]{protects \texttt{main} $\cdot$ production $\cdot$ publication} (sci);
+\draw[flow] (sci.west) to[out=155, in=205] node[lbl, align=center, xshift=-4.5mm]{revise / dispute\\[-2pt] rounds $\leq$ \texttt{max\_rounds}} (gen.west);
+\draw[esc] (led.south) to[out=-90, in=90] node[lbl, pos=0.5, right=1.6mm, align=left]{\textbf{7}~ESCALATE\\[-2pt] rounds exhausted $\cdot$ stuck} (hum.north);
+% ---------------- Lane frames ----------------
 \begin{scope}[on background layer]
-  \node[draw=caslate!40, rounded corners=3pt, fill=cabgslate!40, fit=(hpc)(gen)(sci), inner sep=3.5mm, label={[font=\scriptsize\sffamily\bfseries, text=caslate]north:Generation --- vendor $A$}] {};
-  \node[draw=caslate!40, rounded corners=3pt, fill=cabgslate!40, fit=(dcl)(audr)(arepo), inner sep=3.5mm, label={[font=\scriptsize\sffamily\bfseries, text=caslate]north:Audit --- vendor $B \neq A$}] {};
+  \node[draw=cagreen!35, rounded corners=4pt, fill=cabggreen!28, fit=(hpc)(gen)(sci), inner sep=4mm,
+        label={[font=\scriptsize\sffamily\bfseries, text=cagreen!50!black]north:Generation --- vendor $A$}] {};
+  \node[draw=caorange!35, rounded corners=4pt, fill=cabgorange!28, fit=(dcl)(aur)(led), inner sep=4mm,
+        label={[font=\scriptsize\sffamily\bfseries, text=caorange!70!black]north:Audit --- vendor $B \neq A$}] {};
 \end{scope}
 \end{tikzpicture}
-\caption{The CrossAudit loop. Solid numbered arrows follow one experiment increment; the deterministic layer runs before any model (\invariant{4}); the revision loop is bounded (\invariant{5}); humans are interrupted only by escalation (\invariant{6}).}
+\caption{The CrossAudit loop, revision 1. Numbered arrows follow one increment: deterministic checks precede any model (\invariant{4}); the audit side emits a two-phase report-plus-receipt into an append-only ledger (\invariant{7}); the verdict is verified against the fetched receipt, and a required commit status gates protected actions fail-closed (\invariant{8}); controller-managed rounds bound revision (\invariant{5}); humans are interrupted only by escalation or the dead-letter sweep (\invariant{6}).}
 \label{fig:arch}
 \end{figure}
 

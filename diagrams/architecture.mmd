@@ -8,7 +8,7 @@
   "edgeLabelBackground": "#FFFFFF",
   "clusterBkg": "#FAFAFA",
   "clusterBorder": "#CBD5E1"
-}, "flowchart": {"curve": "basis", "padding": 14, "nodeSpacing": 42, "rankSpacing": 56}}}%%
+}, "flowchart": {"curve": "basis", "padding": 14, "nodeSpacing": 42, "rankSpacing": 52}}}%%
 flowchart TB
     classDef repo fill:#EEF2FF,stroke:#4F46E5,stroke-width:1.5px,color:#1E1B4B
     classDef agentA fill:#ECFDF5,stroke:#059669,stroke-width:1.5px,color:#064E3B
@@ -16,29 +16,33 @@ flowchart TB
     classDef det fill:#F8FAFC,stroke:#475569,stroke-width:1.5px,color:#0F172A
     classDef human fill:#FEF2F2,stroke:#DC2626,stroke-width:2px,color:#7F1D1D
     classDef compute fill:#F5F3FF,stroke:#8B5CF6,stroke-width:1.5px,stroke-dasharray:5 4,color:#4C1D95
+    classDef gate fill:#D1FAE5,stroke:#065F46,stroke-width:2px,color:#064E3B
 
     subgraph SCI["  Generation — vendor A  "]
         direction TB
-        HPC["Cloud HPC<br/><i>decoupled compute:<br/>never interrupted by audits</i>"]:::compute
+        HPC["Cloud HPC<br/><i>decoupled compute:<br/>never interrupted</i>"]:::compute
         G["<b>Generator</b><br/>research agent"]:::agentA
         S[("<b>Science Repo</b><br/>experiment increments")]:::repo
-        HPC -. "jobs and data" .-> G
+        HPC -. "jobs · data" .-> G
         G -- "(1) push increment" --> S
-        S -. "revise / dispute<br/><b>bounded: max_rounds</b>" .- G
+        S -. "revise / dispute<br/><b>controller rounds ≤ max_rounds</b>" .- G
     end
 
     subgraph AUD["  Audit — vendor B ≠ A  "]
         direction TB
         D["<b>Deterministic checks</b><br/>schema · units · convergence<br/><i>no LLM · non-overridable</i>"]:::det
         A["<b>Auditor</b><br/>agent · applies the Constitution"]:::agentB
-        R[("<b>Audit Repo</b><br/>Constitution + audit reports")]:::repo
+        R[("<b>Audit Ledger</b><br/>Constitution · cycles<br/>reports + <b>receipts (I7)</b>")]:::repo
         D -- "(3) pass" --> A
         D -- "hard fail ⇒ BLOCKED" --> R
-        A -- "(4) report:<br/>rule IDs + Constitution hash" --> R
+        A -- "(4) report + receipt<br/><i>two-phase · append-only</i>" --> R
     end
 
-    H["<b>Human principal</b><br/>escalation via GitHub Issue<br/><i>final authority</i>"]:::human
+    GATE["<b>Admission gate (I8)</b><br/>required status crossaudit/admission<br/><i>verified receipt or no admission — fail closed</i>"]:::gate
+    H["<b>Human principal</b><br/>escalations · dead-letter sweep<br/><i>final authority</i>"]:::human
 
-    S == "(2) dispatch @ sha" ==> D
-    R == "(5) verdict: PASS ·<br/>BLOCKED · ESCALATE" ==> G
-    R == "(6) rounds exhausted<br/>or ESCALATE" ==> H
+    S == "(2) dispatch @ resolved SHA" ==> D
+    R == "(5) verdict — verified<br/>against the receipt" ==> G
+    R == "(6) commit status:<br/>pass / fail" ==> GATE
+    GATE -. "protects main ·<br/>production · publication" .-> S
+    R == "(7) ESCALATE · rounds<br/>exhausted · stuck cycles" ==> H
