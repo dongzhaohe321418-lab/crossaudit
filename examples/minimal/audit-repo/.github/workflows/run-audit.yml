@@ -1,0 +1,84 @@
+name: "CrossAudit: run audit"
+
+on:
+  repository_dispatch:
+    types: [crossaudit-run]
+
+permissions:
+  contents: write
+
+env:
+  SCIENCE_REPO: ${{ github.event.client_payload.science_repo }}
+  SHA: ${{ github.event.client_payload.sha }}
+  ROUND: ${{ github.event.client_payload.round }}
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4   # Audit Repo: Constitution, checks/, scripts/
+
+      - uses: actions/checkout@v4   # Science Repo pinned at the audited SHA
+        with:
+          repository: ${{ env.SCIENCE_REPO }}
+          ref: ${{ env.SHA }}
+          path: science
+          token: ${{ secrets.CROSSAUDIT_DISPATCH_TOKEN }}
+
+      - name: Dependencies
+        run: pip install --quiet pyyaml
+
+      - name: Assert vendor heterogeneity (I1)
+        run: |
+          python3 - <<'EOF'
+          import sys, yaml
+          cfg = yaml.safe_load(open("science/crossaudit.yml"))
+          g, a = cfg["generator"]["vendor"], cfg["auditor"]["vendor"]
+          if g == a:
+              sys.exit(f"I1 violated: generator and auditor share vendor '{g}'")
+          print(f"I1 ok: generator={g}, auditor={a}")
+          EOF
+
+      - name: Deterministic checks — before any LLM (I4)
+        id: dcl
+        run: |
+          set +e
+          echo '${{ github.event.client_payload.changed }}' | jq -r '.[]' > changed.txt
+          # shellcheck disable=SC2046
+          python checks/run_checks.py --science-root science \
+            --changed $(cat changed.txt) --output checks.json
+          echo "exit=$?" >> "$GITHUB_OUTPUT"
+
+      - name: LLM audit (vendor B), or offline stub without a key
+        env:
+          AUDITOR_API_KEY: ${{ secrets.AUDITOR_API_KEY }}
+          AUDITOR_MODEL: ${{ vars.AUDITOR_MODEL }}
+        run: |
+          EXTRA=""
+          [ -z "$AUDITOR_API_KEY" ] && EXTRA="--offline"
+          python scripts/run_llm_audit.py \
+            --science-root science \
+            --science-repo "$SCIENCE_REPO" --sha "$SHA" --round "$ROUND" \
+            --constitution AUDIT_RULES.md --checks checks.json \
+            --changed changed.txt \
+            --out "reports/${SHA:0:7}-round${ROUND}.md" $EXTRA
+
+      - name: Commit report to the ledger (I2)
+        run: |
+          git config user.name "crossaudit-bot"
+          git config user.email "crossaudit-bot@users.noreply.github.com"
+          git add reports/
+          git commit -m "audit: ${SCIENCE_REPO}@${SHA:0:7} round ${ROUND} — $(cat verdict.txt)"
+          git push
+
+      - name: Dispatch verdict back to the Science Repo
+        env:
+          GH_TOKEN: ${{ secrets.CROSSAUDIT_DISPATCH_TOKEN }}
+        run: |
+          REPORT_URL="https://github.com/${GITHUB_REPOSITORY}/blob/main/reports/${SHA:0:7}-round${ROUND}.md"
+          gh api "repos/${SCIENCE_REPO}/dispatches" \
+            -f event_type=crossaudit-verdict \
+            -f "client_payload[verdict]=$(cat verdict.txt)" \
+            -f "client_payload[sha]=${SHA}" \
+            -f "client_payload[round]=${ROUND}" \
+            -f "client_payload[report_url]=${REPORT_URL}"

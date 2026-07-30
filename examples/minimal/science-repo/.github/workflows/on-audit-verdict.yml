@@ -1,0 +1,59 @@
+name: "CrossAudit: route verdict"
+
+on:
+  repository_dispatch:
+    types: [crossaudit-verdict]
+
+permissions:
+  contents: read
+  issues: write
+
+env:
+  VERDICT: ${{ github.event.client_payload.verdict }}
+  ROUND: ${{ github.event.client_payload.round }}
+  REPORT_URL: ${{ github.event.client_payload.report_url }}
+  SHA: ${{ github.event.client_payload.sha }}
+
+jobs:
+  route:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Read max_rounds from crossaudit.yml
+        id: cfg
+        run: |
+          pip install --quiet pyyaml
+          echo "max_rounds=$(python3 -c "import yaml; print(yaml.safe_load(open('crossaudit.yml'))['loop']['max_rounds'])")" >> "$GITHUB_OUTPUT"
+
+      - name: "PASS → generator proceeds"
+        if: env.VERDICT == 'PASS'
+        run: |
+          {
+            echo "## CrossAudit: PASS ✅"
+            echo "Increment \`${SHA:0:7}\` cleared (round ${ROUND}). Report: ${REPORT_URL}"
+            echo "Hook point: trigger your Generator's next step here"
+            echo "(e.g. a Claude Code action, a queue message — deployment-specific)."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: "BLOCKED, rounds remain → generator must revise or dispute"
+        if: env.VERDICT == 'BLOCKED' && fromJSON(env.ROUND) < fromJSON(steps.cfg.outputs.max_rounds)
+        run: |
+          {
+            echo "## CrossAudit: BLOCKED ⛔ (round ${ROUND}/${{ steps.cfg.outputs.max_rounds }})"
+            echo "Report: ${REPORT_URL}"
+            echo "Hook point: invoke your Generator with the report; its revision commit"
+            echo "must carry the trailer \`CrossAudit-Round: $((ROUND + 1))\`."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: "ESCALATE or rounds exhausted → open Issue for the human (I5/I6)"
+        if: env.VERDICT == 'ESCALATE' || (env.VERDICT == 'BLOCKED' && fromJSON(env.ROUND) >= fromJSON(steps.cfg.outputs.max_rounds))
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh label create crossaudit-escalation --color D93F0B \
+            --description "CrossAudit human escalation" --force
+          gh issue create \
+            --title "CrossAudit escalation: ${SHA:0:7} (round ${ROUND})" \
+            --label crossaudit-escalation \
+            --body "$(printf 'Verdict: %s at round %s/%s.\nAudit report: %s\n\nThe loop is halted for this increment only; running compute jobs are unaffected (I6). Please review the report and either amend the increment, amend the Constitution, or overrule with a written note.' "$VERDICT" "$ROUND" "${{ steps.cfg.outputs.max_rounds }}" "$REPORT_URL")"

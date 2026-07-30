@@ -1,0 +1,21 @@
+# CrossAudit configuration (lives in the Science Repo)
+version: 1
+
+audit:
+  repo: REPLACE-USER/demo-audit     # the sibling Audit Repo
+
+# Invariant I1 — vendors must differ; workflows assert this.
+generator:
+  vendor: anthropic                 # e.g. Claude-based generator
+auditor:
+  vendor: openai                    # e.g. GPT/Codex-based auditor
+
+loop:
+  max_rounds: 3                     # invariant I5 — oscillation guard
+
+severity:
+  block_on: [BLOCKER]               # invariant I6 — ADVISORY never gates
+
+escalation:
+  method: github-issue
+  labels: [crossaudit-escalation]

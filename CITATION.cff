@@ -1,0 +1,22 @@
+cff-version: 1.2.0
+message: "If you use CrossAudit, please cite it as below."
+title: "CrossAudit: A Git-Native, Cross-Vendor Audit Loop for Agentic Science"
+authors:
+  - family-names: "Dong"
+    given-names: "Zhaohe"
+type: software
+year: 2026
+url: "https://github.com/dongzhaohe321418-lab/crossaudit"
+abstract: >-
+  CrossAudit is a lightweight protocol for supervising autonomous AI research
+  agents: every experiment increment produced by a generator agent is audited
+  by an agent from a different model vendor against a versioned, human-authored
+  rulebook, with git as the tamper-evident ledger, deterministic scripted checks
+  as a model-free backstop, and bounded escalation to a human principal.
+keywords:
+  - agentic science
+  - AI scientist
+  - LLM auditing
+  - self-preference bias
+  - reproducibility
+license: MIT

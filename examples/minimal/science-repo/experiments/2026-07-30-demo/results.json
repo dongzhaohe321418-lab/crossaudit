@@ -1,0 +1,22 @@
+{
+  "quantities": [
+    {
+      "name": "binding_energy",
+      "value": -4.72,
+      "unit": "kcal/mol",
+      "source": "run_demo.py@d3m0c0d3"
+    },
+    {
+      "name": "oo_distance",
+      "value": 2.91,
+      "unit": "angstrom",
+      "source": "run_demo.py@d3m0c0d3"
+    }
+  ],
+  "convergence": {
+    "converged": true,
+    "threshold": 1.0e-6,
+    "achieved": 3.2e-7,
+    "unit": "hartree"
+  }
+}

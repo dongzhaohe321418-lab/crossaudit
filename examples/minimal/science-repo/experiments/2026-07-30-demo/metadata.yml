@@ -1,0 +1,17 @@
+# Demo increment — illustrative data for the CrossAudit walkthrough.
+objective: >
+  Demo increment: compute the counterpoise-corrected binding energy of the
+  water dimer at PBE0/def2-SVP. Values are illustrative walkthrough data,
+  not a scientific claim.
+inputs:
+  - geometries/water_dimer.xyz
+method:
+  functional: PBE0
+  basis_set: def2-SVP
+  corrections: [counterpoise]
+  thresholds:
+    scf: 1.0e-6        # hartree
+code_version: d3m0c0d3
+environment: "container:demo/psi4:1.9"
+exclusions: []
+rerun: "python run_demo.py --geometry geometries/water_dimer.xyz  # illustrative"
