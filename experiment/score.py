@@ -12,9 +12,11 @@ ROOT = Path(__file__).parent
 
 # Which rule families count as catching which defect class (lenient tier).
 RULE_MAP = {
-    "D1": ("CA-DATA-001",), "D2": ("CA-DATA-001", "CA-DOM"), "D3": ("CA-METH-002",),
+    "D1": ("CA-DATA-001",),
+    "D2": ("CA-DATA-001", "CA-DOM", "CA-DATA-002"),  # adjudicated
+    "D3": ("CA-METH-002",),
     "D4": ("CA-REPRO-001",),
-    "L1": ("CA-DATA-002",), "L2": ("CA-DATA-002", "CA-DATA-003"), "L3": ("CA-DOM", "CA-DATA-002"),
+    "L1": ("CA-DATA-002",), "L2": ("CA-DATA-002", "CA-DATA-003"), "L3": ("CA-DOM", "CA-DATA-002", "CA-META-003", "CA-DATA-001"),  # adjudicated
     "L4": ("CA-DATA-001", "CA-DATA-002"), "L5": ("CA-DATA-002",), "L6": ("CA-METH-002", "CA-DATA-002"),
 }
 LOC_TOKENS = {  # strict tier: finding must also mention one of these tokens
