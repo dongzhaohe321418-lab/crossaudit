@@ -51,3 +51,13 @@ callbacks; does not yet enforce receipt-verified fail-closed admission.**
 7 (dispute+deadletter; integrity-escalation open), 9 (scorer done; execution blocked
 on operator keys/escrow) · Locally tested: DCL_ONLY→deny, PASS→admit+consume,
 replay→deny, tamper→deny, controller round derivation.
+
+## R3 candidate: telemetry-driven standards ratchet
+
+Shadow-mode rule promotion (ADVISORY rehearses enforcement; ledger evidence — hit rate,
+dispute rate, would-be blocking cost — justifies promotion to BLOCKER); stepwise threshold
+tightening as generator competence grows; agent-drafted amendment PRs from ledger telemetry
+(auto-draft promotion after N undisputed hits; auto-draft clarification after M
+disputed-and-withdrawn), with enactment reserved to the human principal. Invariant: standards
+freeze within a cycle (I7 pins the version) and move only between cycles, preserving I5
+termination.
