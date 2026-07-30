@@ -25,7 +25,7 @@ flowchart TB
         S[("<b>Science Repo</b><br/>experiment increments")]:::repo
         HPC -. "jobs · data" .-> G
         G -- "(1) push increment" --> S
-        S -. "revise / dispute<br/><b>controller rounds ≤ max_rounds</b>" .- G
+        S -. "BLOCKED → revise, or dispute<br/><i>once per finding</i><br/><b>controller rounds ≤ max_rounds</b>" .- G
     end
 
     subgraph AUD["  Audit — vendor B ≠ A  "]
@@ -39,10 +39,10 @@ flowchart TB
     end
 
     GATE["<b>Admission gate (I8)</b><br/>required status crossaudit/admission<br/><i>verified receipt or no admission — fail closed</i>"]:::gate
-    H["<b>Human principal</b><br/>escalations · dead-letter sweep<br/><i>final authority</i>"]:::human
+    H["<b>Human principal</b> — final authority<br/><i>every cycle terminates: PASS,<br/>or bounded escalation to here</i>"]:::human
 
     S == "(2) dispatch @ resolved SHA" ==> D
-    R == "(5) verdict — verified<br/>against the receipt" ==> G
+    R == "(5) verdict: PASS · BLOCKED · ESCALATE<br/><i>verified against the fetched receipt</i>" ==> G
     R == "(6) commit status:<br/>pass / fail" ==> GATE
     GATE -. "protects main ·<br/>production · publication" .-> S
-    R == "(7) ESCALATE · rounds<br/>exhausted · stuck cycles" ==> H
+    R == "(7) ESCALATE · rounds exhausted<br/>· 6h dead-letter sweep" ==> H

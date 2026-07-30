@@ -119,7 +119,7 @@ The two-repository split is separation of powers made mechanical: the Auditor ho
 \node[repo, below=9mm of aur] (led) {\textbf{Audit Ledger}\\[-1pt] \scriptsize Constitution $\cdot$ cycles\\[-2pt] \scriptsize reports $+$ receipts (\invariant{7})};
 % ---------------- Bottom row ----------------
 \node[gate, below=17mm of sci] (gate) {\textbf{Admission gate} (\invariant{8})\\[-1pt] \scriptsize required status \texttt{crossaudit/admission}\\[-2pt] \scriptsize verified receipt or no admission --- fail closed};
-\node[hum, below=17mm of led] (hum) {\textbf{Human principal}\\[-1pt] \scriptsize escalations $\cdot$ dead-letter sweep\\[-2pt] \scriptsize final authority};
+\node[hum, below=17mm of led] (hum) {\textbf{Human principal} --- final authority\\[-1pt] \scriptsize every cycle terminates: PASS,\\[-2pt] \scriptsize or bounded escalation to here};
 % ---------------- Edges ----------------
 \draw[flow, densely dashed, draw=caviolet] (hpc) -- node[lbl]{jobs $\cdot$ data} (gen);
 \draw[main] (gen) -- node[lbl]{\textbf{1}\; push increment} (sci);
@@ -127,11 +127,11 @@ The two-repository split is separation of powers made mechanical: the Auditor ho
 \draw[main] (dcl) -- node[lbl]{\textbf{3}\; pass} (aur);
 \draw[flow] (dcl.east) to[out=-12, in=55] node[lbl, xshift=1mm]{hard fail $\Rightarrow$ BLOCKED} (led.north east);
 \draw[main] (aur) -- node[lbl]{\textbf{4}\; report $+$ receipt\\[-2pt]\scriptsize two-phase, append-only} (led);
-\draw[main] (led.west) to[out=185, in=-8] node[lbl, pos=0.5]{\textbf{5}\; verdict --- verified against receipt} (sci.east);
+\draw[main] (led.west) to[out=185, in=-8] node[lbl, pos=0.5, align=center]{\textbf{5}~verdict: PASS $\cdot$ BLOCKED $\cdot$ ESCALATE\\[-2pt] verified against the fetched receipt} (sci.east);
 \draw[main] (led.south west) to[out=225, in=10] node[lbl, pos=0.52, yshift=-2mm]{\textbf{6}~status: pass / fail} (gate.east);
 \draw[flow, densely dashed, draw=cagreen!50!black] (gate) -- node[lbl]{protects \texttt{main} $\cdot$ production $\cdot$ publication} (sci);
-\draw[flow] (sci.west) to[out=155, in=205] node[lbl, align=center, xshift=-4.5mm]{revise / dispute\\[-2pt] rounds $\leq$ \texttt{max\_rounds}} (gen.west);
-\draw[esc] (led.south) to[out=-90, in=90] node[lbl, pos=0.5, right=1.6mm, align=left]{\textbf{7}~ESCALATE\\[-2pt] rounds exhausted $\cdot$ stuck} (hum.north);
+\draw[flow] (sci.west) to[out=155, in=205] node[lbl, align=center, xshift=-5mm]{BLOCKED $\to$ revise, or dispute\\[-2pt] \emph{once per finding}\\[-2pt] controller rounds $\leq$ \texttt{max\_rounds}} (gen.west);
+\draw[esc] (led.south) to[out=-90, in=90] node[lbl, pos=0.5, right=1.6mm, align=left]{\textbf{7}~to the human: ESCALATE $\cdot$\\[-2pt] rounds exhausted $\cdot$ 6\,h dead-letter} (hum.north);
 % ---------------- Lane frames ----------------
 \begin{scope}[on background layer]
   \node[draw=cagreen!35, rounded corners=4pt, fill=cabggreen!28, fit=(hpc)(gen)(sci), inner sep=4mm,
@@ -140,7 +140,7 @@ The two-repository split is separation of powers made mechanical: the Auditor ho
         label={[font=\scriptsize\sffamily\bfseries, text=caorange!70!black]north:Audit --- vendor $B \neq A$}] {};
 \end{scope}
 \end{tikzpicture}
-\caption{The CrossAudit loop, revision 1. Numbered arrows follow one increment: deterministic checks precede any model (\invariant{4}); the audit side emits a two-phase report-plus-receipt into an append-only ledger (\invariant{7}); the verdict is verified against the fetched receipt, and a required commit status gates protected actions fail-closed (\invariant{8}); controller-managed rounds bound revision (\invariant{5}); humans are interrupted only by escalation or the dead-letter sweep (\invariant{6}).}
+\caption{The CrossAudit loop, revision 1. Numbered arrows follow one increment: deterministic checks precede any model (\invariant{4}); the audit side emits a two-phase report-plus-receipt into an append-only ledger (\invariant{7}); the verdict is verified against the fetched receipt, and a required commit status gates protected actions fail-closed (\invariant{8}); controller-managed rounds bound revision (\invariant{5}); humans are interrupted only by escalation or the dead-letter sweep (\invariant{6}). Termination is structural: within \texttt{max\_rounds} every cycle ends in admission or in human hands, disputes are one-shot per finding, and silent stalls are caught by the sweep.}
 \label{fig:arch}
 \end{figure}
 
