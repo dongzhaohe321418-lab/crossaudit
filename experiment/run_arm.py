@@ -61,6 +61,7 @@ def main() -> int:
     args = ap.parse_args()
     args.out.mkdir(parents=True, exist_ok=True)
 
+    first = True
     for inc_dir in sorted((ROOT / "corpus").glob("INC-*")):
         out_file = args.out / f"{inc_dir.name}.json"
         if out_file.exists():
@@ -81,6 +82,9 @@ def main() -> int:
                     reply = {"verdict": "ERROR", "findings": [], "error": repr(exc)}
                 else:
                     time.sleep(10 * (attempt + 1))
+        if reply.get("verdict") == "ERROR" and first:
+            sys.exit(f"first call failed — check model ID / key / quota: {reply.get('error')}")
+        first = False
         out_file.write_text(json.dumps(
             {"increment": inc_dir.name, "arm": args.arm, "model": args.model,
              "reply": reply}, indent=2))

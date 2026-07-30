@@ -37,6 +37,10 @@ jobs:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
+          if [ "${{ matrix.arm }}" = "openai" ] && [ -z "$OPENAI_API_KEY" ]; then
+            echo "OPENAI_API_KEY secret not set — skipping this arm"; exit 0; fi
+          if [ "${{ matrix.arm }}" = "anthropic" ] && [ -z "$ANTHROPIC_API_KEY" ]; then
+            echo "ANTHROPIC_API_KEY secret not set — skipping this arm"; exit 0; fi
           cd experiment
           python3 run_arm.py --arm "${{ matrix.arm }}" \
             --model "${{ steps.model.outputs.id }}" \
