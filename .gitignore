@@ -13,7 +13,10 @@ dist/
 **/checks.json
 
 # LaTeX build products — scoped to paper dirs so that *.log fixtures under
-# experiment/v3/partC/fixtures/ stay tracked
+# experiment/v3/partC/fixtures/ stay tracked.
+# crossaudit.pdf is the raw pdflatex output of crossaudit.tex; the tracked
+# record of the build is crossaudit-paper.pdf (see paper/FIGURES.md)
+/paper/crossaudit.pdf
 /paper/*.aux
 /paper/*.log
 /paper/*.out
