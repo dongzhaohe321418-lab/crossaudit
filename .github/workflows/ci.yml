@@ -22,7 +22,7 @@ jobs:
     name: Paper builds and the style freeze holds
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Install TeX Live
         run: |
           sudo apt-get update -qq
@@ -51,8 +51,8 @@ jobs:
     name: Test suite
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
       - name: Install the pinned toolchain
@@ -63,8 +63,8 @@ jobs:
     name: Part C pipeline reproduces its verdicts
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
       - name: Install the pinned toolchain

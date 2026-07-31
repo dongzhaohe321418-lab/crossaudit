@@ -111,16 +111,36 @@ was for. Recorded here as a data point for Part C's environment sensitivity: it
 bounds drift for the interpreter, not for the analysers, whose versions remain
 the ones to watch.
 
-## Phase 3 — open
+## Phase 3 — closed
 
-R8 (duplicate and superseded figure exports), R9 (accepted as "do not move";
-`experiment/README.md` maps the generations instead), R10 (two missing zh README
-sections).
+**R8 — duplicate and superseded binaries.** Per the cloud session's
+disposition, the two graphical abstracts are both live with distinct roles —
+`crossaudit-abstract-figure` results-oriented (carries the NULLCHECK floors),
+`graphical-abstract-v2` protocol-oriented (submission portals) — so both stay;
+what went was the superseded v1 family (`graphical-abstract.tex`, `.pdf`,
+`crossaudit-graphical-abstract.png`), the WeChat byte-twin of
+`diagrams/architecture.png` (the article now points at the canonical path), and
+`paper/crossaudit.pdf`, the second name for the same build that `e49d801`
+introduced (owned by the cloud session; now gitignored as a build product, with
+`crossaudit-paper.pdf` the tracked record). `paper/FIGURES.md` maps every
+source → export → role with regeneration commands, and records that no `.tex`
+uses `\includegraphics`: exports can never break the build. ~1.2 MB out of the
+tree.
 
-R8 gained one item during phase 2: `e49d801` added `paper/crossaudit.pdf`
-alongside `paper/crossaudit-paper.pdf`, byte-for-byte the same build under two
-names. Phase 3 should keep one and say in `paper/FIGURES.md` which command
-produces it.
+**R9 — generation layout.** Accepted as "do not move": `experiment/README.md`
+maps v1 (top level, frozen, runner archived) / v2 (superseded scorer) / v3
+(registered, key-gated) with per-generation authority documents and restates
+the precedence rule.
+
+**R10 — bilingual parity.** `README.zh-CN.md` gains 仓库结构 and 部署注记,
+mirroring the EN sections; both READMEs now have the same eleven headings in
+the same order. `CLAUDE.md`'s queue line refreshed: B5 done, queue head is C3,
+and the sixth audit's closure is recorded for future sessions.
+
+Housekeeping in the same batch: CI actions bumped (`checkout@v5`,
+`setup-python@v6`) to clear the Node 20 deprecation annotations from the first
+green run (30637515587: paper 1m15s, tests 21s, partC 23s — the operator-side
+package-set judgement held).
 
 ## Notes carried forward
 
