@@ -54,3 +54,10 @@ and this file's commit hash (I3).
 - **Criterion:** no BLOCKER finding without citing a BLOCKER-severity rule;
   uncovered judgement calls are ADVISORY at most.
 - **Rationale:** keeps the gate objective and disputes resolvable.
+
+### CA-META-004 — Escalate on competence boundary
+- **Severity:** — (procedural)
+- **Applies to:** audit process
+- **Criterion:** if deciding a finding requires information outside the increment plus
+  Constitution, return ESCALATE with the specific question for the human.
+- **Rationale:** knowing when not to decide is part of the audit.

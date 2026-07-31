@@ -218,6 +218,7 @@ def main() -> int:
         cycle = {"cycle_id": "no-controller", "round": 1}
     args.round = str(cycle["round"])
     inc_key = cycle["cycle_id"]
+    escalation_lock = bool(cycle.get("blocked_by_escalation"))
 
     llm_reply, llm_invalid = None, None
     if not args.offline:
@@ -243,7 +244,9 @@ def main() -> int:
     # Verdict synthesis. I4: DCL blockers dominate. I3: invalid reply escalates.
     # Truncated or unreadable inputs can never yield PASS (I8: fail closed).
     bounds_exceeded = locals().get("bounds_exceeded", 0)
-    if dcl["total_hard_failures"] > 0:
+    if escalation_lock:
+        verdict = "ESCALATE"   # an escalated cycle cannot be routed around (I8)
+    elif dcl["total_hard_failures"] > 0:
         verdict = "BLOCKED"
     elif llm_invalid:
         verdict = "ESCALATE"

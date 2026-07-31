@@ -11,6 +11,8 @@ for c in state.stuck_cycles(int(sys.argv[1]) if len(sys.argv) > 1 else 21600):
     body = (f"Cycle {c['cycle_id']} (repo {c['repo']}, active {c['active_sha'][:12]}, "
             f"round {c['round']}) has had no state change beyond the threshold. "
             f"Human attention required.")
-    subprocess.run(["gh", "issue", "create", "--repo", c["repo"], "--title", title,
-                    "--label", "crossaudit-escalation", "--body", body], check=False)
-    print("escalated", c["cycle_id"])
+    r = subprocess.run(["gh", "issue", "create", "--repo", c["repo"], "--title", title,
+                        "--label", "crossaudit-escalation", "--body", body],
+                       check=False, capture_output=True, text=True)
+    state.mark_deadlettered(c["cycle_id"], r.stdout.strip() or "issue-created")
+    print("escalated once", c["cycle_id"])

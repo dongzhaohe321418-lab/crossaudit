@@ -61,3 +61,14 @@ tightening as generator competence grows; agent-drafted amendment PRs from ledge
 disputed-and-withdrawn), with enactment reserved to the human principal. Invariant: standards
 freeze within a cycle (I7 pins the version) and move only between cycles, preserving I5
 termination.
+
+## Post-detread status (third audit, wiring fixes)
+Fixed: --admit live in router (state machine on execution path); verifier report path
+follows the receipt's own cycle dir (dispute rounds verify); anchor checkout births HEAD +
+"unversioned" constitution now DENIES; MAX_ROUNDS read from crossaudit.yml; same-sha
+re-dispatch advances rounds (no cycle reset), ESCALATED unbypassable by child commits;
+deadletter dedup via state writeback; run-audit concurrency group; example README ships
+controller/; CA-META-004 added to demo Constitution. Open: one-shot dispute enforcement in
+code (on-dispute.yml is an unbounded re-dispatch trigger today; rounds bound it, per-finding
+one-shot does not exist yet); zh README + faq two revisions behind; ratchet N/M thresholds
+unbound.

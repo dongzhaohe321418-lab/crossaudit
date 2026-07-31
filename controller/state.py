@@ -51,6 +51,23 @@ def open_or_advance(repo: str, sha: str, parent_sha: str | None) -> dict:
     longer reset rounds: identity follows the commit graph, not changed paths."""
     s = _load()
     for cid, c in s["cycles"].items():
+        if c["active_sha"] == sha and c["status"] in ("OPEN", "BLOCKED"):
+            # Same-sha re-dispatch (dispute/re-audit): ADVANCE, never rebuild.
+            c["round"] += 1
+            c["status"] = "OPEN"
+            _log(s, "readvance_same_sha", cycle=cid, sha=sha, round=c["round"])
+            _save(s)
+            return c | {"cycle_id": cid}
+        if c["active_sha"] == sha and c["status"] == "ESCALATED":
+            _log(s, "blocked_by_escalation", cycle=cid, sha=sha)
+            _save(s)
+            return c | {"cycle_id": cid, "blocked_by_escalation": True}
+    for cid, c in s["cycles"].items():
+        if parent_sha and c["active_sha"] == parent_sha and c["status"] == "ESCALATED":
+            # A child commit cannot route around an escalated cycle (I8).
+            _log(s, "blocked_by_escalation", cycle=cid, sha=sha, parent=parent_sha)
+            _save(s)
+            return c | {"cycle_id": cid, "blocked_by_escalation": True}
         if parent_sha and c["active_sha"] == parent_sha and c["status"] in ("BLOCKED", "OPEN"):
             c["round"] += 1
             c["active_sha"] = sha
@@ -110,6 +127,14 @@ def admit(cycle_id: str, sha: str, receipt_hash: str) -> str | None:
     return None
 
 
+def mark_deadlettered(cycle_id: str, issue_ref: str) -> None:
+    s = _load()
+    if cycle_id in s["cycles"]:
+        s["cycles"][cycle_id]["deadlettered"] = issue_ref
+        _log(s, "deadletter", cycle=cycle_id, issue=issue_ref)
+        _save(s)
+
+
 def stuck_cycles(max_age_s: int) -> list[dict]:
     """Cycles OPEN/BLOCKED with no state change for max_age_s — dead-letter feed."""
     s = _load()
@@ -119,7 +144,8 @@ def stuck_cycles(max_age_s: int) -> list[dict]:
             last[h["cycle"]] = h["t"]
     now = int(time.time())
     return [{"cycle_id": cid, **c} for cid, c in s["cycles"].items()
-            if c["status"] in ("OPEN", "BLOCKED") and now - last.get(cid, now) > max_age_s]
+            if c["status"] in ("OPEN", "BLOCKED") and not c.get("deadlettered")
+            and now - last.get(cid, now) > max_age_s]
 
 
 if __name__ == "__main__":

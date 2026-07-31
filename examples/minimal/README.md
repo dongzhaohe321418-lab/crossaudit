@@ -8,8 +8,9 @@ checks, the Auditor runner, and the report ledger.
 
 1. **Create the repos.** Copy `science-repo/` → `you/demo-science` and
    `audit-repo/` → `you/demo-audit` (both with default branch `main`).
-   Copy the top-level `checks/` directory of the main CrossAudit repository
-   into the root of `you/demo-audit`.
+   Copy the top-level `checks/` AND `controller/` directories of the main CrossAudit
+   repository into the root of `you/demo-audit` (without `controller/` you get
+   `cycle_id="no-controller"`, rounds stuck at 1, and no dead-letter source).
 2. **Point them at each other.** In `demo-science/crossaudit.yml`, set
    `audit.repo: you/demo-audit`.
 3. **Cross-repo token.** Create a fine-grained PAT with `contents: read/write`

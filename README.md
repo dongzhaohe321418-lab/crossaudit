@@ -95,7 +95,7 @@ The reference example is flavoured as computational chemistry, but nothing in th
 
 ## Status
 
-CrossAudit is a working protocol running daily in the author's own computational-chemistry pipeline (Claude-based generator, Codex-based auditor, compute on Alibaba Cloud HPC). The reference implementation here is deliberately minimal; issues and PRs are welcome — see [CONTRIBUTING.md](CONTRIBUTING.md).
+CrossAudit is a working protocol whose first live cycles are running in the author's own computational-chemistry pipeline (Claude-based generator, Codex-based auditor, compute on Alibaba Cloud HPC). The reference implementation here is deliberately minimal; issues and PRs are welcome — see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Citing CrossAudit
 

@@ -7,6 +7,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: crossaudit-${{ github.event.client_payload.science_repo }}
+  cancel-in-progress: false
+
 env:
   SCIENCE_REPO: ${{ github.event.client_payload.science_repo }}
   SHA: ${{ github.event.client_payload.sha }}
@@ -65,6 +69,7 @@ jobs:
         run: |
           EXTRA=""
           [ -z "$AUDITOR_API_KEY" ] && EXTRA="--offline"
+          export MAX_ROUNDS=$(python3 -c "import yaml; print(yaml.safe_load(open('science/crossaudit.yml'))['loop']['max_rounds'])")
           python scripts/run_llm_audit.py \
             --science-root science \
             --science-repo "$SCIENCE_REPO" --sha "$SHA" --round "$ROUND" \

@@ -78,13 +78,19 @@ def main() -> None:
         fail("constitution missing in audit tree")
     const_commit = sh("git", "-C", str(a.audit_root), "log", "-1", "--format=%H",
                       "--", "AUDIT_RULES.md")
-    if const_commit and r["constitution_hash"] not in ("unversioned", const_commit):
+    if r["constitution_hash"] == "unversioned":
+        fail("receipt declares constitution unversioned — the ledger must version AUDIT_RULES.md")
+    if not const_commit:
+        fail("cannot resolve constitution commit in audit tree (HEAD unborn?) — fail closed")
+    if r["constitution_hash"] != const_commit:
         fail(f"constitution commit {const_commit[:12]} != receipt {str(r['constitution_hash'])[:12]}")
     dcl_files = sorted((a.audit_root / "checks").glob("*.py"))
     dcl_digest = hashlib.sha256(b"".join(p.read_bytes() for p in dcl_files)).hexdigest()
     if dcl_digest != r["dcl_source_sha256"]:
         fail("DCL source hash mismatch — check layer changed since audit")
-    report = a.audit_root / "cycles" / r["sha"] / "report.md"
+    if not a.receipt.parent.name.startswith(r["sha"]):
+        fail(f"receipt lives in {a.receipt.parent.name}, not a cycle dir for {r['sha'][:12]}")
+    report = a.receipt.parent / "report.md"
     if not report.is_file() or sha256_file(report) != r["report_sha256"]:
         fail("report blob hash mismatch or report missing")
     if r["verdict"] != "PASS":

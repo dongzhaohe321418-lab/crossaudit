@@ -22,7 +22,7 @@ This document is the normative description of the protocol. The READMEs summaris
 
 ## 3. Protocol invariants
 
-These eight invariants define CrossAudit (I7–I8 were adopted in revision 1, following a cross-vendor audit of this repository — see `audits/`). An implementation that breaks one is not CrossAudit.
+These eight invariants define CrossAudit (I7–I8 were adopted in revision 1, following a cross-vendor audit of this repository — see `audits/`). An implementation conforms fully only when all eight hold; partial implementations (including the reference example and the deployed variant) must state which invariants they enforce and which they merely target.
 
 **I1 — Heterogeneity.** The Auditor's model family/vendor differs from the Generator's. Rationale: LLM evaluators favour outputs resembling their own (self-preference bias), and same-pipeline models share failure modes; cross-vendor pairing decorrelates blind spots. It does not eliminate them — see I4 and the threat model.
 
