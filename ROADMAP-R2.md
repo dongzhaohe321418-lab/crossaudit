@@ -62,6 +62,21 @@ disputed-and-withdrawn), with enactment reserved to the human principal. Invaria
 freeze within a cycle (I7 pins the version) and move only between cycles, preserving I5
 termination.
 
+## R4 candidate: distribution and interface
+
+**Packaging.** `pip install crossaudit`: controller, receipt verifier, DCL runner and
+scaffolding (`crossaudit init` / `audit` / `verify --admit`) as a release-versioned CLI.
+Receipts extended to record the verifier's package version and distribution hash — vendored
+copies drift, and a receipt that does not pin the machinery that admitted on its basis is
+bound one layer short of I7's intent. Field check packs as extras (`crossaudit[compchem]`).
+New trust surface: package supply chain (signed releases, hash-pinned installs).
+
+**Supervision console.** A UI over the ledger: per-increment cycle timelines, advisory
+backlog by rule and hit rate, escalation inbox (round history, diffs, dispute grounds),
+ratchet telemetry. Hard rule: the console writes nothing of its own — every action
+materialises as a commit or issue through the agents' own authenticated paths (I2);
+a private store would be a second, unauditable ledger.
+
 ## Post-detread status (third audit, wiring fixes)
 Fixed: --admit live in router (state machine on execution path); verifier report path
 follows the receipt's own cycle dir (dispute rounds verify); anchor checkout births HEAD +
