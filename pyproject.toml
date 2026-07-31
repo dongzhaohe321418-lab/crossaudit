@@ -50,5 +50,4 @@ packages = []
 Repository = "https://github.com/dongzhaohe321418-lab/crossaudit"
 
 [tool.pytest.ini_options]
-# tests/ arrives with R5 (checks/ and controller/ are still untested).
-testpaths = ["experiment/v3/partC/seed_scripts"]
+testpaths = ["controller/tests", "experiment/v3/partC/seed_scripts"]
