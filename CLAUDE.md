@@ -44,11 +44,16 @@ workshop submission scaffolds (`paper/submissions/`).
 
 ## Current queue (details in paper/QUALITY-BACKLOG.md)
 
-Unblocked, in order: B5 chance-floor column → C3 keywords → A2+B7 real-loop
-numbers + trace figure into §4.2 → B4 invariants card → B6 termination
-mini-figure → D2 9-page workshop condensation. Key-gated: A1/A5 ablation arms
-(RUNBOOK stages 0–2), then A3 reframe. Operator-only: key escrow choice,
-blinded adjudication, comma-splice read-through.
+Unblocked, in order: C3 keywords → A2+B7 real-loop numbers + trace figure
+into §4.2 → B4 invariants card → B6 termination mini-figure → D2 9-page
+workshop condensation. (B5 done 2026-07-31, values from
+experiment/results/NULLCHECK.json.) Key-gated: A1/A5 ablation arms (RUNBOOK
+stages 0–2), then A3 reframe. Operator-only: key escrow choice, blinded
+adjudication, comma-splice read-through.
+
+Sixth-audit hygiene items (improvements/04): R1–R11 all closed as of
+2026-07-31; CI (.github/workflows/ci.yml) now guards the paper build, the
+style freeze, the test suite, and the Part C verdicts on every push.
 
 ## Credentials
 

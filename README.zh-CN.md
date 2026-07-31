@@ -79,6 +79,16 @@ you/demo-audit       ← 宪法 + 审计工作流 + 报告存放于此
 
 参考示例以计算化学为背景，但协议本身与化学无关。只要满足：(a) 科研产出以离散增量落入仓库；(b) "正确"的一部分可以写成规则——CrossAudit 就适用。换掉确定性校验和宪法的领域章节即可，环路、分级、上报策略原样保留。指引见 [`docs/architecture.md#adapting`](docs/architecture.md#adapting)。
 
+## 仓库结构
+
+```text
+├── docs/                  架构说明、规则撰写规范、FAQ、威胁模型
+├── templates/             宪法与审计报告模板
+├── checks/                确定性校验运行器 + 示例校验
+├── examples/minimal/      fork 即用的双仓演示（GitHub Actions）
+└── diagrams/              架构图（Mermaid 源文件 + SVG/PNG）
+```
+
 ## 项目状态
 
 CrossAudit 是一套已在作者本人计算化学管线中每日运转的工作协议（Claude 系生成者、Codex 系审计者、算力在阿里云超算）。本仓库的参考实现刻意保持最小化；欢迎 Issue 与 PR——见 [CONTRIBUTING.md](CONTRIBUTING.md)。
@@ -90,3 +100,14 @@ Position paper 撰写中（arXiv 链接将更新于此）。在此之前请按 [
 ## 许可证
 
 [MIT](LICENSE) © 2026 Zhaohe Dong
+
+## 部署注记：让准入真正生效
+
+审计侧会在每个被审计的科学提交上发布 commit status `crossaudit/admission`。要把
+"通知"升级为**强制执行**：在科学仓库的受保护分支上启用分支保护，并把
+`crossaudit/admission` 设为必需状态检查；生产/发表类任务还应通过
+`controller/verify_receipt.py --admit` 核验回执。请使用两个相互独立的
+fine-grained token：`SCIENCE_TO_AUDIT_TOKEN`（向审计仓库派发）与
+`AUDIT_TO_SCIENCE_TOKEN`（回写状态与派发）。旧式单一
+`CROSSAUDIT_DISPATCH_TOKEN` 仍可用，但它让凭证跨越了信任边界——见
+`ROADMAP-R2.md` §8。
