@@ -230,7 +230,29 @@ The Constitution is the protocol's quality ceiling: the Auditor's blocking power
 
 \subsection{Rounds, disputes, termination}\label{sec:rounds}
 
-Round $k$ for an increment: the Auditor publishes report $R_k$ with a verdict. On \texttt{BLOCKED}, the Generator either \emph{revises} (a new commit, opening round $k{+}1$) or \emph{disputes} specific findings by rule ID, with grounds. A disputed finding returns to the Auditor once: it is withdrawn with a logged reason, or upheld. An upheld dispute at the round bound escalates. Disputes exist because the Auditor is fallible in both directions, a false-positive \texttt{BLOCKER}, silently obeyed, degrades the science as surely as a false negative, and the one-shot rule prevents the dispute channel from becoming the oscillation it exists to control. Termination is structural: each increment ends in \texttt{PASS} or in human hands after at most \texttt{max\_rounds} exchanges.
+Round $k$ for an increment: the Auditor publishes report $R_k$ with a verdict. On \texttt{BLOCKED}, the Generator either \emph{revises} (a new commit, opening round $k{+}1$) or \emph{disputes} specific findings by rule ID, with grounds. A disputed finding returns to the Auditor once: it is withdrawn with a logged reason, or upheld. An upheld dispute at the round bound escalates. Disputes exist because the Auditor is fallible in both directions, a false-positive \texttt{BLOCKER}, silently obeyed, degrades the science as surely as a false negative, and the one-shot rule prevents the dispute channel from becoming the oscillation it exists to control. Termination is structural: each increment ends in \texttt{PASS} or in human hands after at most \texttt{max\_rounds} exchanges. Figure~\ref{fig:termination} draws the walk.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[
+  font=\small, >=Stealth, line width=0.7pt,
+  st/.style={draw, rounded corners=2.5pt, minimum height=7.5mm, inner xsep=3.2mm, thick},
+  lab/.style={font=\scriptsize, text=caslate, align=center},
+  edge/.style={->, draw=caslate}]
+  \node[st, draw=caslate, fill=cabgslate] (open) {\texttt{OPEN}$_{k}$};
+  \node[st, draw=cared, fill=cabgred, right=27mm of open] (blocked) {\texttt{BLOCKED}$_{k}$};
+  \node[st, draw=cagreen, fill=cabggreen, above=11mm of blocked] (passed) {\texttt{PASSED}};
+  \node[st, draw=caorange, fill=cabgorange, right=27mm of blocked] (esc) {\texttt{ESCALATED}};
+  \draw[edge, draw=cagreen] (open) |- node[lab, pos=0.75, above] {report $R_k$: \texttt{PASS}} (passed);
+  \draw[edge, draw=cared] (open) -- node[lab, above] {report $R_k$:\\\texttt{BLOCKER} found} (blocked);
+  \draw[edge] (blocked.south) .. controls +(-12mm,-10mm) and +(12mm,-10mm) .. node[lab, below=1mm] {revise: new commit, round $k{+}1$, while $k < \texttt{max\_rounds}$ (default 3)\\dispute by rule ID, one shot: withdrawn or upheld} (open.south);
+  \draw[edge, draw=caorange] (blocked) -- node[lab, above] {$k = \texttt{max\_rounds}$,\\or dispute upheld\\at the bound} (esc);
+  \node[lab, right=2.5mm of passed] {admission via receipt (\invariant{7}--\invariant{8})};
+  \node[lab, below=2.5mm of esc] {human principal};
+\end{tikzpicture}
+\caption{Termination as a walk on four states. Every path from \texttt{OPEN} ends in \texttt{PASSED} (admission gated by receipt) or \texttt{ESCALATED} (a human decides); the only cycle in the graph is the revision loop, and the round bound cuts it after \texttt{max\_rounds} exchanges. The dispute edge re-enters the same loop rather than adding one: a finding may return to the Auditor once.}
+\label{fig:termination}
+\end{figure}
 
 % ---------- 4 Implementation ----------
 \section{Reference implementation and deployment}\label{sec:implementation}

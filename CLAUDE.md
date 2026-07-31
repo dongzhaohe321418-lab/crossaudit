@@ -46,12 +46,12 @@ workshop submission scaffolds (`paper/submissions/`).
 
 ## Current queue (details in paper/QUALITY-BACKLOG.md)
 
-Unblocked, in order: C3 keywords → A2+B7 real-loop numbers + trace figure
-into §4.2 → B4 invariants card → B6 termination mini-figure → D2 9-page
-workshop condensation. (B5 done 2026-07-31, values from
-experiment/results/NULLCHECK.json.) Key-gated: A1/A5 ablation arms (RUNBOOK
-stages 0–2), then A3 reframe. Operator-only: key escrow choice, blinded
-adjudication, comma-splice read-through.
+Unblocked, next: D2 9-page workshop condensation (B5/C3/A2+B7/B4/B6 all done
+2026-07-31; the paper is now 15 pp with Table 2 invariants card and Figure 2
+termination walk, and the ` --- ` count is 9). Key-gated: A1/A5 ablation arms
+(RUNBOOK stages 0–2), then A3 reframe + C2 + D3. Operator-only: key escrow
+choice, blinded adjudication, comma-splice read-through (C1), A4 decision,
+neurips_2026.sty download (D5).
 
 Sixth-audit hygiene items (improvements/04): R1–R11 all closed as of
 2026-07-31; CI (.github/workflows/ci.yml) now guards the paper build, the
