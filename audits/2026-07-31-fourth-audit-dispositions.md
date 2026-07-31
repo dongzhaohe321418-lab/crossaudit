@@ -15,3 +15,11 @@ Citation nits fixed (szymanski2023 title; gottweis2025 retitle note). EIC sugges
 (recentre empirics on the self-audit chain, demote synthetic trial to feasibility)
 adopted directionally in the abstract; full restructure queued for the major revision.
 Reviewer verdict "Major Revision — evidence layer, rerun not rewrite": accepted.
+
+APPENDED 2026-07-31 (sixth audit, R1): the floors in item 1 were computed by an
+implementation that never entered the ledger, so the numbers above stood on an
+unrecoverable artefact. `experiment/score_nullcheck.py` now exists and
+regenerates them: 4.8/22.4/31.8 (2000 shuffles, seed 20260731), κ .813
+same-family vs .677 cross-vendor. The figures above are superseded by those,
+and are left unedited as the record of what was claimed at the time. See
+`audits/2026-07-31-sixth-audit-dispositions.md`.

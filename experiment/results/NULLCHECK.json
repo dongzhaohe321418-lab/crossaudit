@@ -1,0 +1,127 @@
+{
+ "null_model": "increment-to-defect map shuffled; each arm's outputs, output volume and rule-citation habits held fixed",
+ "shuffles": 2000,
+ "seed": 20260731,
+ "n_defects": 43,
+ "n_increments": 30,
+ "arms": {
+  "frozen": {
+   "anthropic-subagent": {
+    "n_findings": 63,
+    "lenient": {
+     "observed": 38,
+     "floor": 22.4,
+     "sd": 3.1,
+     "p95": 28,
+     "p_value": 0.0,
+     "chance_corrected": 0.76
+    },
+    "strict": {
+     "observed": 38,
+     "floor": 16.3,
+     "sd": 2.8,
+     "p95": 21,
+     "p_value": 0.0,
+     "chance_corrected": 0.81
+    }
+   },
+   "dcl": {
+    "n_findings": 17,
+    "lenient": {
+     "observed": 17,
+     "floor": 4.8,
+     "sd": 1.6,
+     "p95": 8,
+     "p_value": 0.0,
+     "chance_corrected": 0.32
+    },
+    "strict": {
+     "observed": 17,
+     "floor": 4.2,
+     "sd": 1.6,
+     "p95": 7,
+     "p_value": 0.0,
+     "chance_corrected": 0.33
+    }
+   },
+   "openai": {
+    "n_findings": 113,
+    "lenient": {
+     "observed": 41,
+     "floor": 31.8,
+     "sd": 2.5,
+     "p95": 36,
+     "p_value": 0.0,
+     "chance_corrected": 0.82
+    },
+    "strict": {
+     "observed": 37,
+     "floor": 24.4,
+     "sd": 2.5,
+     "p95": 29,
+     "p_value": 0.0,
+     "chance_corrected": 0.68
+    }
+   }
+  },
+  "adjudicated": {
+   "anthropic-subagent": {
+    "n_findings": 63,
+    "lenient": {
+     "observed": 43,
+     "floor": 24.7,
+     "sd": 3.1,
+     "p95": 30,
+     "p_value": 0.0,
+     "chance_corrected": 1.0
+    },
+    "strict": {
+     "observed": 43,
+     "floor": 17.5,
+     "sd": 2.9,
+     "p95": 22,
+     "p_value": 0.0,
+     "chance_corrected": 1.0
+    }
+   },
+   "dcl": {
+    "n_findings": 17,
+    "lenient": {
+     "observed": 19,
+     "floor": 5.3,
+     "sd": 1.8,
+     "p95": 8,
+     "p_value": 0.0,
+     "chance_corrected": 0.36
+    },
+    "strict": {
+     "observed": 17,
+     "floor": 4.2,
+     "sd": 1.6,
+     "p95": 7,
+     "p_value": 0.0,
+     "chance_corrected": 0.33
+    }
+   },
+   "openai": {
+    "n_findings": 113,
+    "lenient": {
+     "observed": 41,
+     "floor": 33.0,
+     "sd": 2.4,
+     "p95": 37,
+     "p_value": 0.0,
+     "chance_corrected": 0.8
+    },
+    "strict": {
+     "observed": 37,
+     "floor": 24.5,
+     "sd": 2.5,
+     "p95": 29,
+     "p_value": 0.0,
+     "chance_corrected": 0.68
+    }
+   }
+  }
+ }
+}

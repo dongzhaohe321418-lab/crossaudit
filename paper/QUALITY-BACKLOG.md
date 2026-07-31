@@ -34,7 +34,11 @@
 - ✅ B3. Graphical abstract（论文图同款视觉标准）+ Figure 1 独立导出
 - ⬜ **B4. 不变量参考卡**：I1–I8 × 一句话保证 × 执行机制 × 实现状态表，
   放 §3.2，同时替掉 §4.1 部分重复叙述。执行：Claude。
-- ⬜ **B5. §4.3 结果表加 permutation chance-floor 列**（4.7/22.4/31.9 of 43）。
+- ⬜ **B5. §4.3 结果表加 permutation chance-floor 列**（4.8/22.4/31.8 of 43，
+  frozen map、lenient 层；strict 层地板为 4.2/16.3/24.4）。
+  **门槛：gated on R1** —— 数字必须取自 `experiment/results/NULLCHECK.json`
+  的重算产物，不得再引用旧值 4.7/22.4/31.9（其生成实现从未入库，见
+  `improvements/04-repo-hygiene-and-reproducibility.md` R1）。
   执行：Claude，10 分钟。
 - ⬜ **B6. §3.4 终止状态机小图**（OPEN→BLOCKED→revise/dispute→PASSED/ESCALATED，
   round ≤ 3）。执行：Claude。
