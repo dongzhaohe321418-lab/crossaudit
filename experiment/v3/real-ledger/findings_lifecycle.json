@@ -1,0 +1,220 @@
+[
+ {
+  "finding_id": "F-001",
+  "severity": "HIGH",
+  "first_raised": "CYCLE-000001",
+  "raised_in": [
+   "CYCLE-000001"
+  ],
+  "closed_confirmed_in": "CYCLE-000002",
+  "rules_cited": [
+   "R-PRO-004"
+  ],
+  "fix_commits": [
+   "bfece650948a"
+  ]
+ },
+ {
+  "finding_id": "F-002",
+  "severity": "CRITICAL",
+  "first_raised": "CYCLE-000001",
+  "raised_in": [
+   "CYCLE-000001"
+  ],
+  "closed_confirmed_in": "CYCLE-000002",
+  "rules_cited": [
+   "Gate 2",
+   "R-EVD-001"
+  ]
+ },
+ {
+  "finding_id": "F-003",
+  "severity": "CRITICAL",
+  "first_raised": "CYCLE-000001",
+  "raised_in": [
+   "CYCLE-000001"
+  ],
+  "closed_confirmed_in": "CYCLE-000002",
+  "rules_cited": [
+   "Gate 2",
+   "R-EVD-002"
+  ]
+ },
+ {
+  "finding_id": "F-004",
+  "severity": "HIGH",
+  "first_raised": "CYCLE-000001",
+  "raised_in": [
+   "CYCLE-000001"
+  ],
+  "closed_confirmed_in": "CYCLE-000002",
+  "rules_cited": [
+   "Gate 11",
+   "R-STA-002"
+  ]
+ },
+ {
+  "finding_id": "F-005",
+  "severity": "LOW",
+  "first_raised": "CYCLE-000001",
+  "raised_in": [
+   "CYCLE-000001",
+   "CYCLE-000002"
+  ],
+  "closed_confirmed_in": null,
+  "rules_cited": [
+   "Gate 11",
+   "R-EVD-002"
+  ],
+  "fix_commits": [
+   "ddaca3fc36e3"
+  ]
+ },
+ {
+  "finding_id": "F-006",
+  "severity": "HIGH",
+  "first_raised": "CYCLE-000001",
+  "raised_in": [
+   "CYCLE-000001",
+   "CYCLE-000002",
+   "CYCLE-000004"
+  ],
+  "closed_confirmed_in": "CYCLE-000005",
+  "rules_cited": [
+   "Gate 2",
+   "R-EVD-006"
+  ],
+  "fix_commits": [
+   "b7de47840a74",
+   "ddaca3fc36e3"
+  ]
+ },
+ {
+  "finding_id": "F-007",
+  "severity": "MEDIUM",
+  "first_raised": "CYCLE-000001",
+  "raised_in": [
+   "CYCLE-000001"
+  ],
+  "closed_confirmed_in": "CYCLE-000002",
+  "rules_cited": [
+   "R-NAV-003"
+  ],
+  "fix_commits": [
+   "bfece650948a"
+  ]
+ },
+ {
+  "finding_id": "F-008",
+  "severity": "HIGH",
+  "first_raised": "CYCLE-000002",
+  "raised_in": [
+   "CYCLE-000002",
+   "CYCLE-000004"
+  ],
+  "closed_confirmed_in": "CYCLE-000005",
+  "rules_cited": [
+   "Gate 11",
+   "R-COR-001"
+  ],
+  "fix_commits": [
+   "b7de47840a74",
+   "ddaca3fc36e3"
+  ]
+ },
+ {
+  "finding_id": "F-009",
+  "severity": "MEDIUM",
+  "first_raised": "CYCLE-000002",
+  "raised_in": [
+   "CYCLE-000002"
+  ],
+  "closed_confirmed_in": null,
+  "rules_cited": [
+   "R-GRD-001"
+  ],
+  "fix_commits": [
+   "ddaca3fc36e3"
+  ]
+ },
+ {
+  "finding_id": "F-011",
+  "severity": "HIGH",
+  "first_raised": "CYCLE-000004",
+  "raised_in": [
+   "CYCLE-000004"
+  ],
+  "closed_confirmed_in": "CYCLE-000005",
+  "rules_cited": [
+   "Gate 11",
+   "R-STA-002"
+  ],
+  "fix_commits": [
+   "b7de47840a74"
+  ]
+ },
+ {
+  "finding_id": "F-012",
+  "severity": "HIGH",
+  "first_raised": "CYCLE-000005",
+  "raised_in": [
+   "CYCLE-000005"
+  ],
+  "closed_confirmed_in": "CYCLE-000006",
+  "rules_cited": [
+   "Gate 2",
+   "R-EVD-003"
+  ],
+  "fix_commits": [
+   "4aed10a97d48"
+  ]
+ },
+ {
+  "finding_id": "F-013",
+  "severity": "HIGH",
+  "first_raised": "CYCLE-000005",
+  "raised_in": [
+   "CYCLE-000005"
+  ],
+  "closed_confirmed_in": "CYCLE-000006",
+  "rules_cited": [
+   "Gate 11",
+   "R-STA-002"
+  ],
+  "fix_commits": [
+   "4aed10a97d48"
+  ]
+ },
+ {
+  "finding_id": "F-014",
+  "severity": "HIGH",
+  "first_raised": "CYCLE-000006",
+  "raised_in": [
+   "CYCLE-000006"
+  ],
+  "closed_confirmed_in": "CYCLE-000007",
+  "rules_cited": [
+   "Gate 2",
+   "R-EVD-003"
+  ],
+  "fix_commits": [
+   "4ccb0cd6c4fa"
+  ]
+ },
+ {
+  "finding_id": "F-015",
+  "severity": "MEDIUM",
+  "first_raised": "CYCLE-000007",
+  "raised_in": [
+   "CYCLE-000007"
+  ],
+  "closed_confirmed_in": "CYCLE-000008",
+  "rules_cited": [
+   "Gate 11",
+   "R-NAV-003"
+  ],
+  "fix_commits": [
+   "af0dc58713b9"
+  ]
+ }
+]
