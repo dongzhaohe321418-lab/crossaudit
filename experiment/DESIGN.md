@@ -62,6 +62,12 @@ secrets `ANTHROPIC_API_KEY` / `OPENAI_API_KEY`, and commits raw outputs to
 `experiment/RUN_TRIGGER`. Scoring (`score.py`) runs locally/CI after both arms land and
 writes `experiment/results/SCORECARD.md`.
 
+> Disarmed 2026-07-31 (sixth audit, R6/R11): the trial is finished and its results are
+> frozen, so the workflow moved to `.github/workflows-archive/experiment.yml` (inert:
+> GitHub runs only `.github/workflows/`) and `experiment/RUN_TRIGGER` was deleted. The
+> paragraph above stands as the record of how the committed results were produced; see
+> the archive README before any rerun.
+
 ## Amendment 1 (2026-07-30, pre-execution)
 
 API credentials are not yet available. Execution order amended, committed BEFORE any arm runs:
