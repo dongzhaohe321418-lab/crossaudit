@@ -1,0 +1,54 @@
+# Environment manifest for the reference implementation and the experiments.
+# Its purpose is reproduction, not distribution: publishing CrossAudit to PyPI is
+# a Revision-2 item (README "Status", paper section 5). Until then, install from
+# a clone.
+#
+#   pip install -e .                 # checks/ and controller/
+#   pip install -e '.[partC]'        # + the Part C deterministic channels
+#   pip install -c constraints.txt -e '.[partC]'   # exact versions of record
+#
+# The Part C channels refuse to score without their tools (finding R2), so the
+# extras are load-bearing, not a convenience.
+
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "crossaudit"
+version = "0.1.0"
+description = "A git-native, cross-vendor audit protocol for agentic science"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { file = "LICENSE" }
+authors = [
+  { name = "Zhaohe Dong", email = "zd314@cam.ac.uk" },
+  { name = "Yuhao Chen", email = "ychen2546@wisc.edu" },
+]
+dependencies = [
+  "PyYAML>=6.0",          # checks/check_schema.py
+]
+
+[project.optional-dependencies]
+# Part C deterministic channels, in cost order: lint -> type -> tests.
+partC = [
+  "pyflakes>=3.0",
+  "mypy>=1.0",
+  "pytest>=7.0",
+]
+dev = [
+  "pytest>=7.0",
+]
+
+[tool.setuptools]
+# The scripts are run in place, by path, as the paper and the RUNBOOK describe.
+# Nothing is importable as a package yet, so nothing is installed as one; the
+# install exists to resolve the dependency set.
+packages = []
+
+[project.urls]
+Repository = "https://github.com/dongzhaohe321418-lab/crossaudit"
+
+[tool.pytest.ini_options]
+# tests/ arrives with R5 (checks/ and controller/ are still untested).
+testpaths = ["experiment/v3/partC/seed_scripts"]
