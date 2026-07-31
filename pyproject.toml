@@ -19,7 +19,9 @@ name = "crossaudit"
 version = "0.1.0"
 description = "A git-native, cross-vendor audit protocol for agentic science"
 readme = "README.md"
-requires-python = ">=3.9"
+# >=3.10 per installer-design Amendment 1: 3.9 is EOL (2025-10); runtime dict
+# merge already needs >=3.9, annotations are future-imported either way
+requires-python = ">=3.10"
 license = { file = "LICENSE" }
 authors = [
   { name = "Zhaohe Dong", email = "zd314@cam.ac.uk" },

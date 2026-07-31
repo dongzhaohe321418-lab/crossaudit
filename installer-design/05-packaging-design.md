@@ -1,6 +1,12 @@
 # 05 — Packaging: `pip install crossaudit` | 打包设计
 
-**Status 状态**: design frozen 2026-08-01, implementation not started
+> **Superseded in part by AMENDMENT 1 (2026-08-01, end of file): the v2 text
+> there is the operative contract.** The v1 body below stands unedited as the
+> record of what was first frozen. （本文下方正文为 v1 首次冻结记录，操作
+> 合同以文末修正案一之 v2 全文为准。）
+
+**Status 状态**: design v1 frozen 2026-08-01 morning; v2 adopted via
+Amendment 1 same day, implementation not started
 （设计冻结，实现未启动）. Merged from the cloud session's framework (layout,
 constraints 1–5, CLI verbs, release engineering, roadmap skeleton) and the
 local session's review (constraints 6–7, the provider layer, the GitHub
@@ -210,3 +216,102 @@ PyPI account + Trusted Publisher registration (one-time, needs your login);
 the name `crossaudit` is unclaimed as of 2026-08-01 — 0.1.0 to TestPyPI then
 PyPI claims it; GitHub OAuth device-flow needs no app registration (uses
 GitHub's public client flow via gh).
+
+---
+
+## AMENDMENT 1 (2026-08-01) — v2 adopted, two boundary resolutions, operator product directive
+
+**EN summary.** A same-day external review found seven P0 trust gaps in the v1
+text above and supplied a v2 one-pager; the cloud session independently
+reviewed v1 (four P1s, one P1.5, six P2s). All P0/P1 findings are accepted;
+v2 below is the operative contract, with the cloud deltas folded in. Boundary
+resolutions: milestone 0.2 is audit-only (one auditor key suffices), but per
+the operator's product directive the full two-key loop with a controlled
+Generator adapter is the product north star, delivered at a named milestone
+rather than promised early; the enforced GitHub tier requires a user-owned
+GitHub App plus an independent, persistent, atomic controller. v1 stands
+unedited above as the first-freeze record.
+
+### 评审记录与核验
+
+同日两份评审：
+
+1. **外部严谨复核**（P0×7、P1×7、附 v2 一页稿）。P0 全部接受。抽验属实：
+   `pyproject.toml` 现为 `packages = []` 的环境清单，不可发布；参考实现确为
+   push-to-main 后置审计（`on-push-trigger-audit.yml`）；GitHub status 确可被
+   任意具写权限者同名伪造；wheel 哈希无法从解压后的安装自证。
+2. **云端会话对 v1 的评审**（P1×4、P1.5×1、P2×6，结论"通过"）。评审对象为
+   v1，时序上早于 v2 到达；其全部条目与 v2 兼容，并入见下文增量清单。
+
+一处核验纠偏：复核称 `str | None` 语法需 Python 3.10 —— 实情是
+`controller/state.py` 带 `from __future__ import annotations`，注解层面 3.9
+可运行；但 `c | {...}` dict 合并本就要求 ≥3.9，且 3.9 已于 2025-10 EOL，故
+`requires-python >= 3.10` 照采，理由记为版本生命周期而非语法必需。
+
+### 两项边界决议
+
+**决议一（含 2026-08-01 操作者产品指令）。** 协议事实不变：CrossAudit 是
+审计器与控制器，Generator 是用户自己的研究 agent，部署中其厂商在
+`crossaudit.yml` 里申明以供 I1 断言。因此**里程碑 0.2 为 audit-only：一份
+Constitution + 一个 Auditor key 即可开始审计**，`CROSSAUDIT_GENERATOR_KEY`
+不属于 0.2 的环境变量契约。但操作者在裁定期间下达产品指令：最终产品形态为
+"一份总体审计 markdown + 两个 API key + 向导自动创建双仓 = 稳定运行的完整
+循环"。二者的合并方式是**排序而非取舍**：
+
+- 0.3 的向导从第一天起就收两个 key（都写成加密 secrets），并明说当前只有
+  auditor key 在用；
+- **受控 Generator adapter 是 0.5 的具名交付物**（受版本控制的 adapter 契约
+  + 独立验收 gate），到位后"两 key 完整循环"承诺才生效——在那之前所有文案
+  不得提前宣称。P0-1 的红线（不能把尚不存在的 Generator 功能伪装成输入契约）
+  由此满足，产品北极星也不被砍掉。
+
+**决议二。** enforced 档接受"用户自有 GitHub App + 独立持久原子 controller"
+为前提。0.3 交付 notification-only 与 gated-permissive 两档、doctor 实测
+探针与三态措辞；enforced-app-bound 须通过 BLOCKED-不可-merge /
+PASS-可-merge 实测烟测后方可声称，目标 0.5–1.0。前提不满足时，产品措辞
+封顶为 gated-permissive。操作者"loop 一定要稳定"的要求落点即持久原子
+controller 后端——它同时是稳定性与 admission 语义的地基。
+
+### v2 之上的增量（云端 P1/P1.5/P2 并入）
+
+1. **跨档准入策略**：`crossaudit.yml` 增 `isolation.minimum`；
+   `verify --admit` 拒绝隔离证据弱于部署最低档的回执。回执在 v2 的五维
+   操作证据（execution/credential/provider/provisioner/admission）之上导出
+   论文 I1 术语的三维布尔 `{parametric, contextual, permissive}`；向导单人
+   开通即 `permissive: false`。
+2. 回执字段清单补 `receipt_schema: 2` 字段本身。
+3. `CROSSAUDIT_GENERATOR_KEY` 自 0.x 契约移除，随 0.5 的 adapter 契约回归
+   （决议一）。
+4. 测试迁移措辞精确化：**40** 个 controller/verifier/validator 测试迁入
+   `tests/`；partC 种子测试留在冻结 harness，包内副本另计；CI 与第六轮
+   dispositions 中的引用同步更新。
+5. （P1.5）fine-grained PAT 新建页的参数预填支持有限，0.3 实现时先实测再
+   收窄措辞，不承诺 GitHub 未提供的表单。
+6. （P2 批量）`requires-python >= 3.10`（随本修正案提交生效）；CI 矩阵加
+   macOS/Windows；兼容垫片的死亡条件：不早于 1.0，且拆除须随论文修订版
+   同步更新引用；`--local` 档账本落点 `.crossaudit/cycles/`；插件必须声明
+   `dcl_api_version`，错代 fail-closed；TestPyPI 与 PyPI 是**两次**独立的
+   Trusted Publisher 注册。
+
+### 取代关系
+
+v1 正文的 §1 产品面、§2–§9 全部由下文 v2 取代；v1 的约束 6/7 在 v2 中重述
+并给出可验收定义。v1 全文一字未改，保留为首次冻结记录。
+
+### 路线图（合并后）
+
+| 版本 | 交付 | 不可跳过 gate |
+|---|---|---|
+| 0.1.0 | src 迁移、CLI（init --local/check/verify/doctor）、显式 state store、脚本级垫片 | wheel/sdist/source 三路径安装、Python 矩阵、无网络 import、旧路径与 receipt 语义兼容 |
+| 0.2.0 | providers、audit/status/dispute、receipt v2 自指认 | audit-only 承诺兑现：一 markdown + 一 auditor key = 本地环跑通；provider fixtures、egress/超时/密钥红删、持久单次消费 controller |
+| 0.3.0 | gh 为硬前提的 GitHub bootstrap（plan → --apply）、双 key 收纳、mirror | PR/merge-queue head-SHA gate、callback 仅定位、BLOCKED/PASS 合并烟测、可恢复 bootstrap、三态措辞如实 |
+| 0.4.0 | check 插件组 + 首方包 | allowlist、子进程隔离（无 key 无网络）、插件 lock/digest 入回执 |
+| 0.5.0 | **受控 Generator adapter** → 两 key 完整循环承诺生效；enforced-app-bound 若 App+controller 就绪 | adapter 契约版本化 + 独立验收；enforced 烟测 |
+| 1.0 | 稳定 schema/API | v3 实验落地、独立安全复核、真实部署 gate 证据、支持期承诺 |
+
+### v2 全文（操作合同，as received 2026-08-01）
+
+见本次修正案提交中随附的 `05a-packaging-v2.md`——v2 一页稿逐字保存，含
+产品契约三档表、七条可验收约束、CLI 契约与退出码、receipt v2 与 controller
+transaction 落账顺序、GitHub 三态、打包/插件/发布工程、逐版本 gate。该文件
+与本修正案同权：v2 全文为合同正文，本修正案为其决议与增量记录。

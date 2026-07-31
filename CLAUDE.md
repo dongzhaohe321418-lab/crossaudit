@@ -46,11 +46,17 @@ workshop submission scaffolds (`paper/submissions/`).
 
 ## Current queue (details in paper/QUALITY-BACKLOG.md)
 
-New lane 2026-08-01 (operator): **packaging** — `pip install crossaudit`.
-Design frozen in improvements/05-packaging-design.md (seven constraints,
-src-layout with shims for paper-cited paths, no-SDK provider layer, honest
-isolation tiering, GitHub wizard in 0.3.0). Implementation starts at v0.1.0
-per its roadmap; PyPI name verified unclaimed 2026-08-01.
+New lane 2026-08-01 (operator): **installer/packaging**, isolated in
+`installer-design/` (operator directive; never mixes with the research
+record). Design v1 = 05 + Amendment 1 + 05a there: seven testable
+constraints, audit-only 0.2 (one auditor key), wizard 0.3 (gh hard prereq,
+plan/--apply, three-state admission honesty), Generator adapter 0.5 (then
+the two-key full-loop promise switches on), enforced admission only via
+user-owned GitHub App + persistent atomic controller. No PyPI account yet:
+distribution is GitHub-direct (tag-pinned git+https, release wheels +
+hashes); PyPI deferred. UI and agent-dialog surfaces kept open under the
+console iron rule (front-end writes nothing of its own). requires-python
+moved to >=3.10.
 
 Lane change 2026-07-31 (operator): **arXiv first; NeurIPS formatting (D2–D5)
 deferred**, scaffolds under paper/submissions/ untouched. arXiv materials are
