@@ -19,6 +19,12 @@
   合成试验降级为可行性附录。决策点在你：主论文改不改由你定；
   workshop 两版按各自 CFP 口味取舍（Academia 版建议采纳）。
 
+- 🔒 **A5. Part C 代码审计消融（变异测试法）** —— 设计已冻结：
+  registration AMENDMENT 2；规则模板 `templates/AUDIT_RULES_CODE.md`。
+  ground truth 来自密封的变异日志；测量目标 = 逃过全部确定性工具、
+  仅评审可捕获的语义 bug 份额（"歧义"的量化）。阻塞同 A1（keys+托管）。
+  预注册方向性假设：隔离效应在代码上大于数据。
+
 ## B. 图与表
 
 - ✅ B1. Figure 1 重画（顺时针环、白话标注、300dpi 逐区查重叠）

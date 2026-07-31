@@ -138,3 +138,53 @@ downstream unchallenged. L1/L2 remain impossible on real data (generator
 sessions were never committed; evidence for I2). L4 = B5, L4b runs if the
 same-vendor second model is available under the escrowed keys, L5 = B6 and
 the historical reports themselves.
+
+## AMENDMENT 2 (2026-07-31, operator-proposed) — Part C: auditing code, not just data
+
+Rationale. Data defects corrupt one increment; a defective analysis script
+corrupts every increment it touches. Code is also where the deterministic
+layer is weakest and reviewer judgment matters most — precisely the regime
+where same-source bias is most dangerous, since vendors share training
+exposure to the same public code corpus and its idiomatic bugs.
+
+**Corpus (mutation-testing methodology).** Correct, tested analysis scripts
+in the reference-increment style (unit conversion, convergence extraction,
+tabulation) are mutated by a deterministic mutator: dropped unit conversions,
+inverted convergence predicates, off-by-one column selections, silenced
+exceptions, boundary-condition flips. Ground truth = the mutation log, sealed
+under the same third-party rule as Part A. Each mutant is pre-tagged with its
+cheapest catching channel, which for code has a finer gradation:
+
+| Channel | Instrument | Example mutant class |
+|---|---|---|
+| syntactic | linter | unused/shadowed variable |
+| type-level | type checker | unit-carrying type dropped |
+| test-killable | existing test suite | inverted predicate a test exercises |
+| tool-verifiable | dry-run on toy fixture + output-contract check | schema drift in emitted results |
+| review-only | none of the above kills it | semantically wrong but type-safe, test-surviving |
+
+The **review-only stratum is the measurement target**: the fraction of
+seeded semantic bugs that survive every deterministic instrument but are
+caught by model review, per rung of the isolation ladder (L1–L5 reused
+verbatim), is the quantified value of cross-vendor code audit — the
+operator's "ambiguity" made a number. Equivalent-mutant risk is handled by
+pre-run adjudication: before any arm runs, each mutant is confirmed
+behaviour-changing on the toy fixture; mutants that are not are discarded
+and logged.
+
+**Deterministic layer for code (new DCL members, also deployable to the
+reference implementation):** lint, type check, test-suite execution,
+dry-run-on-fixture with output-contract comparison, and diff-coverage
+(changed lines must be executed by at least one test). Constitution gains a
+draft `CA-CODE-*` rule family (see `templates/AUDIT_RULES_CODE.md`);
+promotion of any CA-CODE rule from ADVISORY to BLOCKER follows the
+shadow-mode ratchet, not this experiment.
+
+**Endpoints.** Same ladder trend + channel decomposition as Part A, computed
+separately for code; co-primary false-positive rate on unmutated scripts;
+cross-part comparison (are isolation effects larger for code than for data
+increments? — the operator's hypothesis, pre-registered here as directional).
+Part B tie-in: the deployment's own scripts at the frozen SHAs may be
+re-audited under B4–B6, with findings adjudicated by the principal; no
+mutation ground truth exists there, so real-code results report precision
+only.
