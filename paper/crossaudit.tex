@@ -93,65 +93,69 @@ CrossAudit supervises a pipeline in which a \textbf{Generator} agent (vendor $A$
 
 The two-repository split is separation of powers made mechanical: the Auditor holds no write access to the Science Repository, the Generator none to the Audit Repository, so neither agent holds credentials to alter the other's record; guarding each record against its \emph{own} author additionally requires branch protection.
 
-\begin{figure}[t]
+\begin{figure}[!tp]
 \centering
 \resizebox{\textwidth}{!}{%
-\begin{tikzpicture}[
-  font=\small\sffamily,
+\begin{tikzpicture}[x=1cm, y=1cm,
+  font=\footnotesize\sffamily,
   every shadow/.style={shadow xshift=0.6pt, shadow yshift=-1.1pt, opacity=0.12},
-  box/.style={draw, rounded corners=3pt, align=center, inner sep=5.5pt, line width=1pt, drop shadow, minimum height=18mm},
-  gen/.style={box, draw=cagreen, fill=cabggreen, text width=26mm},
-  sci/.style={box, draw=caindigo, fill=cabgindigo, text width=24mm},
-  det/.style={box, draw=caslate, fill=cabgslate, text width=30mm},
-  aud/.style={box, draw=caorange, fill=cabgorange, text width=33mm},
-  hum/.style={box, draw=cared, fill=cabgred, line width=1.2pt, text width=26mm},
-  ver/.style={draw=caslate, fill=white, diamond, aspect=1.5, align=center, inner sep=2.5pt, minimum width=20mm, line width=1.2pt, drop shadow},
-  badge/.style={circle, text=white, inner sep=1.4pt, font=\bfseries\footnotesize},
-  flow/.style={-{Stealth[length=2.8mm]}, line width=1.3pt, draw=caslate},
-  fate/.style={-{Stealth[length=3mm]}, line width=1.6pt},
-  lbl/.style={fill=white, align=center, inner sep=2.2pt, font=\scriptsize\sffamily, rounded corners=2pt, draw=caslate!30, line width=0.5pt},
-  fatelbl/.style={lbl, line width=0.8pt, inner sep=3pt},
-  bandlbl/.style={font=\scriptsize\sffamily\bfseries, inner sep=1.5pt}
+  box/.style={draw, rounded corners=3pt, align=center, inner sep=6pt, line width=1pt, drop shadow},
+  gen/.style={box, draw=cagreen, fill=cabggreen, text width=36mm, minimum height=30mm},
+  sci/.style={box, draw=caindigo, fill=cabgindigo, text width=35mm, minimum height=30mm},
+  det/.style={box, draw=caslate, fill=cabgslate, text width=36mm, minimum height=30mm},
+  aud/.style={box, draw=caorange, fill=cabgorange, text width=36mm},
+  led/.style={box, draw=caviolet, fill=cabgviolet, text width=36mm},
+  hum/.style={box, draw=cared, fill=cabgred, line width=1.2pt, text width=36mm, minimum height=33mm},
+  con/.style={box, draw=caindigo!70!black, fill=white, text width=36mm},
+  cmp/.style={box, draw=caviolet, fill=cabgviolet!60, densely dashed, text width=34mm, inner sep=4.5pt},
+  ver/.style={draw=caslate, fill=white, diamond, aspect=1.45, align=center, inner sep=2.5pt, minimum width=25mm, line width=1.2pt, drop shadow},
+  badge/.style={circle, text=white, inner sep=1.5pt, font=\bfseries\footnotesize},
+  flow/.style={-{Stealth[length=2.9mm]}, line width=1.3pt, draw=caslate},
+  fate/.style={-{Stealth[length=3.2mm]}, line width=1.7pt, rounded corners=8pt},
+  lbl/.style={fill=white, align=center, inner sep=2.6pt, font=\footnotesize\sffamily, rounded corners=2pt, draw=caslate!30, line width=0.5pt},
+  fatelbl/.style={lbl, line width=0.8pt, inner sep=3.2pt}
 ]
-% ---------- main row: one reading direction, left to right ----------
-\node[gen] (gen) {\textbf{Generator}\\[1pt] \scriptsize research AI, vendor $A$ (e.g.\ Claude). Writes one experiment increment};
-\node[sci, right=9mm of gen] (sci) {\textbf{Science Repo}\\[1pt] \scriptsize the increment is frozen as commit \texttt{S}: diffable, citable};
-\node[det, right=9mm of sci] (dcl) {\textbf{Script checks, no AI}\\[1pt] \scriptsize units, schema, sources, convergence on \texttt{S}. \emph{A hard fail blocks at once; no model can override.}};
-\node[aud, right=9mm of dcl] (aur) {\textbf{Auditor}\\[1pt] \scriptsize reviewing AI, vendor $B \neq A$ (e.g.\ GPT). Reads \texttt{S} against the human-written, version-pinned rulebook; every finding must cite a rule};
-\node[ver, right=9mm of aur] (ver) {\footnotesize\textbf{Verdict}};
-\node[hum, right=24mm of ver] (hum) {\textbf{Human}\\[1pt] \scriptsize writes the rulebook; decides escalations; otherwise never interrupted};
-% ---------- step badges ----------
+% ================= top row: produce, freeze, check =================
+\node[gen] (gen) at (2.05,-1.50) {\small\textbf{Generator}\\[-1pt] \small\textbf{research AI, vendor $A$}\\[2.5pt] e.g.\ Claude-based. Plans and runs the experiment; writes one \emph{increment}: data, metadata, logs, provenance.};
+\node[sci] (sci) at (8.10,-1.50) {\small\textbf{Science Repository}\\[2.5pt] The increment lands as commit \texttt{S}: frozen, diffable, citable. Every later step points at exactly \texttt{S}.};
+\node[det] (dcl) at (14.15,-1.50) {\small\textbf{Script checks: no AI}\\[2.5pt] Plain code runs first: schema complete? units legal? every number sourced? runs converged? A hard fail is final; no model can override it.};
+% ================= middle band =================
+\node[cmp] (cmp) at (8.10,-4.05) {Cloud compute keeps running: a verdict gates the \emph{next} increment, never live jobs.};
+\node[hum] (hum) at (4.90,-6.75) {\small\textbf{Human principal}\\[2.5pt] The only person in the loop: writes the rulebook, rules on escalations, reads advisories asynchronously. Never interrupted otherwise.};
+\node[con] (con) at (9.85,-6.75) {\small\textbf{The rulebook (Constitution)}\\[2.5pt] Human-authored, versioned. Every rule: stable ID $+$ decidable criterion. Changes land only \emph{between} cycles.};
+\node[aud] (aur) at (14.35,-5.75) {\small\textbf{Auditor}\\[-1pt] \small\textbf{reviewing AI, vendor $B \neq A$}\\[2.5pt] e.g.\ GPT-based; no shared memory with the Generator. Reads \texttt{S} rule by rule; every finding must cite a rule ID and evidence. BLOCKER findings gate; ADVISORY never do.};
+% ================= bottom row =================
+\node[ver] (ver) at (9.50,-10.20) {\small\textbf{Verdict}};
+\node[led] (led) at (14.35,-10.20) {\small\textbf{Audit ledger}\\[2.5pt] \texttt{report.md} $+$ \texttt{receipt.json}, append-only. The receipt pins commit \texttt{S}, file hashes, rulebook version, auditor identity.};
+% ================= badges =================
 \node[badge, fill=cagreen]  at (gen.north west) {1};
 \node[badge, fill=caindigo] at (sci.north west) {2};
 \node[badge, fill=caslate]  at (dcl.north west) {3};
 \node[badge, fill=caorange] at (aur.north west) {4};
-\node[badge, fill=caslate, anchor=south west]  at ([xshift=-1mm, yshift=0.2mm]ver.north east) {5};
-\node[badge, fill=cared]    at (hum.north west) {6};
-% ---------- forward flow: single words; the boxes carry the explanation ----------
-\draw[flow] (gen) -- node[lbl]{push} (sci);
-\draw[flow] (sci) -- (dcl);
-\draw[flow] (dcl) -- node[lbl]{pass} (aur);
-\draw[flow] (aur) -- (ver);
-% ---------- the three fates ----------
-\draw[fate, draw=cagreen!75!black] (ver.north) to[out=125, in=80, looseness=1.05]
-  node[fatelbl, draw=cagreen!60, pos=0.5]{\textbf{\textcolor{cagreen!60!black}{PASS}}: receipt verified $\Rightarrow$ \texttt{S} admitted; the \emph{next} increment builds on it}
-  ([xshift=-8mm]gen.north);
-\draw[fate, draw=caorange!85!black] (ver.south) to[out=-125, in=-80, looseness=1.05]
-  node[fatelbl, draw=caorange!60, pos=0.5]{\textbf{\textcolor{caorange!80!black}{BLOCKED}}: revise or dispute, then re-audit; at most 3 rounds}
-  ([xshift=-8mm]gen.south);
-\draw[fate, draw=cared] (ver.east) -- node[fatelbl, draw=cared!55, yshift=5.2mm]{\textbf{\textcolor{cared}{ESCALATE}}\\[-1pt] or 3 rounds spent} (hum.west);
-% ---------- the two records ----------
-\begin{scope}[on background layer]
-  \node[draw=caindigo!40, densely dashed, rounded corners=5pt, fill=cabgindigo!45, fit=(gen)(sci), inner xsep=3.5mm, inner ysep=6.5mm] (bandsci) {};
-  \node[draw=caorange!40, densely dashed, rounded corners=5pt, fill=cabgorange!40, fit=(dcl)(aur), inner xsep=3.5mm, inner ysep=6.5mm] (bandaud) {};
-\end{scope}
-\node[bandlbl, text=caindigo!80!black, anchor=north east] at ([xshift=-2.5mm, yshift=-1mm]bandsci.north east) {Science Repository: the Auditor cannot write here};
-\node[bandlbl, text=caorange!80!black, anchor=north west] at ([xshift=2.5mm, yshift=-1mm]bandaud.north west) {Audit Repository: the Generator cannot write here};
-% ---------- the ledger property, in words ----------
-\node[align=center, font=\scriptsize\sffamily, text=caslate, anchor=north] at ([yshift=-2.5mm]current bounding box.south)
-  {Every step above is a git commit or a GitHub issue: the entire supervision history is public and replayable by anyone.};
+\node[badge, fill=caviolet] at (led.north west) {5};
+\node[badge, fill=caslate, anchor=south west] at ([xshift=-0.5mm, yshift=0.2mm]ver.north east) {6};
+\node[badge, fill=cared]    at (hum.north west) {7};
+% ================= forward flow =================
+\draw[flow] (gen) -- node[lbl]{pushes} (sci);
+\draw[flow] (sci) -- node[lbl]{cross-repo trigger,\\[-2pt] pinned to exactly \texttt{S}} (dcl);
+\draw[flow] (dcl.south -| aur.north) -- node[lbl]{all scripts pass} (aur.north);
+\draw[flow] (aur.south) -- node[lbl]{commits report $+$ receipt} (led.north);
+\draw[flow] (led.west) -- node[lbl, yshift=4.5mm, xshift=1mm]{verdict\\[-2pt] sent back} (ver.east);
+\draw[flow, densely dashed, draw=caviolet] (sci) -- (cmp);
+\draw[flow, densely dashed, draw=cared!70!black] (hum) -- (con);
+\draw[flow, draw=caindigo!70!black] (con.east) -- (con.east -| aur.west);
+% ================= the three fates =================
+\draw[fate, draw=cagreen!75!black] (ver.south) -- (9.50,-11.55) -- (1.70,-11.55) -- (1.70,-3.30) -- ([xshift=-3.5mm]gen.south);
+\node[fatelbl, draw=cagreen!60] at (5.60,-11.55) {\textbf{\textcolor{cagreen!60!black}{PASS}}: receipt re-verified at the admission gate\\[-1pt] $\Rightarrow$ \texttt{S} admitted; the next increment builds on it};
+\draw[fate, draw=caorange!85!black] (ver.west) -- (2.55,-10.20) -- (2.55,-3.30) -- ([xshift=5mm]gen.south);
+\node[fatelbl, draw=caorange!60] at (5.45,-10.20) {\textbf{\textcolor{caorange!80!black}{BLOCKED}}: revise or dispute\\[-1pt] (once per finding); round ${+}1$, at most 3};
+\draw[fate, draw=cared] (ver.north) -- (9.50,-9.05) -- (5.50,-9.05) -- ([xshift=6mm]hum.south);
+\node[fatelbl, draw=cared!55] at (6.00,-9.12) {\textbf{\textcolor{cared}{ESCALATE}}: rounds spent, invalid\\[-1pt] audit, or either agent asks};
+% ================= the ledger property, in words =================
+\node[align=center, font=\footnotesize\sffamily, text=caslate, anchor=north] at (8.1,-12.15)
+  {Every element on this page is a git commit or a GitHub issue: the entire supervision history is public and replayable by anyone.};
 \end{tikzpicture}}
-\caption{One experiment increment through CrossAudit, read left to right. The Generator writes an increment, which is frozen as a commit; scripts with no learned component check it first, and their word is final in both directions (\invariant{4}); an auditor from a different vendor (\invariant{1}) then reviews the same pinned commit against the human-authored, version-pinned rulebook, citing a rule for every finding (\invariant{3}, \invariant{7}). Three fates follow: admitted, only on a verified receipt (\invariant{8}); sent back, at most three rounds with each finding disputable once (\invariant{5}); or escalated to the human, who writes the rules and is interrupted only by these cases (\invariant{6}); rule changes take effect between cycles, never mid-round, so the Generator never faces a moving target. Compute is decoupled: a verdict gates the next increment, never running jobs, and silent stalls are caught by a periodic dead-letter sweep. Every artefact is a commit or an issue (\invariant{2}), so a third party can replay the whole history.}
+\caption{One experiment increment through CrossAudit, read clockwise from the top left. The Generator writes an increment, which is frozen as a commit; scripts with no learned component check it first, and their word is final in both directions (\invariant{4}); an auditor from a different vendor (\invariant{1}) then reviews the same pinned commit against the human-authored, version-pinned rulebook, citing a rule for every finding (\invariant{3}), and commits its report and receipt to the audit ledger (\invariant{7}). The two repositories are mutually unwritable: the Auditor cannot touch the science record, the Generator cannot touch the rules or the reports. Three fates follow: admitted, only on a verified receipt (\invariant{8}); sent back, at most three rounds with each finding disputable once (\invariant{5}); or escalated to the human, who writes the rules and is interrupted only by these cases (\invariant{6}); rule changes take effect between cycles, never mid-round, so the Generator never faces a moving target. Compute is decoupled: a verdict gates the next increment, never running jobs, and silent stalls are caught by a periodic dead-letter sweep. Every artefact is a commit or an issue (\invariant{2}), so a third party can replay the whole history.}
 \label{fig:arch}
 \end{figure}
 
