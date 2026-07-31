@@ -1,0 +1,78 @@
+{
+ "results": [
+  {
+   "id": "M-SYN-01",
+   "class": "undefined_name_in_error_branch",
+   "predicted_channel": "syntactic",
+   "valid": true,
+   "killed_by": "syntactic"
+  },
+  {
+   "id": "M-TYP-01",
+   "class": "float_return_becomes_str",
+   "predicted_channel": "type",
+   "valid": true,
+   "killed_by": "type"
+  },
+  {
+   "id": "M-TST-01",
+   "class": "unit_conversion_dropped",
+   "predicted_channel": "test",
+   "valid": true,
+   "killed_by": "test"
+  },
+  {
+   "id": "M-TST-02",
+   "class": "off_by_one_step_count",
+   "predicted_channel": "test",
+   "valid": true,
+   "killed_by": "test"
+  },
+  {
+   "id": "M-TOL-01",
+   "class": "output_key_renamed",
+   "predicted_channel": "type",
+   "valid": true,
+   "killed_by": "type"
+  },
+  {
+   "id": "M-TOL-02",
+   "class": "converged_flag_inverted",
+   "predicted_channel": "toolrun",
+   "valid": true,
+   "killed_by": "toolrun"
+  },
+  {
+   "id": "M-REV-01",
+   "class": "boundary_flip_at_tolerance",
+   "predicted_channel": "review-only",
+   "valid": true,
+   "killed_by": null
+  },
+  {
+   "id": "M-REV-02",
+   "class": "tolerance_loosened_1000x",
+   "predicted_channel": "review-only",
+   "valid": true,
+   "killed_by": null
+  },
+  {
+   "id": "M-REV-03",
+   "class": "last_step_vs_min_energy",
+   "predicted_channel": "review-only",
+   "valid": true,
+   "killed_by": null
+  }
+ ],
+ "review_only_residue": [
+  "M-REV-01",
+  "M-REV-02",
+  "M-REV-03"
+ ],
+ "kills": {
+  "syntactic": 1,
+  "type": 2,
+  "test": 2,
+  "toolrun": 1
+ }
+}
