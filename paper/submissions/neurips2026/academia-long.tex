@@ -1,0 +1,114 @@
+% ============================================================================
+% CrossAudit — workshop version A (LONG, 9 content pages + refs + appendix)
+% Target: AI-Native Academia @ NeurIPS 2026 (Atlanta, Dec 12-13)
+%         deadline 29 Aug 2026 · non-archival · prepare as DOUBLE-BLIND
+% Build:  pdflatex academia-long.tex   (twice)
+% Style:  drop the official neurips_2026.sty into THIS directory and it is
+%         used automatically; until then a dimension-compatible fallback
+%         applies so the skeleton compiles today.
+% ============================================================================
+\documentclass[10pt]{article}
+\IfFileExists{neurips_2026.sty}%
+  {\usepackage[final]{neurips_2026}}%
+  {% ---- fallback approximating the NeurIPS text block; replace with official style ----
+   \usepackage[letterpaper,textwidth=5.5in,textheight=9in]{geometry}%
+   \usepackage{times}\newcommand{\neuripsfallback}{1}}
+\usepackage{amsmath,amssymb}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{positioning,fit,backgrounds,arrows.meta,calc,shapes.geometric,shadows}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+\hypersetup{pdftitle={CrossAudit (anonymised workshop version)},pdfauthor={}} % keep author EMPTY for double-blind
+\input{shared/preamble-shared}
+
+\title{CrossAudit: A Git-Native, Cross-Vendor Audit Loop for Agentic Science}
+% DOUBLE-BLIND: no \author block. Add only in the camera-ready.
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\input{shared/abstract-full}
+% BUDGET 0.3p. The full abstract above is reusable as-is; if space is tight,
+% cut paragraph 3 (trial numbers) to one sentence and point to §4.
+\end{abstract}
+
+% ============================================================================
+% CONDENSATION MAP  (source: paper/crossaudit.tex, 14 pp A4 -> 9 content pp)
+%   §1  1.6p -> 1.2p   keep the 4 contributions verbatim
+%   §2  1.6p -> 1.0p   merge paras 1-2; Table 1 -> Appendix B
+%   §3  3.2p -> 2.2p   halve each invariant's rationale; merge §3.3+§3.4;
+%                      Figure 1 stays full width
+%   §4  3.5p -> 2.4p   status-vs-invariants paragraph -> Appendix C (as a
+%                      table); trial keeps Design / What-the-audit-found /
+%                      vendor-split; scorecard tabular -> Appendix D
+%   §5  1.2p -> 0.8p   keep all five bullets, cut elaboration sentences
+%   §6  2.2p -> 0.9p   KEEP: CI-for-claims, ledger-as-data-asset,
+%                      management-by-exception. CUT (or one clause each):
+%                      platform relations, community constitutions, ratchet,
+%                      packaging, console
+%   §7  0.4p -> 0.3p
+% ANGLE for this venue: governance / audit trails / integrity / accountability.
+% Lead §1 with the self-audit chain (audits/): the paper was audited under
+% the protocol it proposes.
+% ============================================================================
+
+\section{Introduction}\label{sec:intro}
+% PASTE from crossaudit.tex §1, then trim per map. Keep contributions 1-4.
+\emph{[TODO: condense \S1 of \texttt{paper/crossaudit.tex} to 1.2 pages.]}
+
+\section{Related work and the same-source problem}\label{sec:related}
+% PASTE §2; merge first two paragraphs; move Table 1 to Appendix B and keep
+% one referencing sentence here.
+\emph{[TODO: condense \S2 to 1.0 page.]}
+
+\section{The CrossAudit protocol}\label{sec:protocol}
+% PASTE §3. Halve invariant rationales; fold §3.3 (Constitution) into §3.4.
+\emph{[TODO: condense \S3 to 2.2 pages around Figure~\ref{fig:arch}.]}
+
+\begin{figure}[t]
+\centering
+\resizebox{\textwidth}{!}{\input{shared/figure1-loop}}
+\caption{One experiment increment through CrossAudit. \emph{[TODO: paste the
+full caption from crossaudit.tex and trim the invariant map if space demands.]}}
+\label{fig:arch}
+\end{figure}
+
+\section{Reference implementation, live deployment, and an audited trial}\label{sec:implementation}
+% PASTE §4. Move the "Status against the invariants" narration to Appendix C;
+% keep the three-details paragraph; trial keeps its three core paragraphs.
+% DOUBLE-BLIND: replace the repo footnote URL with the anonymous mirror, and
+% "the first author's ... pipeline" -> "a live computational-chemistry pipeline".
+\emph{[TODO: condense \S4 to 2.4 pages.]}
+
+\section{Threat model and limitations}\label{sec:threat}
+\emph{[TODO: condense \S5 to 0.8 page; keep all five bullets.]}
+
+\section{Discussion}\label{sec:discussion}
+\emph{[TODO: 0.9 page; keep CI-for-claims, ledger-as-data-asset,
+management-by-exception only.]}
+
+\section{Conclusion}\label{sec:conclusion}
+\emph{[TODO: 0.3 page; keep the homework close.]}
+
+\bibliographystyle{plain}
+% PASTE the thebibliography block from crossaudit.tex (references do not
+% count against the page limit).
+
+\appendix
+\section{Full invariant statements}
+\emph{[TODO: paste the eight invariants verbatim from \S3.2 if trimmed above.]}
+\section{Related-systems comparison}
+\begin{center}\footnotesize\setlength{\tabcolsep}{3.5pt}
+\input{shared/table1-related}
+\end{center}
+\section{Implementation status against the invariants}
+\emph{[TODO: tabulate the enforce-vs-target status from \S4.1.]}
+\section{Seeded-defect trial scorecard}
+\emph{[TODO: paste the arm-comparison tabular and permutation floors.]}
+
+\end{document}

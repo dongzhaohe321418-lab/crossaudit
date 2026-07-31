@@ -1,0 +1,95 @@
+% ============================================================================
+% CrossAudit — workshop version B (SHORT, 5 content pages + refs + appendix)
+% Target: Agentic Systems for Molecular Sciences @ NeurIPS 2026 (Paris)
+%         deadline 29 Aug 2026 · DOUBLE-BLIND · non-archival
+%         (CFP explicitly welcomes negative results and rigorous evaluation)
+% Build:  pdflatex molecular-5p.tex   (twice)
+% ============================================================================
+\documentclass[10pt]{article}
+\IfFileExists{neurips_2026.sty}%
+  {\usepackage[final]{neurips_2026}}%
+  {\usepackage[letterpaper,textwidth=5.5in,textheight=9in]{geometry}%
+   \usepackage{times}}
+\usepackage{amsmath,amssymb}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{positioning,fit,backgrounds,arrows.meta,calc,shapes.geometric,shadows}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+\hypersetup{pdftitle={CrossAudit (anonymised workshop version)},pdfauthor={}}
+\input{shared/preamble-shared}
+
+\title{Who Audits the AI Chemist? A Cross-Vendor, Git-Native Supervision Loop, Deployed}
+% Working title -- deployment-first framing for this venue. Alternatives:
+%  "CrossAudit in the Loop: Supervising an Agentic Computational-Chemistry Pipeline"
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+% REWRITE deployment-first (do not reuse the position-paper abstract wholesale):
+% 1 sentence pipeline (agentic comp-chem, cloud HPC, increments as commits);
+% 1-2 sentences problem (same-vendor critics, self-preference); 2 sentences
+% protocol (8 invariants, scripts-first, receipts); 2 sentences trial with the
+% honest numbers (frozen 38/43, cross-vendor 41/37 lenient/strict, 10/10
+% clean-increment blocks, permutation floors); 1 sentence takeaway.
+\emph{[TODO: 150--180 word deployment-first abstract.]}
+\end{abstract}
+
+% ============================================================================
+% STRUCTURE PROPOSAL (5 content pages; refs + appendix free)
+%   1  Motivation from the deployment          0.8p
+%      the live perovskite-screening pipeline; who reviews its increments
+%   2  The protocol, compressed               1.5p  (Figure 1 + invariants
+%      as a tight enumerated list, one line each; full text -> Appendix A)
+%   3  Live deployment observations           1.0p  (letter-vs-intent rule
+%      readings; compute decoupling; escalation economics)
+%   4  Seeded-defect trial, honestly reported 1.2p  (three arms, dual-tier
+%      scores, permutation correction, constant-BLOCKED caveat -- this
+%      venue's CFP explicitly welcomes negative results)
+%   5  Related work + takeaways               0.5p
+% ANGLE: closed-loop labs need supervision that gates the NEXT increment,
+% never running jobs; decidable rules make disagreement inspectable.
+% DOUBLE-BLIND: anonymous repo mirror; no author-identifying deployment detail
+% beyond what the mirror shows.
+% ============================================================================
+
+\section{Motivation: a running pipeline nobody reviews}
+\emph{[TODO 0.8p]}
+
+\section{The CrossAudit protocol in brief}
+\emph{[TODO 1.5p around Figure~\ref{fig:arch}; invariants one line each.]}
+
+\begin{figure}[t]
+\centering
+\resizebox{\textwidth}{!}{\input{shared/figure1-loop}}
+\caption{\emph{[TODO: short caption; full walk stays in the main paper.]}}
+\label{fig:arch}
+\end{figure}
+
+\section{Deployment observations}
+\emph{[TODO 1.0p]}
+
+\section{An exploratory seeded-defect trial, audited and corrected}
+\emph{[TODO 1.2p]}
+
+\section{Related work and takeaways}
+\emph{[TODO 0.5p]}
+
+\bibliographystyle{plain}
+% PASTE trimmed bibliography.
+
+\appendix
+\section{The eight invariants in full}
+\emph{[TODO]}
+\section{Related-systems comparison}
+\begin{center}\footnotesize\setlength{\tabcolsep}{3.5pt}
+\input{shared/table1-related}
+\end{center}
+\section{Trial scorecard and permutation floors}
+\emph{[TODO]}
+
+\end{document}

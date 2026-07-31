@@ -1,0 +1,17 @@
+% Related-systems comparison tabular (booktabs required; \cite keys must exist in the including doc)
+\begin{tabular}{@{}lccccc@{}}
+\toprule
+ & \begin{tabular}{@{}c@{}}Critic from a\\different vendor\end{tabular}
+ & \begin{tabular}{@{}c@{}}Versioned,\\decidable rules\end{tabular}
+ & \begin{tabular}{@{}c@{}}Replayable\\public ledger\end{tabular}
+ & \begin{tabular}{@{}c@{}}Deterministic\\precedence\end{tabular}
+ & \begin{tabular}{@{}c@{}}Bounded loop,\\escalation\end{tabular} \\
+\midrule
+The AI Scientist \cite{lu2024aiscientist} & -- & -- & $\sim$ & -- & $\sim$ \\
+AI co-scientist \cite{gottweis2025coscientist} & -- & -- & -- & -- & $\sim$ \\
+PoLL judge panels \cite{verga2024poll} & $\bullet$ & -- & -- & -- & -- \\
+Cross-vendor review advice (\S\ref{sec:related}) & $\bullet$ & -- & $\sim$ & -- & -- \\
+statcheck, PPS \cite{nuijten2016statcheck,cabanac2022pps} & -- & $\sim$ & $\sim$ & $\bullet$ & -- \\
+\textbf{CrossAudit (this paper)} & $\bullet$ & $\bullet$ & $\bullet$ & $\bullet$ & $\bullet$ \\
+\bottomrule
+\end{tabular}
