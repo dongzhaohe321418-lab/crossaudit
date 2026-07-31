@@ -52,6 +52,13 @@ callbacks; does not yet enforce receipt-verified fail-closed admission.**
 on operator keys/escrow) · Locally tested: DCL_ONLY→deny, PASS→admit+consume,
 replay→deny, tamper→deny, controller round derivation.
 
+> Superseded by `controller/tests/` @ `75f4d6f` (2026-07-31, sixth audit R5).
+> The T1–T3 runs behind the line above happened only in the session that ran
+> them and were never committed, so they are unrecoverable: the third I2
+> violation this repository committed against itself, recorded in
+> `audits/2026-07-31-sixth-audit-dispositions.md`. The line stands unedited as
+> what was claimed; the tests that now back those behaviours are new work.
+
 ## R3 candidate: telemetry-driven standards ratchet
 
 Shadow-mode rule promotion (ADVISORY rehearses enforcement; ledger evidence — hit rate,

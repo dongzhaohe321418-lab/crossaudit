@@ -12,7 +12,11 @@ this file is history + first-15-minutes.
    audits** (claims → implementation honesty → wiring 6/6 fixed → statistics
    → style); dispositions committed under `audits/`. R2 architecture built:
    controller state machine, full receipt verifier, fail-closed admission,
-   locally tested (T1–T3).
+   locally tested (T1–T3). **Superseded by `controller/tests/` @ `75f4d6f`
+   (sixth audit, R5): T1–T3 were never committed and cannot be recovered — the
+   third I2 self-violation, recorded in
+   `audits/2026-07-31-sixth-audit-dispositions.md`. The forty tests there are
+   post-hoc work covering the same behaviours, not those runs.**
 3. Seeded-defect trial v1 run three-arm; seal failure caught by audit,
    corrected dual-tier reporting adopted; permutation floors via
    `experiment/score_nullcheck.py`.
