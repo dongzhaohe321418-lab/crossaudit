@@ -21,68 +21,76 @@
 \begin{document}
 \begin{tikzpicture}[x=1cm, y=1cm,
   font=\footnotesize,
-  box/.style={draw, rounded corners=3pt, align=center, inner sep=5pt, line width=0.9pt},
+  every node/.append style={execute at begin node=\hyphenpenalty10000\exhyphenpenalty10000\relax},
+  every shadow/.style={shadow xshift=0.6pt, shadow yshift=-1.1pt, opacity=0.12},
+  box/.style={draw, rounded corners=3pt, align=center, inner sep=5pt, line width=1pt, drop shadow},
   hdr/.style={font=\scriptsize\bfseries, text=caslate},
-  flow/.style={-{Stealth[length=2.6mm]}, line width=1.2pt, draw=caslate},
-  fate/.style={-{Stealth[length=2.8mm]}, line width=1.5pt, rounded corners=7pt},
-  ret/.style={-{Stealth[length=2mm]}, line width=0.8pt, densely dashed, rounded corners=7pt},
-  chip/.style={rounded corners=2.5pt, inner sep=3.4pt, font=\scriptsize, fill=white}
+  sub/.style={font=\small\bfseries, text=cadark},
+  badge/.style={circle, text=white, inner sep=1.4pt, font=\bfseries\footnotesize},
+  flow/.style={-{Stealth[length=2.7mm]}, line width=1.2pt, draw=caslate},
+  fate/.style={-{Stealth[length=3mm]}, line width=1.6pt, rounded corners=8pt},
+  lbl/.style={fill=white, align=center, inner sep=2pt, font=\scriptsize, rounded corners=2pt, draw=caslate!30, line width=0.5pt},
+  fatelbl/.style={lbl, line width=0.8pt, inner sep=3pt, font=\footnotesize}
 ]
-\path (0,0) rectangle (18,-9.6);
-% ---------- banner ----------
-\fill[cadark] (0,0) rectangle (18,-1.02);
-\node[anchor=west, text=white, font=\large\bfseries] at (0.35,-0.50) {CrossAudit};
-\node[anchor=west, text=white!85!cadark, font=\small] at (3.05,-0.51) {cross-vendor, git-native supervision for AI-driven science};
-\node[anchor=east, text=white!75!cadark, font=\scriptsize] at (17.7,-0.51) {Dong \& Chen, 2026};
-% ---------- panel dividers ----------
-\draw[caslate!25, line width=0.6pt] (5.55,-1.30) -- (5.55,-8.45);
-\draw[caslate!25, line width=0.6pt] (12.72,-1.30) -- (12.72,-8.45);
-% ================= PANEL 1: the problem =================
-\node[hdr] at (2.78,-1.42) {THE PROBLEM};
-\node[align=center, font=\small\bfseries, text=cadark] at (2.78,-1.95) {Who audits the AI scientist?};
-\node[align=center, font=\scriptsize, text=caslate] at (2.78,-2.62) {submits $\rightarrow$};
-\node[box, draw=cagreen, fill=cabggreen, text width=16mm] (a1) at (1.42,-3.42) {AI author\\ \scriptsize vendor $A$};
-\node[box, draw=cagreen, fill=cabggreen, text width=16mm] (a2) at (4.14,-3.42) {AI reviewer\\ \scriptsize vendor $A$: its twin};
-\draw[flow, draw=caslate!80] ([yshift=2.5mm]a1.east) -- ([yshift=2.5mm]a2.west);
-\draw[flow, draw=cagreen!70!black] ([yshift=-2.5mm]a2.west) -- ([yshift=-2.5mm]a1.east);
-\node[align=center, font=\scriptsize, text=cagreen!60!black] at (2.78,-4.32) {$\leftarrow$ approves $\checkmark$};
-\node[align=center, text=cared, font=\footnotesize] at (2.78,-5.55) {Same training pipeline $\Rightarrow$ same\\ blind spots. LLM judges prefer output\\ resembling their own (self-preference\\ bias); shared errors sail through.};
-\node[align=center, font=\footnotesize\itshape, text=caslate] at (2.78,-7.35) {Internal critics in today's AI-scientist\\ systems are the author's twin.};
-% ================= PANEL 2: the protocol =================
-\node[hdr] at (9.10,-1.42) {THE PROTOCOL};
-\node[align=center, font=\small\bfseries, text=cadark] at (9.10,-1.90) {A second vendor, scripts first, git underneath};
-\node[box, draw=cagreen, fill=cabggreen, text width=40mm] (g) at (9.10,-2.62) {\textbf{Generator} (vendor $A$) pushes one increment, frozen as commit \texttt{S}};
-\node[box, draw=caslate, fill=cabgslate, text width=40mm] (d) at (9.10,-3.97) {\textbf{Scripts first, no AI}: units, schema, sources, convergence; non-overridable};
-\node[box, draw=caorange, fill=cabgorange, text width=40mm] (b) at (9.10,-5.32) {\textbf{Auditor} (vendor $B \neq A$) applies the human-written, versioned rulebook};
-\node[draw=caslate, fill=white, diamond, aspect=1.6, inner sep=1.8pt, line width=1pt] (v) at (9.10,-6.62) {\footnotesize\textbf{Verdict}};
-\draw[flow] (g) -- (d); \draw[flow] (d) -- (b); \draw[flow] (b) -- (v);
-% fates: three branches out of the diamond
-\node[chip, draw=cagreen!60] (cp) at (7.35,-7.50) {\textcolor{cagreen!60!black}{\textbf{PASS}} $\to$ next};
-\node[chip, draw=caorange!60] (cb) at (8.60,-8.25) {\textcolor{caorange!80!black}{\textbf{BLOCKED}} $\to$ revise, $\leq$3};
-\node[box, draw=cared, fill=cabgred, text width=19mm, line width=1pt] (h) at (11.40,-7.62) {\textbf{Human}: rules $+$ escalations};
-\draw[fate, draw=cagreen!75!black] (v.west) -| (cp.north);
-\draw[fate, draw=caorange!85!black] (v.south) -- (cb.north);
-\draw[fate, draw=cared] (v.east) -- node[sloped, above=0.2mm, font=\scriptsize\bfseries, text=cared, pos=0.45]{ESCALATE} (h.north west |- v.east) -- (h.north);
-% thin dashed returns: the loop closes
-\draw[ret, draw=cagreen!70!black] (cp.west) -- (5.85,-7.50) -- (5.85,-2.62) -- (g.west);
-\draw[ret, draw=caorange!80!black] (cb.west) -- (6.30,-8.25) -- (6.30,-5.32) -- (b.west);
-% ================= PANEL 3: the record =================
-\node[hdr] at (15.30,-1.42) {THE RECORD};
-\node[align=center, font=\small\bfseries, text=cadark] at (15.30,-1.95) {Supervision as a public artefact};
-\draw[caslate!45, line width=1.1pt] (13.30,-2.55) -- (13.30,-5.95);
+\path (0,0) rectangle (20,-11.25);
+% ================= banner =================
+\fill[cadark] (0,0) rectangle (20,-1.02);
+\node[anchor=west, text=white, font=\large\bfseries] at (0.38,-0.50) {CrossAudit};
+\node[anchor=west, text=white!85!cadark, font=\small] at (3.10,-0.51) {cross-vendor, git-native supervision for AI-driven science};
+\node[anchor=east, text=white!75!cadark, font=\scriptsize] at (19.65,-0.51) {Dong \& Chen, 2026};
+% ================= row 1 left: the problem =================
+\node[hdr] at (4.90,-1.55) {THE PROBLEM};
+\node[sub] at (4.90,-2.00) {Who audits the AI scientist?};
+\node[box, draw=cagreen, fill=cabggreen, text width=20mm] (a1) at (2.00,-2.90) {AI author\\ \scriptsize vendor $A$};
+\node[box, draw=cagreen, fill=cabggreen, text width=22mm] (a2) at (6.20,-2.90) {AI reviewer\\ \scriptsize vendor $A$: its twin};
+\draw[flow, draw=caslate!80] ([yshift=2.5mm]a1.east) -- node[lbl, yshift=3.6mm]{submits} ([yshift=2.5mm]a2.west);
+\draw[flow, draw=cagreen!70!black] ([yshift=-2.5mm]a2.west) -- node[lbl, yshift=-3.6mm]{approves $\checkmark$} ([yshift=-2.5mm]a1.east);
+\node[box, draw=cared!70, fill=cabgred, text width=78mm, inner sep=4.5pt] at (4.90,-4.42)
+  {\scriptsize\textcolor{cared}{Same training pipeline $\Rightarrow$ same blind spots: LLM judges prefer output resembling their own (self-preference bias); shared errors sail through review.}};
+% ================= row 1 right: the record =================
+\node[hdr] at (15.00,-1.55) {THE RECORD};
+\node[sub] at (15.00,-2.00) {Supervision as a public artefact};
+\draw[caslate!45, line width=1.1pt] (10.95,-2.55) -- (10.95,-4.15);
 \foreach \y/\c/\t in {
-  -2.75/cagreen/{\texttt{a41f}~ experiment increment},
-  -3.55/caorange/{\texttt{9c2e}~ audit report, cites\\ \hphantom{\texttt{9c2e}~} \texttt{CA-DATA-001} @ rules v14},
-  -4.55/caviolet/{\texttt{5b77}~ \texttt{receipt.json}: SHA, file\\ \hphantom{\texttt{5b77}~} hashes, verdict},
-  -5.55/cared/{\texttt{e004}~ escalation issue $\to$ human}}{
-  \fill[\c] (13.30,\y) circle (1.5mm);
-  \node[anchor=west, align=left, font=\scriptsize] at (13.62,\y) {\t};}
-\node[align=center, font=\footnotesize, text=caslate] at (15.42,-6.75) {Every supervision step is a commit:\\ replayable, diffable, citable, by anyone.};
-\node[chip, draw=caindigo!50, fill=cabgindigo, text=cadark] at (14.20,-7.85) {8 invariants};
-\node[chip, draw=caindigo!50, fill=cabgindigo, text=cadark] at (16.05,-7.85) {fork-and-run};
-% ---------- footer ----------
-\fill[cabgindigo] (0,-8.62) rectangle (18,-9.6);
-\node[align=center, font=\small\itshape, text=cadark] at (9,-9.00) {An AI scientist should not grade its own homework. Now it doesn't have to.};
-\node[align=center, font=\scriptsize, text=caslate] at (9,-9.38) {github.com/dongzhaohe321418-lab/crossaudit \; $\cdot$ \; MIT licence \; $\cdot$ \; paper: CrossAudit (arXiv preprint)};
+  -2.60/cagreen/{\texttt{a41f}~ experiment increment},
+  -3.10/caorange/{\texttt{9c2e}~ audit report: cites \texttt{CA-DATA-001} @ rules v14},
+  -3.60/caviolet/{\texttt{5b77}~ \texttt{receipt.json}: SHA, file hashes, verdict},
+  -4.10/cared/{\texttt{e004}~ escalation issue $\to$ human}}{
+  \fill[\c] (10.95,\y) circle (1.4mm);
+  \node[anchor=west, font=\scriptsize] at (11.28,\y) {\t};}
+\node[font=\scriptsize, text=caslate] at (15.05,-4.55) {Every supervision step is a commit: replayable, diffable, citable, by anyone.};
+% dividers
+\draw[caslate!25, line width=0.6pt] (10.05,-1.55) -- (10.05,-4.60);
+\draw[caslate!20, line width=0.6pt] (0.35,-5.04) -- (19.65,-5.04);
+% ================= row 2: the protocol (paper-figure standard) =================
+\node[hdr, anchor=west] at (0.38,-5.22) {THE PROTOCOL};
+\node[font=\scriptsize\itshape, text=caslate, anchor=west] at (2.55,-5.22) {one experiment increment through the loop};
+\node[box, draw=cagreen, fill=cabggreen, text width=23mm, minimum height=26mm] (gen) at (1.575,-7.50) {\textbf{Generator}\\[1.5pt] \scriptsize research AI, vendor $A$: writes one experiment increment};
+\node[box, draw=caindigo, fill=cabgindigo, text width=23mm, minimum height=26mm] (sci) at (5.075,-7.50) {\textbf{Science Repo}\\[1.5pt] \scriptsize the increment is frozen as commit \texttt{S}: diffable, citable};
+\node[box, draw=caslate, fill=cabgslate, text width=23mm, minimum height=26mm] (dcl) at (8.575,-7.50) {\textbf{Script checks, no AI}\\[1.5pt] \scriptsize schema? units? sources? convergence? a hard fail is final};
+\node[box, draw=caorange, fill=cabgorange, text width=23mm, minimum height=26mm] (aur) at (12.075,-7.50) {\textbf{Auditor}\\[1.5pt] \scriptsize vendor $B \neq A$, no shared memory; each finding cites a rule of the versioned rulebook};
+\node[draw=caslate, fill=white, diamond, aspect=1.5, minimum width=19mm, inner sep=2pt, line width=1.2pt, drop shadow] (ver) at (14.80,-7.50) {\footnotesize\textbf{Verdict}};
+\node[box, draw=cared, fill=cabgred, text width=19mm, line width=1.2pt] (hum) at (18.45,-7.50) {\textbf{Human}\\[1pt] \scriptsize rules $+$\\[-1pt] escalations only};
+\node[badge, fill=cagreen]  at (gen.north west) {1};
+\node[badge, fill=caindigo] at (sci.north west) {2};
+\node[badge, fill=caslate]  at (dcl.north west) {3};
+\node[badge, fill=caorange] at (aur.north west) {4};
+\node[badge, fill=caslate, anchor=south west] at ([xshift=-0.5mm]ver.north east) {5};
+\node[badge, fill=cared]    at (hum.north east) {6};
+\draw[flow] (gen) -- node[lbl]{pushes} (sci);
+\draw[flow] (sci) -- node[lbl]{pinned\\[-2pt] to \texttt{S}} (dcl);
+\draw[flow] (dcl) -- node[lbl]{pass} (aur);
+\draw[flow] (aur) -- (ver);
+\draw[fate, draw=cagreen!75!black] (ver.north) -- (14.80,-5.66) -- (1.18,-5.66) -- ([xshift=-4mm]gen.north);
+\node[fatelbl, draw=cagreen!60] at (8.20,-5.66) {\textcolor{cagreen!60!black}{\textbf{PASS}}: receipt re-verified $\Rightarrow$ \texttt{S} admitted; the next increment builds on it};
+\draw[fate, draw=caorange!85!black] (ver.south) -- (14.80,-9.52) -- (1.18,-9.52) -- ([xshift=-4mm]gen.south);
+\node[fatelbl, draw=caorange!60] at (8.20,-9.52) {\textcolor{caorange!80!black}{\textbf{BLOCKED}}: revise or dispute (once per finding); at most 3 rounds};
+\draw[fate, draw=cared] (ver.east) -- (hum.west);
+\node[fatelbl, draw=cared!55] at (17.05,-6.38) {\textcolor{cared}{\textbf{ESCALATE}}: rounds spent,\\[-1pt] or either agent asks};
+\node[font=\scriptsize, text=caslate] at (10.0,-10.02) {Every step above is a git commit or a GitHub issue: the entire supervision history is public and replayable by anyone.};
+% ================= footer =================
+\fill[cabgindigo] (0,-10.42) rectangle (20,-11.25);
+\node[font=\small\itshape, text=cadark] at (10,-10.74) {An AI scientist should not grade its own homework. Now it doesn't have to.};
+\node[font=\scriptsize, text=caslate] at (10,-11.05) {github.com/dongzhaohe321418-lab/crossaudit \; $\cdot$ \; MIT licence \; $\cdot$ \; paper: CrossAudit (arXiv preprint)};
 \end{tikzpicture}
 \end{document}
