@@ -1,0 +1,96 @@
+name: CI
+
+# The repository argues for mechanised precedence; until this workflow existed
+# nothing mechanised its own (finding R4, sixth audit). Three jobs, no secrets,
+# no network calls to model vendors: the paper must build, the suite must pass,
+# and the Part C pipeline must reproduce its committed verdicts.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  paper:
+    name: Paper builds and the style freeze holds
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install TeX Live
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+            texlive-latex-base texlive-latex-recommended texlive-latex-extra \
+            texlive-fonts-recommended texlive-pictures
+      - name: Compile twice
+        working-directory: paper
+        run: |
+          pdflatex -interaction=nonstopmode crossaudit.tex > /dev/null
+          pdflatex -interaction=nonstopmode crossaudit.tex > /dev/null
+      - name: Assert zero LaTeX errors
+        working-directory: paper
+        run: |
+          if grep -qE '^!' crossaudit.log; then
+            echo "LaTeX reported errors:"; grep -nE '^!' -A3 crossaudit.log; exit 1
+          fi
+          grep -oE 'Output written on .*\([0-9]+ pages' crossaudit.log || true
+      - name: Assert the em-dash freeze
+        run: |
+          n=$(grep -c ' --- ' paper/crossaudit.tex)
+          echo "file-wide ' --- ' count: $n"
+          test "$n" -eq 8 || { echo "style freeze broken: expected 8, found $n"; exit 1; }
+
+  tests:
+    name: Test suite
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install the pinned toolchain
+        run: pip install -c constraints.txt -e '.[partC]'
+      - run: pytest -q
+
+  partC:
+    name: Part C pipeline reproduces its verdicts
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install the pinned toolchain
+        run: pip install -c constraints.txt -e '.[partC]'
+      - name: Keep the committed matrix for comparison
+        run: git show HEAD:experiment/v3/partC/results/deterministic_kill_matrix.json > /tmp/committed.json
+      - name: Regenerate mutants and rerun the four channels
+        working-directory: experiment/v3/partC
+        run: |
+          python3 mutate_code.py /tmp/mutants
+          diff -r mutants /tmp/mutants
+          python3 code_dcl.py /tmp/mutants > /dev/null
+      - name: Compare verdicts only, ignoring the toolchain stamp
+        run: |
+          python3 - <<'PY'
+          import json, sys
+          strip = lambda d: {k: v for k, v in d.items() if k not in ("toolchain", "canary")}
+          old = strip(json.load(open("/tmp/committed.json")))
+          new = strip(json.load(open("experiment/v3/partC/results/deterministic_kill_matrix.json")))
+          if old != new:
+              print("Part C verdicts drifted from the committed matrix.")
+              print("committed:", json.dumps(old.get("kills"), sort_keys=True),
+                    "residue", old.get("review_only_residue"))
+              print("rerun:    ", json.dumps(new.get("kills"), sort_keys=True),
+                    "residue", new.get("review_only_residue"))
+              sys.exit(1)
+          print("verdicts identical:", json.dumps(new["kills"], sort_keys=True),
+                "residue", new["review_only_residue"])
+          PY
