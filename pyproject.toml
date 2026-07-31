@@ -1,14 +1,11 @@
-# Environment manifest for the reference implementation and the experiments.
-# Its purpose is reproduction, not distribution: publishing CrossAudit to PyPI is
-# a Revision-2 item (README "Status", paper section 5). Until then, install from
-# a clone.
+# CrossAudit — package and environment manifest.
 #
-#   pip install -e .                 # checks/ and controller/
-#   pip install -e '.[partC]'        # + the Part C deterministic channels
-#   pip install -c constraints.txt -e '.[partC]'   # exact versions of record
+# Distribution is GitHub-direct while no PyPI account exists (installer-design):
+#   pip install "crossaudit @ git+https://github.com/dongzhaohe321418-lab/crossaudit@v0.1.0"
+#   pip install --require-hashes -r requirements-crossaudit.lock   (release wheels)
 #
-# The Part C channels refuse to score without their tools (finding R2), so the
-# extras are load-bearing, not a convenience.
+# Installing must have no side effects: no network, no auth, no writes outside
+# the package. Everything interactive lives behind `crossaudit init`.
 
 [build-system]
 requires = ["setuptools>=61"]
@@ -16,40 +13,46 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "crossaudit"
-version = "0.1.0"
+version = "0.1.0.dev0"
 description = "A git-native, cross-vendor audit protocol for agentic science"
 readme = "README.md"
-# >=3.10 per installer-design Amendment 1: 3.9 is EOL (2025-10); runtime dict
-# merge already needs >=3.9, annotations are future-imported either way
+# 3.10 floor: 3.9 reached end of life in October 2025 (installer-design Amendment 1).
 requires-python = ">=3.10"
 license = { file = "LICENSE" }
 authors = [
   { name = "Zhaohe Dong", email = "zd314@cam.ac.uk" },
   { name = "Yuhao Chen", email = "ychen2546@wisc.edu" },
 ]
-dependencies = [
-  "PyYAML>=6.0",          # checks/check_schema.py
+keywords = ["agentic science", "auditing", "research integrity", "LLM", "provenance"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3.10",
+  "Topic :: Scientific/Engineering",
 ]
+# The whole runtime dependency budget (constraint 1). Model access is stdlib urllib.
+dependencies = ["PyYAML>=6.0"]
 
 [project.optional-dependencies]
 # Part C deterministic channels, in cost order: lint -> type -> tests.
-partC = [
-  "pyflakes>=3.0",
-  "mypy>=1.0",
-  "pytest>=7.0",
-]
-dev = [
-  "pytest>=7.0",
-]
+partC = ["pyflakes>=3.0", "mypy>=1.0", "pytest>=7.0"]
+dev = ["pytest>=7.0"]
 
-[tool.setuptools]
-# The scripts are run in place, by path, as the paper and the RUNBOOK describe.
-# Nothing is importable as a package yet, so nothing is installed as one; the
-# install exists to resolve the dependency set.
-packages = []
+[project.scripts]
+crossaudit = "crossaudit.cli.main:main"
 
 [project.urls]
 Repository = "https://github.com/dongzhaohe321418-lab/crossaudit"
 
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"crossaudit.scaffold" = ["templates/*"]
+
 [tool.pytest.ini_options]
-testpaths = ["controller/tests", "experiment/v3/partC/seed_scripts"]
+testpaths = ["tests", "controller/tests", "experiment/v3/partC/seed_scripts"]
