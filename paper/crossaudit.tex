@@ -82,9 +82,32 @@ The pattern persists through the 2025 generation of research agents: Curie harde
 
 \paragraph{Why internal critique is not enough.} Panickssery et al.\ demonstrate that LLM evaluators recognise their own generations and rate them preferentially, with fine-tuning experiments providing evidence that self-recognition capability causes the inflation \cite{panickssery2024}. Zheng et al.\ catalogue further judge pathologies, position, verbosity, and self-enhancement biases, even in strong models \cite{zheng2023}. These results concern single-model self-evaluation; we hypothesise the mechanism generalises: models sharing a training pipeline are likely to share stylistic priors and knowledge gaps, putting a same-vendor critic at the wrong end of the bias distribution just when it matters. We call this the \emph{same-source supervision problem}. The remedy of drawing judges from different model families has precedent: Verga et al.\ score generations with a panel of evaluators from three model families precisely to dilute intra-model bias \cite{verga2024poll}, and the same intuition has begun to appear in developer tooling as cross-vendor code review.\footnote{E.g.\ MindStudio, ``Cross-Vendor AI Agent Review: Why Claude Should Review Codex's Code and Vice Versa'' (June 2026), \url{https://www.mindstudio.ai/blog/cross-vendor-ai-agent-review-claude-codex}, as accessed 30 July 2026, a workflow recommendation, without versioned rules, ledger, deterministic precedence, or escalation semantics.} CrossAudit's claim is accordingly not the heterogeneity idea itself, but its packaging as a supervision protocol for research: versioned rules, a replayable ledger, deterministic precedence, and bounded escalation, run against a live pipeline. Cross-vendor pairing does not eliminate correlated error, frontier models plausibly train on largely overlapping public corpora, so where the shared literature is wrong, both can be confidently wrong together, but it forecloses the demonstrated configuration of the best-documented bias in this setting (self-preference) and is intended to decorrelate vendor-idiosyncratic failure modes. What cross-vendor pairing cannot fix, a model-free layer must (\S\ref{sec:protocol}, \invariant{4}).
 
-\paragraph{Supervision as an artefact.} Software engineering solved an analogous trust problem not by making programmers infallible but by making quality mechanisms \emph{inspectable}: version control, continuous integration, review trails. Reproducibility initiatives in science point the same way, the unit of trust is the auditable record, not the author's competence \cite{baker2016}. Deterministic screening of the research record has its own lineage: statcheck recomputes reported statistics across the psychology literature \cite{nuijten2016statcheck}, and the Problematic Paper Screener runs mechanical detectors over millions of published papers \cite{cabanac2022pps}, post-publication analogues of our deterministic check layer, which moves checks of that character upstream, before a claim ever leaves the repository. At the ledger end, blockchain-based research-integrity infrastructures pursue tamper-evidence with far heavier machinery;\footnote{E.g.\ the bloxberg consortium, \url{https://bloxberg.org}.} CrossAudit's position is that git (ubiquitous, free, and already attached to CI, permissions, and issue tracking) is ledger enough for the supervision trail. CrossAudit transplants the inspectability stance to agentic science: the supervision history itself becomes a first-class, versioned, citable research artefact.
+\paragraph{Supervision as an artefact.} Software engineering solved an analogous trust problem not by making programmers infallible but by making quality mechanisms \emph{inspectable}: version control, continuous integration, review trails. Reproducibility initiatives in science point the same way, the unit of trust is the auditable record, not the author's competence \cite{baker2016}. Deterministic screening of the research record has its own lineage: statcheck recomputes reported statistics across the psychology literature \cite{nuijten2016statcheck}, and the Problematic Paper Screener runs mechanical detectors over millions of published papers \cite{cabanac2022pps}, post-publication analogues of our deterministic check layer, which moves checks of that character upstream, before a claim ever leaves the repository. At the ledger end, blockchain-based research-integrity infrastructures pursue tamper-evidence with far heavier machinery;\footnote{E.g.\ the bloxberg consortium, \url{https://bloxberg.org}.} CrossAudit's position is that git (ubiquitous, free, and already attached to CI, permissions, and issue tracking) is ledger enough for the supervision trail. CrossAudit transplants the inspectability stance to agentic science: the supervision history itself becomes a first-class, versioned, citable research artefact. Table~\ref{tab:related} compresses the comparison.
 
 % ---------- 3 Protocol ----------
+
+\begin{table}[t]
+\centering\footnotesize\setlength{\tabcolsep}{3.5pt}
+\caption{Supervision properties of related systems, as published. $\bullet$ = held by design; $\sim$ = partial or informal; -- = absent. PoLL is an evaluation technique rather than a supervision loop; statcheck and the Problematic Paper Screener are deterministic by construction but run post-publication, where CrossAudit moves checks of that character before a claim leaves the repository. The CrossAudit column describes the protocol specification; \S\ref{sec:implementation} states which invariants the public reference implementation enforces versus targets.}
+\label{tab:related}
+\begin{tabular}{@{}lccccc@{}}
+\toprule
+ & \begin{tabular}{@{}c@{}}Critic from a\\different vendor\end{tabular}
+ & \begin{tabular}{@{}c@{}}Versioned,\\decidable rules\end{tabular}
+ & \begin{tabular}{@{}c@{}}Replayable\\public ledger\end{tabular}
+ & \begin{tabular}{@{}c@{}}Deterministic\\precedence\end{tabular}
+ & \begin{tabular}{@{}c@{}}Bounded loop,\\escalation\end{tabular} \\
+\midrule
+The AI Scientist \cite{lu2024aiscientist} & -- & -- & $\sim$ & -- & $\sim$ \\
+AI co-scientist \cite{gottweis2025coscientist} & -- & -- & -- & -- & $\sim$ \\
+PoLL judge panels \cite{verga2024poll} & $\bullet$ & -- & -- & -- & -- \\
+Cross-vendor review advice (\S\ref{sec:related}) & $\bullet$ & -- & $\sim$ & -- & -- \\
+statcheck, PPS \cite{nuijten2016statcheck,cabanac2022pps} & -- & $\sim$ & $\sim$ & $\bullet$ & -- \\
+\textbf{CrossAudit (this paper)} & $\bullet$ & $\bullet$ & $\bullet$ & $\bullet$ & $\bullet$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
 \section{The CrossAudit protocol}\label{sec:protocol}
 
 \subsection{Objects and roles}\label{sec:roles}
