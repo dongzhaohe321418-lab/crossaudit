@@ -15,7 +15,7 @@
 \usepackage[hidelinks]{hyperref}
 \hypersetup{pdftitle={CrossAudit: A Git-Native, Cross-Vendor Audit Loop for Agentic Science},
   pdfauthor={Zhaohe Dong, Yuhao Chen},
-  pdfkeywords={agentic science, AI scientist, LLM auditing, reproducibility}}
+  pdfkeywords={agentic science, AI scientist, scalable oversight, cross-vendor auditing, LLM-as-a-judge, self-preference bias, research integrity, human-in-the-loop}}
 \usepackage{caption}
 \captionsetup{font=small,labelfont=bf}
 
@@ -53,6 +53,8 @@
 We specify the protocol as eight invariants; describe a public reference implementation (GitHub Actions plus a few hundred lines of dependency-light Python) that \emph{targets} them and implements a subset (deterministic checks, reply validation, receipts, anchored callbacks; receipt-verified fail-closed admission is specified but not yet enforced); and report a live deployment of a closely related variant in a computational-chemistry pipeline whose generator (Claude-based), auditor (GPT-lineage), and compute (cloud HPC) are mutually decoupled. \par
 In an exploratory seeded-defect trial (30 synthetic increments, 43 defects; its intended blinding voided by a cross-vendor audit of our own repository, whose findings we adopt and commit alongside the data), a same-family auditor scored 38/43 at both scoring tiers with zero false-positive blockers, while a cross-vendor auditor scored 41/43 at the lenient tier but 37/43 at the strict tier and returned BLOCKED on all thirty increments; because recall under the frozen scorer rises with finding volume (the arms emitted 17, 63, and 113 findings), permutation-corrected agreement places the two model arms within noise at the lenient tier and reverses their order at the strict tier. The trial shows that vendors disagree, not that either is better; the strongest evidence in the repository is the committed record of cross-vendor audits of this paper itself. We argue that cross-vendor audit trails of this kind are a practical basis for accountable machine science, and one a single researcher can adopt today.
 \end{abstract}
+
+\vspace{5pt}\noindent{\small\textbf{Keywords:} agentic science; AI scientist; scalable oversight; cross-vendor auditing; LLM-as-a-judge; self-preference bias; research integrity; human-in-the-loop.}
 
 % ---------- 1 Introduction ----------
 \section{Introduction}\label{sec:intro}
@@ -220,11 +222,50 @@ The reference implementation\footnote{\url{https://github.com/dongzhaohe321418-l
 
 A closely related variant of CrossAudit runs live in the first author's computational-chemistry pipeline (perovskite additive screening). The generation side is a Claude-based research agent that plans calculations, launches them on Alibaba Cloud E-HPC and a GPU worker, and pushes every increment to a private science repository whose audit policy, an epistemic-status ledger separating established, bounded, and provisional claims, together with a standing retraction log, is itself a committed, versioned document. A controller opens each cycle against a fixed science commit. The audit request pins a SHA-256 manifest of every tracked file. A Codex-CLI auditor (OpenAI lineage, so \invariant{1} holds against the Claude-based generator) writes four artefacts into an append-only per-cycle directory in the audit repository: a human-readable report, a machine-readable result, run metadata, and a per-file hash manifest. All sit on one long-lived \texttt{audit} branch that later cycles may not rewrite. The controller enforces this by validating every audit commit before recording a cycle as final, which detects a rewrite rather than preventing one; prevention would need branch protection. The controller's own orchestration state deliberately lives outside both repositories, so tampering by either agent with the record of its own supervision is detectable against controller-held state. Three deliberate divergences from the reference design should be named plainly: the deployed auditor is a tool-bearing CLI agent rather than the reference's toolless one, contained instead by that commit validation and the append-only cycle layout; the externalised controller state means the deployment's history is fully replayable from the repositories \emph{plus} that state, a weaker property than \invariant{2}'s repositories-alone ideal; and findings carry a four-level severity ladder feeding scope-level gates, rather than the protocol's two levels, a live experiment running against \S\ref{sec:invariants}'s two-level argument, whose outcome the telemetry will eventually adjudicate. Every input and output lives on GitHub; the system is designed so that any single component (generator, auditor, controller host, workstation) can fail without loss of ledger state.
 
-Two refinements of the deployed system go beyond the reference implementation and are worth adopting upstream. First, findings are \emph{evidence-typed}: each carries a policy citation (section and rule ID), a deterministic check identifier where applicable, and a copy-paste \emph{reproduce} command, so a human can re-derive any deterministic finding in seconds. Second, blocking is \emph{scope-granular}: a finding blocks named scopes, production-job submission, claim publication, rather than the pipeline wholesale, refining \invariant{6}'s graded-interruption principle. Human authority enters through escalation, plus one deployment-specific addition: a standing principal-approval gate on production launches, recorded in the ledger. The loop is live in the plainest sense: at the time of writing, its most recent cycle (opened and closed within six minutes on the morning of writing) returned a \texttt{BLOCK} decision on deterministic grounds (manifest-hash disagreements and commit-provenance defects), freezing production submission and claim publication until resolved. Audits gate the record and future submissions, never running jobs: E-HPC work in flight is never interrupted. A redacted public mirror of the deployment's finalised cycles is maintained in the reference repository (\texttt{ledger-mirror/}; scientific magnitudes masked, structure, rule citations and reproduce-command shapes verbatim). The ledger is young (at the time of writing it holds its first finalised cycle) so operational telemetry (cycle counts, verdict mix, escalation and dispute rates, per-cycle cost) is deferred to a revision once volume has accumulated.
+Two refinements of the deployed system go beyond the reference implementation and are worth adopting upstream. First, findings are \emph{evidence-typed}: each carries a policy citation (section and rule ID), a deterministic check identifier where applicable, and a copy-paste \emph{reproduce} command, so a human can re-derive any deterministic finding in seconds. Second, blocking is \emph{scope-granular}: a finding blocks named scopes, production-job submission, claim publication, rather than the pipeline wholesale, refining \invariant{6}'s graded-interruption principle. Human authority enters through escalation, plus one deployment-specific addition: a standing principal-approval gate on production launches, recorded in the ledger. The loop is live in the plainest sense: its first cycle (opened and closed within six minutes) returned a \texttt{BLOCK} decision on deterministic grounds (manifest-hash disagreements and commit-provenance defects), freezing production submission and claim publication until resolved. Audits gate the record and future submissions, never running jobs: E-HPC work in flight is never interrupted. A redacted public mirror of the deployment's finalised cycles is maintained in the reference repository (\texttt{ledger-mirror/}; scientific magnitudes masked, structure, rule citations and reproduce-command shapes verbatim). Since that first cycle the ledger has accumulated seven model-audited cycles across two days (Figure~\ref{fig:trace}): decisions ran \texttt{BLOCK} five times, then \texttt{PASS WITH CAVEATS}, then \texttt{PASS}, while findings per cycle fell 7, 4, 3, 2, 1, 1, 0. Of fourteen distinct findings, twelve are behaviourally confirmed real: each revise leg is a science-repository commit naming the finding IDs it closes, and the following cycle verifies the closure; two remain unresolved at the data freeze. Absent the loop, all twelve confirmed defects would have proceeded downstream unchallenged. One leg (the ledger's numbering gap at cycle~3) ran as a deterministic-tier follow-up without a model audit and is reported as-is. The generator's session state was never committed, so no in-context self-review arm can be reconstructed retrospectively; that absence is itself evidence for \invariant{2}. The mined, structurally redacted cycle records are frozen in this repository (\texttt{experiment/v3/real-ledger/}).
 
 Costs for the reference design are modest. The DCL is free. A single fenced-increment audit call scales with the size of the increment, not of the computation behind it, estimated at cents for a few hundred lines of results and metadata, while the experiment it certifies may represent hours of HPC time. (The deployed variant's tool-bearing auditor reads more and costs more; per-cycle cost reporting is deferred with the rest of the telemetry.) Auditing costs roughly what it costs to read the documentation, not what the compute behind it cost. Two caveats: multi-round exchanges multiply audit calls, and escalations spend human time, which is the truly scarce resource here.
 
-The deployment's role is existence proof for the deployed variant: the loop has run unattended, at single-researcher scale, on commodity infrastructure. The one concrete catch reported above is attributable to the deterministic layer; the deployment record claims no LLM-layer catches.
+The deployment's role is existence proof for the deployed variant: the loop has run unattended, at single-researcher scale, on commodity infrastructure, and has completed one full convergence arc from \texttt{BLOCK} to \texttt{PASS}. Its first catch was attributable to the deterministic layer; the fourteen findings that followed came through the tool-bearing auditor, and what fraction of them a script could have caught (the mechanisability of the confirmed set) is a registered endpoint of the follow-up study, adjudication pending, rather than a claim made here.
+
+
+\begin{figure}[t]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[x=1cm, y=1cm,
+  font=\footnotesize\sffamily,
+  chip/.style={draw=caindigo, fill=cabgindigo, rounded corners=2.5pt, inner sep=4pt, font=\scriptsize\ttfamily},
+  vbox/.style={draw, rounded corners=2.5pt, align=center, inner sep=4pt, font=\scriptsize\sffamily, minimum width=17mm},
+  vb/.style={vbox, draw=cared, fill=cabgred},
+  vc/.style={vbox, draw=caorange, fill=cabgorange},
+  vp/.style={vbox, draw=cagreen, fill=cabggreen},
+  cyc/.style={circle, fill=caslate, text=white, inner sep=1.1pt, font=\bfseries\tiny},
+  down/.style={-{Stealth[length=2mm]}, line width=0.9pt, draw=caslate},
+  nxt/.style={-{Stealth[length=1.8mm]}, line width=0.7pt, draw=caslate!60}
+]
+\foreach \i/\sha/\style/\cyc/\lab in {
+  0/81fd505e/vb/1/{BLOCK\\7 findings},
+  1/bfece650/vb/2/{BLOCK\\4 findings},
+  2/746564b6/vb/4/{BLOCK\\3 findings},
+  3/b7de4784/vb/5/{BLOCK\\2 findings},
+  4/4aed10a9/vb/6/{BLOCK\\1 finding},
+  5/4ccb0cd6/vc/7/{PASS w/\,caveats\\1 finding},
+  6/af0dc587/vp/8/{PASS\\0 findings}}{
+  \node[chip] (s\i) at (\i*2.55,0) {\sha};
+  \node[\style] (v\i) at (\i*2.55,-1.45) {\lab};
+  \node[cyc, anchor=south west] at ([xshift=-1mm, yshift=-0.5mm]v\i.north west) {\cyc};
+  \draw[down] (s\i) -- (v\i);
+}
+\foreach \i [evaluate=\i as \j using int(\i+1)] in {0,...,5}{
+  \draw[nxt] (v\i.east) -- node[above=0mm, font=\tiny\sffamily, text=caslate]{fixes} ([yshift=0mm]s\j.west);
+}
+\node[font=\tiny\sffamily, text=caslate!80, anchor=south] at (s2.north) {Tier-0 leg precedes (no model audit numbered 3)};
+\node[font=\scriptsize\sffamily, text=caslate, anchor=north] at (7.65,-2.55)
+  {Each next science commit names the finding IDs it closes; the following cycle verifies the closure. 12 of 14 distinct findings confirmed closed; 2 unresolved at freeze.};
+\end{tikzpicture}}
+\caption{The live deployment's first convergence arc, mined from its audit ledger at the data freeze (science \texttt{af0dc587}, audit \texttt{88b92429}; structurally redacted records in \texttt{experiment/v3/real-ledger/}). Top lane: the audited science commits. Bottom lane: the audit cycles, coloured by decision, with the deployment's own numbering gap preserved (leg~3 was a deterministic-tier follow-up without a model audit). Findings fall 7, 4, 3, 2, 1, 1, 0 across two days while decisions move from \texttt{BLOCK} to \texttt{PASS}; absent the loop, the twelve behaviourally confirmed defects would have proceeded downstream unchallenged.}
+\label{fig:trace}
+\end{figure}
 
 \subsection{An exploratory seeded-defect trial, audited and corrected}\label{sec:pilot}
 
