@@ -1,0 +1,30 @@
+# Python bytecode (never commit: it was tracked until 2026-07-31 and desynced
+# from source across interpreter versions)
+__pycache__/
+*.py[cod]
+
+# Run outputs written into the tree by the reference implementation
+/checks.json
+**/checks.json
+
+# LaTeX build products — scoped to paper dirs so that *.log fixtures under
+# experiment/v3/partC/fixtures/ stay tracked
+/paper/*.aux
+/paper/*.log
+/paper/*.out
+/paper/*.toc
+/paper/*.synctex.gz
+/paper/*.fls
+/paper/*.fdb_latexmk
+/paper/submissions/**/*.aux
+/paper/submissions/**/*.log
+/paper/submissions/**/*.out
+/paper/submissions/**/*.synctex.gz
+
+# Credentials — keys live in ~/.crossaudit-keys.env, never in the tree
+*.env
+.env.*
+!*.env.example
+
+# OS noise
+.DS_Store
