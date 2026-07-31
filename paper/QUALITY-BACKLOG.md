@@ -11,7 +11,7 @@
   `experiment/v3-ABLATION-REGISTRATION.md`（含 AMENDMENT 1），操作手册
   `experiment/v3/RUNBOOK.md`。阻塞：双厂新 API keys + 缺陷密钥第三方托管。
   执行：Claude 生成代码并跑，你只做钥匙/密封/盲评。
-- ⬜ **A2. 真实部署数据写进 §4.2** —— 已挖掘完毕（`experiment/v3/real-ledger/`）：
+- ✅ **A2. 真实部署数据写进 §4.2** —— 已挖掘完毕（`experiment/v3/real-ledger/`）：
   7 周期、裁定 BLOCK×5→PASS_WITH_CAVEATS→PASS、发现数 7-4-3-2-1-1-0、
   12/14 行为确认。§4.2 目前只有定性描述，应加这组数字 + 反事实一句：
   "没有这条环，12 条已确认缺陷将无阻碍下行"。执行：Claude，随时可做。
@@ -42,7 +42,7 @@
   执行：Claude，10 分钟。
 - ⬜ **B6. §3.4 终止状态机小图**（OPEN→BLOCKED→revise/dispute→PASSED/ESCALATED，
   round ≤ 3）。执行：Claude。
-- ⬜ **B7. 真实周期轨迹图**：数据已备（real-ledger），画 7 周期时间线
+- ✅ **B7. 真实周期轨迹图**：数据已备（real-ledger），画 7 周期时间线
   （commit→报告→裁定→修复，双仓交替）。只用过程元数据，不含科学内容。
   执行：Claude。可与 A2 一起进 §4.2。
 
@@ -53,7 +53,7 @@
   执行：你通读定夺，Claude 批量执行修改。
 - ⬜ **C2. §5 要点节奏变化**（bullet 句式过齐）与 **§6 段落合并**。
   执行：Claude；此前定为 Major Revision 项，可与 A3 一起做。
-- ⬜ **C3. Keywords 行插入摘要下方**（主选 8 个已定：agentic science,
+- ✅ **C3. Keywords 行插入摘要下方**（主选 8 个已定：agentic science,
   AI scientist, scalable oversight, cross-vendor auditing, LLM-as-a-judge,
   self-preference bias, research integrity, human-in-the-loop）。执行：Claude。
 
