@@ -95,3 +95,46 @@ science repositories are read-only inputs: nothing in them is modified, and
 no scientific content is quoted in committed artifacts beyond hashed digests.
 Amendments to this design land only as dated AMENDMENT sections below; the
 scoring code referenced here may not change after the first model arm runs.
+
+## AMENDMENT 1 (2026-07-31, operator-proposed) — the isolation ladder
+
+Part A's arms are reorganised as a monotone ladder; each rung adds exactly one
+layer of isolation between producer and reviewer. Channel arms (A0 stub, A1
+DCL, A2 domain tools) are unchanged and orthogonal.
+
+| Rung | Reviewer configuration | Adds |
+|---|---|---|
+| L0 | **no audit** -- increments admitted as produced | nothing (floor) |
+| L1 | **self-reflection, same session**: the generating session is asked to review its own increment | a review step |
+| L2 | same model, fresh instance, generation transcript attached | a context boundary |
+| L3 | same model, fresh instance, no Constitution | transcript removed |
+| L4 | same model, fresh instance, with Constitution | decidable rules |
+| L4b | same vendor, **different model**, with Constitution | model separation |
+| L5 | different vendor, with Constitution | vendor separation |
+
+L0 contributes two anchors: recall floor (0 catches) and false-block floor
+(0), and in cost accounting the number of defective increments that would
+have been admitted unsupervised. L4 is what "same model, different prompt as
+auditor" denotes; L4b sharpens it to same-vendor/different-weights.
+
+**Pre-registered confound, L1/L2.** Corpus defects are injected by a
+deterministic mutator into increments the generator itself authored, so the
+in-session reviewer retains memory of the pre-mutation content. This biases
+L1 (and, weaker, L2) TOWARD detection. Interpretation is therefore one-sided:
+if self-review still underperforms the fresh-context rungs despite the memory
+advantage, the deficit is robust; if it outperforms, no claim is made beyond
+"memory advantage dominates". Recorded here before any arm runs.
+
+**Analysis update.** Primary: trend across L1..L5 (Cochran's Q on the paired
+per-defect catch matrix, plus adjacent-rung exact McNemar, Holm over the four
+adjacent pairs). Co-primary unchanged (clean-increment false-block rate per
+rung, same ladder). Channel decomposition contrasts unchanged. Cost endpoint
+added: catches per false block and per dollar per rung, with L0 as
+denominator anchor.
+
+**Part B mapping.** L0 realises as the counterfactual already in the mined
+ledger: absent the loop, the 12 behaviourally confirmed defects ship
+downstream unchallenged. L1/L2 remain impossible on real data (generator
+sessions were never committed; evidence for I2). L4 = B5, L4b runs if the
+same-vendor second model is available under the escrowed keys, L5 = B6 and
+the historical reports themselves.
