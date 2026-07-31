@@ -26,6 +26,10 @@ will report. Precedence unchanged: where this disagrees with
 ## Findings 发现
 
 Severity: **C** blocks a claim / **H** blocks mechanisation / **M** hygiene.
+Dispositions and phase-1 outcomes:
+`audits/2026-07-31-sixth-audit-dispositions.md`. Status as of 2026-07-31:
+R1 ✅ `89db3f3` · R2 ✅ `07fd1cd` · R3 ✅ `ce55dec` · R7 ✅ `1428601` ·
+R4–R6, R8–R11 open.
 
 ### R1 (C) — the paper cites a script that has never existed
 

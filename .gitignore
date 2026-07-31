@@ -3,6 +3,11 @@
 __pycache__/
 *.py[cod]
 
+# Editable-install metadata (pip install -e .)
+*.egg-info/
+build/
+dist/
+
 # Run outputs written into the tree by the reference implementation
 /checks.json
 **/checks.json
