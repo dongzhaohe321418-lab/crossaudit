@@ -26,4 +26,11 @@ Pilot readings (to re-test at scale):
    and dead-code mutation (mutating an unused default proves nothing —
    equivalence checking caught it, which is what it is for).
 
-Reproduce: `python3 mutate_code.py mutants && python3 code_dcl.py mutants`.
+Reproduce, from a clone with the pinned channel tools installed
+(`pip install -c constraints.txt -e '.[partC]'`):
+`python3 mutate_code.py mutants && python3 code_dcl.py mutants`.
+Without them `code_dcl.py` now aborts at preflight instead of scoring; the
+toolchain that produced the matrix above is stamped inside
+`deterministic_kill_matrix.json` (finding R2, sixth audit). The table is
+unchanged by that fix: under pyflakes 3.4.0 / mypy 2.3.0 / pytest 9.1.1 the
+channels kill the same six mutants and leave the same three.
