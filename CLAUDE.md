@@ -6,7 +6,7 @@ You are continuing an established project. Orient from this file first, then
 ## What this repo is
 
 CrossAudit: a git-native, cross-vendor audit protocol for agentic science.
-Position paper (`paper/crossaudit.tex`, 14 pp), reference implementation
+Position paper (`paper/crossaudit.tex`, 15 pp), reference implementation
 (`checks/`, `controller/`, `examples/minimal/`), a registered ablation
 programme (`experiment/`), bilingual design docs (`improvements/`), and
 workshop submission scaffolds (`paper/submissions/`).
@@ -18,10 +18,12 @@ workshop submission scaffolds (`paper/submissions/`).
    never comment on or alter their scientific content. Process metadata only.
    （科学仓库只读；不得对其中科学内容做任何评论或改动。）
 2. **Paper style is frozen.** British spelling; no reintroduction of
-   em-dash prose rhythm (file-wide ` --- ` count stays ≈ 8); no AI-tell
-   flourishes or new aphorisms; honesty framing everywhere: the reference
-   implementation "targets I1–I8, implements a subset". Verify after edits:
-   `grep -c ' --- ' paper/crossaudit.tex`.
+   em-dash prose rhythm (file-wide ` --- ` count stays exactly 9: the eight
+   invariant labels in §3.2 plus one bibliography title — raised from 8 on
+   2026-07-31 when B4 repaired I2's mangled label; CI asserts the number); no
+   AI-tell flourishes or new aphorisms; honesty framing everywhere: the
+   reference implementation "targets I1–I8, implements a subset". Verify after
+   edits: `grep -c ' --- ' paper/crossaudit.tex`.
 3. **Experiment red lines** (`experiment/v3/RUNBOOK.md` §8): scoring maps and
    label rules never change after outputs exist (amend via dated AMENDMENT
    sections only); no reading arm outputs before all arms finish; API keys

@@ -45,7 +45,7 @@ jobs:
         run: |
           n=$(grep -c ' --- ' paper/crossaudit.tex)
           echo "file-wide ' --- ' count: $n"
-          test "$n" -eq 8 || { echo "style freeze broken: expected 8, found $n"; exit 1; }
+          test "$n" -eq 9 || { echo "style freeze broken: expected 9, found $n"; exit 1; }
 
   tests:
     name: Test suite
