@@ -59,13 +59,22 @@
 
 ## D. 投稿工程（详见 `paper/submissions/SUBMISSION-PLAN.md`）
 
+> **2026-07-31 操作者决定：先发 arXiv，NeurIPS 投稿格式暂缓。**
+> D2/D3/D4/D5 全部转入 ⏸ 暂缓（骨架保留不动，车道重开时继续）；
+> 新增 D6 为当前 D 区唯一活跃项。
+
 - ✅ D1. 两家 NeurIPS 2026 workshop 骨架 + 逐节砍稿预算（8/29 截稿）
-- ⬜ **D2. 9 页 Academia 版实际压缩**（骨架注释里的 map 逐节执行）
-- ⬜ **D3. 5 页 Molecular 版重构**（deployment-first；A1 跑完则梯度图当主图）
-- ⬜ **D4. 双盲清单执行**：匿名镜像、作者信息剥离、pdfauthor 清空、
+- ⏸ **D2. 9 页 Academia 版实际压缩**（骨架注释里的 map 逐节执行；
+  重开时需决定 Table 2 不变量卡与 Figure 2 终止图是否进 9 页版）
+- ⏸ **D3. 5 页 Molecular 版重构**（deployment-first；A1 跑完则梯度图当主图）
+- ⏸ **D4. 双盲清单执行**：匿名镜像、作者信息剥离、pdfauthor 清空、
   镜像内姓名邮箱自查（清单在 SUBMISSION-PLAN §四）
-- ⬜ **D5. 官方 neurips_2026.sty 下载放入** `paper/submissions/neurips2026/`
+- ⏸ **D5. 官方 neurips_2026.sty 下载放入** `paper/submissions/neurips2026/`
   （沙盒下不了，你从 CFP 页下载，丢进目录即自动生效）
+- ⬜ **D6. arXiv 提交**：材料与逐步清单已备齐（`paper/ARXIV.md`——单文件
+  自包含已验证、表单元数据、1,894 字符压缩摘要、类目与许可建议）。
+  执行：**你上传**（账号 + 背书路径在你手里）；拿到 id 后 Claude 回填
+  CITATION.cff 与双语 README 的引用行。
 
 ## E. 阻塞项汇总（都在你手里）
 

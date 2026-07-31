@@ -46,12 +46,15 @@ workshop submission scaffolds (`paper/submissions/`).
 
 ## Current queue (details in paper/QUALITY-BACKLOG.md)
 
-Unblocked, next: D2 9-page workshop condensation (B5/C3/A2+B7/B4/B6 all done
-2026-07-31; the paper is now 15 pp with Table 2 invariants card and Figure 2
-termination walk, and the ` --- ` count is 9). Key-gated: A1/A5 ablation arms
-(RUNBOOK stages 0–2), then A3 reframe + C2 + D3. Operator-only: key escrow
-choice, blinded adjudication, comma-splice read-through (C1), A4 decision,
-neurips_2026.sty download (D5).
+Lane change 2026-07-31 (operator): **arXiv first; NeurIPS formatting (D2–D5)
+deferred**, scaffolds under paper/submissions/ untouched. arXiv materials are
+ready in paper/ARXIV.md (single-file source verified, form metadata, condensed
+abstract); the upload itself is operator-only (D6), after which Claude back-fills
+CITATION.cff and both READMEs with the id. B5/C3/A2+B7/B4/B6 all done
+2026-07-31; the paper is 15 pp with Table 2 invariants card and Figure 2
+termination walk, ` --- ` count 9. Key-gated: A1/A5 ablation arms (RUNBOOK
+stages 0–2), then A3 reframe + C2. Operator-only: arXiv upload (D6), key escrow
+choice, blinded adjudication, comma-splice read-through (C1), A4 decision.
 
 Sixth-audit hygiene items (improvements/04): R1–R11 all closed as of
 2026-07-31; CI (.github/workflows/ci.yml) now guards the paper build, the
