@@ -142,7 +142,7 @@ The two-repository split is separation of powers made mechanical: the Auditor ho
 ]
 % ================= top row: produce, freeze, check =================
 \node[gen] (gen) at (2.05,-1.50) {\small\textbf{Generator}\\[-1pt] \small\textbf{research AI, vendor $A$}\\[2.5pt] e.g.\ Claude-based. Plans and runs the experiment; writes one \emph{increment}: data, metadata, logs, provenance.};
-\node[sci] (sci) at (8.10,-1.50) {\small\textbf{Science Repository}\\[2.5pt] The increment lands as commit \texttt{S}: frozen, diffable, citable. Every later step points at exactly \texttt{S}.};
+\node[sci] (sci) at (8.10,-1.50) {\small\textbf{Science Repository}\\[2.5pt] The increment lands as commit \texttt{S}: frozen, \mbox{diffable}, citable. Every later step points at exactly \texttt{S}.};
 \node[det] (dcl) at (14.15,-1.50) {\small\textbf{Script checks: no AI}\\[2.5pt] Plain code checks \texttt{S} first: schema? units? sources? convergence? A hard fail is final; no model can override it.};
 % ================= middle band =================
 \node[cmp] (cmp) at (8.10,-4.05) {Cloud compute keeps running: a verdict gates the \emph{next} increment, never live jobs.};
@@ -170,11 +170,11 @@ The two-repository split is separation of powers made mechanical: the Auditor ho
 \draw[flow, densely dashed, draw=cared!70!black] (hum) -- (con);
 \draw[flow, draw=caindigo!70!black] (con.east) -- (con.east -| aur.west);
 % ================= the three fates =================
-\draw[fate, draw=cagreen!75!black] (ver.south) -- (9.50,-11.55) -- (1.70,-11.55) -- (1.70,-3.30) -- ([xshift=-3.5mm]gen.south);
+\draw[fate, draw=cagreen!75!black] (ver.south) -- (9.50,-11.55) -- (1.70,-11.55) -- (1.70,-3.02);
 \node[fatelbl, draw=cagreen!60] at (5.60,-11.55) {\textbf{\textcolor{cagreen!60!black}{PASS}}: receipt re-verified at the admission gate\\[-1pt] $\Rightarrow$ \texttt{S} admitted; the next increment builds on it};
-\draw[fate, draw=caorange!85!black] (ver.west) -- (2.55,-10.20) -- (2.55,-3.30) -- ([xshift=5mm]gen.south);
+\draw[fate, draw=caorange!85!black] (ver.west) -- (2.55,-10.20) -- (2.55,-3.02);
 \node[fatelbl, draw=caorange!60] at (5.45,-10.20) {\textbf{\textcolor{caorange!80!black}{BLOCKED}}: revise or dispute\\[-1pt] (once per finding); round ${+}1$, at most 3};
-\draw[fate, draw=cared] (ver.north) -- (9.50,-9.05) -- (5.50,-9.05) -- ([xshift=6mm]hum.south);
+\draw[fate, draw=cared] (ver.north) -- (9.50,-9.05) -- (5.50,-9.05) -- (5.50,-8.42);
 \node[fatelbl, draw=cared!55] at (6.00,-9.12) {\textbf{\textcolor{cared}{ESCALATE}}: rounds spent, invalid\\[-1pt] audit, or either agent asks};
 % ================= the ledger property, in words =================
 \node[align=center, font=\footnotesize\sffamily, text=caslate, anchor=north] at (8.1,-12.15)
@@ -280,35 +280,47 @@ The deployment's role is existence proof for the deployed variant: the loop has 
 \begin{tikzpicture}[x=1cm, y=1cm,
   font=\footnotesize\sffamily,
   chip/.style={draw=caindigo, fill=cabgindigo, rounded corners=2.5pt, inner sep=4pt, font=\scriptsize\ttfamily},
-  vbox/.style={draw, rounded corners=2.5pt, align=center, inner sep=4pt, font=\scriptsize\sffamily, minimum width=17mm},
+  vbox/.style={draw, rounded corners=2.5pt, align=center, inner sep=4pt, font=\scriptsize\sffamily, minimum width=17mm, line width=0.8pt},
   vb/.style={vbox, draw=cared, fill=cabgred},
   vc/.style={vbox, draw=caorange, fill=cabgorange},
   vp/.style={vbox, draw=cagreen, fill=cabggreen},
-  cyc/.style={circle, fill=caslate, text=white, inner sep=1.1pt, font=\bfseries\tiny},
+  cyc/.style={circle, fill=caslate, text=white, inner sep=1.5pt, font=\bfseries\scriptsize},
   down/.style={-{Stealth[length=2mm]}, line width=0.9pt, draw=caslate},
-  nxt/.style={-{Stealth[length=1.8mm]}, line width=0.7pt, draw=caslate!60}
+  nxt/.style={-{Stealth[length=2.2mm]}, line width=1pt, draw=caslate!85}
 ]
-\foreach \i/\sha/\style/\cyc/\lab in {
-  0/81fd505e/vb/1/{BLOCK\\7 findings},
-  1/bfece650/vb/2/{BLOCK\\4 findings},
-  2/746564b6/vb/4/{BLOCK\\3 findings},
-  3/b7de4784/vb/5/{BLOCK\\2 findings},
-  4/4aed10a9/vb/6/{BLOCK\\1 finding},
-  5/4ccb0cd6/vc/7/{PASS w/\,caveats\\1 finding},
-  6/af0dc587/vp/8/{PASS\\0 findings}}{
+% day boundary (ledger timestamps: cycle 1 on 30 Jul, cycles 2-8 on 31 Jul) — background
+\draw[densely dashed, caslate!45] (1.275,0.42) -- (1.275,-3.55);
+\node[font=\scriptsize\sffamily, text=caslate!80, anchor=south east] at (1.15,0.46) {30 Jul};
+\node[font=\scriptsize\sffamily, text=caslate!80, anchor=south west] at (1.40,0.46) {31 Jul};
+\foreach \i/\sha/\style/\cyc/\lab/\n/\bc in {
+  0/81fd505e/vb/1/{BLOCK\\7 findings}/7/cared,
+  1/bfece650/vb/2/{BLOCK\\4 findings}/4/cared,
+  2/746564b6/vb/4/{BLOCK\\3 findings}/3/cared,
+  3/b7de4784/vb/5/{BLOCK\\2 findings}/2/cared,
+  4/4aed10a9/vb/6/{BLOCK\\1 finding}/1/cared,
+  5/4ccb0cd6/vc/7/{PASS w/\,caveats\\1 finding}/1/caorange,
+  6/af0dc587/vp/8/{PASS\\0 findings}/0/cagreen}{
   \node[chip] (s\i) at (\i*2.55,0) {\sha};
   \node[\style] (v\i) at (\i*2.55,-1.45) {\lab};
   \node[cyc, anchor=south west] at ([xshift=-1mm, yshift=-0.5mm]v\i.north west) {\cyc};
   \draw[down] (s\i) -- (v\i);
+  \ifnum\n>0
+    \fill[\bc!75] ({\i*2.55-0.21},-3.55) rectangle ({\i*2.55+0.21},{-3.55+\n*0.155});
+  \fi
+  \node[font=\bfseries\scriptsize\sffamily, text=\bc!85!black, anchor=south] at ({\i*2.55},{-3.55+\n*0.155}) {\n};
 }
+\draw[caslate!35, line width=0.6pt] (-0.85,-3.55) -- (16.15,-3.55);
+\node[font=\scriptsize\sffamily, text=caslate, anchor=east, align=right] at (-0.50,-2.90) {findings\\per cycle};
 \foreach \i [evaluate=\i as \j using int(\i+1)] in {0,...,5}{
-  \draw[nxt] (v\i.east) -- node[above=0mm, font=\tiny\sffamily, text=caslate]{fixes} ([yshift=0mm]s\j.west);
+  \draw[nxt] (v\i.east) -- node[font=\scriptsize\sffamily, text=caslate, fill=white, inner sep=1pt]{fixes} ([yshift=0mm]s\j.west);
 }
-\node[font=\tiny\sffamily, text=caslate!80, anchor=south] at (s2.north) {Tier-0 leg precedes (no model audit numbered 3)};
-\node[font=\scriptsize\sffamily, text=caslate, anchor=north] at (7.65,-2.55)
+% Tier-0 numbering gap, anchored where the gap is
+\node[font=\scriptsize\sffamily, text=caslate, anchor=south] (tiernote) at (3.825,0.95) {cycle 3: Tier-0 follow-up, no model audit};
+\draw[densely dashed, caslate!60, -{Stealth[length=1.6mm]}] (tiernote.south) -- (3.825,0.30);
+\node[font=\scriptsize\sffamily, text=caslate, anchor=north] at (7.65,-3.95)
   {Each next science commit names the finding IDs it closes; the following cycle verifies the closure. 12 of 14 distinct findings confirmed closed; 2 unresolved at freeze.};
 \end{tikzpicture}}
-\caption{The live deployment's first convergence arc, mined from its audit ledger at the data freeze (science \texttt{af0dc587}, audit \texttt{88b92429}; structurally redacted records in \texttt{experiment/v3/real-ledger/}). Top lane: the audited science commits. Bottom lane: the audit cycles, coloured by decision, with the deployment's own numbering gap preserved (leg~3 was a deterministic-tier follow-up without a model audit). Findings fall 7, 4, 3, 2, 1, 1, 0 across two days while decisions move from \texttt{BLOCK} to \texttt{PASS}; absent the loop, the twelve behaviourally confirmed defects would have proceeded downstream unchallenged.}
+\caption{The live deployment's first convergence arc, mined from its audit ledger at the data freeze (science \texttt{af0dc587}, audit \texttt{88b92429}; structurally redacted records in \texttt{experiment/v3/real-ledger/}). Top lane: the audited science commits, with the day boundary from the ledger's timestamps dashed. Middle lane: the audit cycles, coloured by decision, with the deployment's own numbering gap preserved (the dashed pointer marks leg~3, a deterministic-tier follow-up without a model audit). Bottom: findings per cycle on a shared baseline, falling 7, 4, 3, 2, 1, 1 to 0 as decisions move from \texttt{BLOCK} to \texttt{PASS}; absent the loop, the twelve behaviourally confirmed defects would have proceeded downstream unchallenged.}
 \label{fig:trace}
 \end{figure}
 
