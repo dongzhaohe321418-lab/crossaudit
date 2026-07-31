@@ -29,7 +29,8 @@ Severity: **C** blocks a claim / **H** blocks mechanisation / **M** hygiene.
 Dispositions and phase-1 outcomes:
 `audits/2026-07-31-sixth-audit-dispositions.md`. Status as of 2026-07-31:
 R1 ✅ `89db3f3` · R2 ✅ `07fd1cd` · R3 ✅ `ce55dec` · R7 ✅ `1428601` ·
-R4–R6, R8–R11 open.
+R4 ✅ `280b90a` · R5 ✅ `75f4d6f`+`3e9e2fe` · R6+R11 ✅ `527dd4b` ·
+R8–R10 open (phase 3).
 
 ### R1 (C) — the paper cites a script that has never existed
 

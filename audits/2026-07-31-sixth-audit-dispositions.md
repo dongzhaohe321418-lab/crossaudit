@@ -54,18 +54,73 @@ because R2's rerun needed the pinned toolchain to exist. Commit `ce55dec`.
 
 **R7 — tracked bytecode, no ignore file.** Commit `1428601`.
 
-## Phase 2 — open
+## Phase 2 — closed
 
-R4 (CI never runs the reference implementation), R5 (one test file for 2026 LOC;
-`checks/` and `controller/` untested, while HANDOFF records T1–T3 as "locally
-tested" — the second I2 violation, since those tests were never committed),
-R6+R11 (disarm the finished v1 experiment workflow, delete `RUN_TRIGGER`).
+**R5 — one test file for 2026 LOC.** Forty regression tests under
+`controller/tests/`, covering the five behaviours of the ROADMAP-R2 status line
+plus the escalation lock and the reply-validator negatives: state machine (cycle
+identity, same-sha re-dispatch advancing the round, child-commit advance,
+max-rounds escalation, DCL_ONLY refusing admission, escalation lock against both
+re-push and child commit, admission requiring PASSED and active and matching
+receipt, single use, stale-verdict handling); receipt verifier end to end
+against real git trees (PASS admits and consumes, dry run does not consume,
+replay denied, and denial for tampered artefact, tampered report, weakened
+constitution, altered check layer, ABSENT-but-present manifest entry, non-PASS
+verdict, failed integrity, unversioned constitution, missing field, foreign sha,
+receipt outside its cycle directory); validator (fabricated rule ids in coverage
+and in findings, empty or malformed coverage, PASS with a BLOCKER, BLOCKED
+without one, verdicts outside the vocabulary, invalid severities) and the I8
+floor, an offline run minting DCL_ONLY rather than a conforming PASS.
+
+Per the operator's three conditions: they live in `controller/tests/`, every file
+header states they are post-hoc work written from the current behaviour of the
+code, and they are never called T1–T3. The originals ran only inside the session
+that wrote them and are unrecoverable — the **third I2 self-violation** this
+audit recorded. `ROADMAP-R2.md` and `HANDOFF.md` carry appended supersession
+notes pointing at `75f4d6f`; neither claim was edited. Tests run against a copy
+of `controller/` in a tmp dir, because `state.py` resolves its store relative to
+its own file; one test asserts the repository's state file was never written.
+Commits `75f4d6f`, `3e9e2fe`.
+
+**R4 — CI never ran the reference implementation.** `ci.yml`, three jobs, no
+secrets, no vendor calls: paper compiles twice with zero error lines and the
+style freeze asserted mechanically (` --- ` count must be 8); suite runs under
+the pinned toolchain; Part C regenerates the mutants, checks them byte-identical
+to the committed set, reruns the four channels and compares the matrix with the
+toolchain and canary blocks stripped, per the operator's specification. The
+comparison logic was exercised locally against both the identical case and a
+seeded drift. Commit `280b90a`.
+
+**R6+R11 — the v1 workflow was still armed.** Moved to
+`.github/workflows-archive/` (GitHub runs only `.github/workflows/`, so it is
+inert by construction) rather than deleted, since it is the runner that produced
+`experiment/results/`. `RUN_TRIGGER` deleted; `experiment/DESIGN.md` carries an
+appended note; the archive README records what must be re-pinned before any
+rerun, its model defaults being stale against the v3 registration. Commit
+`527dd4b`.
+
+## Cross-instance replication (cloud side, 2026-07-31)
+
+The cloud instance re-derived phase 1 independently: `NULLCHECK.json` rewritten
+on its machine came out **byte-identical**, and the Part C channels were rerun on
+**CPython 3.11.15** against the same pinned tool versions, giving kills 1/2/2/1,
+the same three-mutant residue, and a silent canary. The Part C verdicts are
+therefore stable across a Python minor version; the only difference falls in the
+toolchain block, which is visible rather than silent, and that is what the R2 fix
+was for. Recorded here as a data point for Part C's environment sensitivity: it
+bounds drift for the interpreter, not for the analysers, whose versions remain
+the ones to watch.
 
 ## Phase 3 — open
 
 R8 (duplicate and superseded figure exports), R9 (accepted as "do not move";
 `experiment/README.md` maps the generations instead), R10 (two missing zh README
 sections).
+
+R8 gained one item during phase 2: `e49d801` added `paper/crossaudit.pdf`
+alongside `paper/crossaudit-paper.pdf`, byte-for-byte the same build under two
+names. Phase 3 should keep one and say in `paper/FIGURES.md` which command
+produces it.
 
 ## Notes carried forward
 
