@@ -46,6 +46,12 @@ workshop submission scaffolds (`paper/submissions/`).
 
 ## Current queue (details in paper/QUALITY-BACKLOG.md)
 
+New lane 2026-08-01 (operator): **packaging** — `pip install crossaudit`.
+Design frozen in improvements/05-packaging-design.md (seven constraints,
+src-layout with shims for paper-cited paths, no-SDK provider layer, honest
+isolation tiering, GitHub wizard in 0.3.0). Implementation starts at v0.1.0
+per its roadmap; PyPI name verified unclaimed 2026-08-01.
+
 Lane change 2026-07-31 (operator): **arXiv first; NeurIPS formatting (D2–D5)
 deferred**, scaffolds under paper/submissions/ untouched. arXiv materials are
 ready in paper/ARXIV.md (single-file source verified, form metadata, condensed

@@ -20,6 +20,8 @@ registration, the registration wins.
 | 01 | [01-independence-ablation.md](01-independence-ablation.md) | Isolation-ladder ablation: does independence work, and through which channel 隔离梯度消融：独立性是否有效、通过哪条通道 | Frozen, blocked on keys 已冻结，等密钥 |
 | 02 | [02-real-ledger-part-b.md](02-real-ledger-part-b.md) | Real-deployment ledger as labelled data 真实部署账本作为带标签数据 | Mined & frozen 已挖掘并冻结 |
 | 03 | [03-code-audit-part-c.md](03-code-audit-part-c.md) | Auditing generated code via mutation testing 用变异测试审计生成代码 | Frozen, blocked on keys 已冻结，等密钥 |
+| 04 | [04-repo-hygiene-and-reproducibility.md](04-repo-hygiene-and-reproducibility.md) | Sixth-audit findings R1–R11: repository hygiene and reproducibility 第六轮审计 R1–R11：仓库卫生与可复现性 | All closed 2026-07-31 全部关闭 |
+| 05 | [05-packaging-design.md](05-packaging-design.md) | `pip install crossaudit`: packaging design, CLI, GitHub wizard, release engineering 打包设计：CLI、GitHub 向导、发布工程 | Design frozen 2026-08-01, unimplemented 设计冻结，未实现 |
 
 Shared blockers 共同阻塞项：fresh API keys for both vendors + third-party
 escrow of the defect key（双厂新密钥 + 缺陷密钥第三方托管）；operator's
