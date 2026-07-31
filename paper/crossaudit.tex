@@ -118,12 +118,12 @@ The two-repository split is separation of powers made mechanical: the Auditor ho
 % ================= top row: produce, freeze, check =================
 \node[gen] (gen) at (2.05,-1.50) {\small\textbf{Generator}\\[-1pt] \small\textbf{research AI, vendor $A$}\\[2.5pt] e.g.\ Claude-based. Plans and runs the experiment; writes one \emph{increment}: data, metadata, logs, provenance.};
 \node[sci] (sci) at (8.10,-1.50) {\small\textbf{Science Repository}\\[2.5pt] The increment lands as commit \texttt{S}: frozen, diffable, citable. Every later step points at exactly \texttt{S}.};
-\node[det] (dcl) at (14.15,-1.50) {\small\textbf{Script checks: no AI}\\[2.5pt] Plain code runs first: schema complete? units legal? every number sourced? runs converged? A hard fail is final; no model can override it.};
+\node[det] (dcl) at (14.15,-1.50) {\small\textbf{Script checks: no AI}\\[2.5pt] Plain code checks \texttt{S} first: schema? units? sources? convergence? A hard fail is final; no model can override it.};
 % ================= middle band =================
 \node[cmp] (cmp) at (8.10,-4.05) {Cloud compute keeps running: a verdict gates the \emph{next} increment, never live jobs.};
 \node[hum] (hum) at (4.90,-6.75) {\small\textbf{Human principal}\\[2.5pt] The only person in the loop: writes the rulebook, rules on escalations, reads advisories asynchronously. Never interrupted otherwise.};
 \node[con] (con) at (9.85,-6.75) {\small\textbf{The rulebook (Constitution)}\\[2.5pt] Human-authored, versioned. Every rule: stable ID $+$ decidable criterion. Changes land only \emph{between} cycles.};
-\node[aud] (aur) at (14.35,-5.75) {\small\textbf{Auditor}\\[-1pt] \small\textbf{reviewing AI, vendor $B \neq A$}\\[2.5pt] e.g.\ GPT-based; no shared memory with the Generator. Reads \texttt{S} rule by rule; every finding must cite a rule ID and evidence. BLOCKER findings gate; ADVISORY never do.};
+\node[aud] (aur) at (14.35,-5.75) {\small\textbf{Auditor}\\[-1pt] \small\textbf{reviewing AI, vendor $B \neq A$}\\[2.5pt] e.g.\ GPT-based; shares no memory with $A$. Reads \texttt{S} rule by rule; every finding must cite a rule ID and evidence. BLOCKER findings gate; ADVISORY never do.};
 % ================= bottom row =================
 \node[ver] (ver) at (9.50,-10.20) {\small\textbf{Verdict}};
 \node[led] (led) at (14.35,-10.20) {\small\textbf{Audit ledger}\\[2.5pt] \texttt{report.md} $+$ \texttt{receipt.json}, append-only. The receipt pins commit \texttt{S}, file hashes, rulebook version, auditor identity.};
@@ -137,10 +137,10 @@ The two-repository split is separation of powers made mechanical: the Auditor ho
 \node[badge, fill=cared]    at (hum.north west) {7};
 % ================= forward flow =================
 \draw[flow] (gen) -- node[lbl]{pushes} (sci);
-\draw[flow] (sci) -- node[lbl]{cross-repo trigger,\\[-2pt] pinned to exactly \texttt{S}} (dcl);
-\draw[flow] (dcl.south -| aur.north) -- node[lbl]{all scripts pass} (aur.north);
-\draw[flow] (aur.south) -- node[lbl]{commits report $+$ receipt} (led.north);
-\draw[flow] (led.west) -- node[lbl, yshift=4.5mm, xshift=1mm]{verdict\\[-2pt] sent back} (ver.east);
+\draw[flow] (sci) -- node[lbl]{audit trigger,\\[-2pt] pinned to\\[-2pt] exactly \texttt{S}} (dcl);
+\draw[flow] (dcl.south -| aur.north) -- node[lbl, inner sep=2pt, yshift=0.8mm]{all scripts pass} (aur.north);
+\draw[flow] (aur.south) -- node[lbl, inner sep=2pt]{commits report $+$ receipt} (led.north);
+\draw[flow] (led.west) -- node[lbl, yshift=4.8mm, xshift=-1.5mm]{verdict\\[-2pt] sent back} (ver.east);
 \draw[flow, densely dashed, draw=caviolet] (sci) -- (cmp);
 \draw[flow, densely dashed, draw=cared!70!black] (hum) -- (con);
 \draw[flow, draw=caindigo!70!black] (con.east) -- (con.east -| aur.west);
