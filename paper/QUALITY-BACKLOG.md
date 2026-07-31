@@ -5,6 +5,8 @@
 
 ## A. 实证升级（对论文档次影响最大）
 
+> 三项实证改进的详细中英对照说明见 `improvements/`（01 梯度消融 / 02 真实账本 / 03 代码审计）。
+
 - 🔒 **A1. 跑 v3 消融（隔离梯度 L0–L5 + 通道分解）** —— 设计已冻结：
   `experiment/v3-ABLATION-REGISTRATION.md`（含 AMENDMENT 1），操作手册
   `experiment/v3/RUNBOOK.md`。阻塞：双厂新 API keys + 缺陷密钥第三方托管。
