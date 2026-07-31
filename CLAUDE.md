@@ -1,0 +1,57 @@
+# CLAUDE.md — operating instructions for Claude Code sessions in this repo
+
+You are continuing an established project. Orient from this file first, then
+`HANDOFF.md` (session history), then `paper/QUALITY-BACKLOG.md` (open work).
+
+## What this repo is
+
+CrossAudit: a git-native, cross-vendor audit protocol for agentic science.
+Position paper (`paper/crossaudit.tex`, 14 pp), reference implementation
+(`checks/`, `controller/`, `examples/minimal/`), a registered ablation
+programme (`experiment/`), bilingual design docs (`improvements/`), and
+workshop submission scaffolds (`paper/submissions/`).
+
+## Standing rules — non-negotiable 长期铁律
+
+1. **Science repos are read-only.** `perovskite-screening` and
+   `perovskite-screening-audit` may be cloned and read; never modify them,
+   never comment on or alter their scientific content. Process metadata only.
+   （科学仓库只读；不得对其中科学内容做任何评论或改动。）
+2. **Paper style is frozen.** British spelling; no reintroduction of
+   em-dash prose rhythm (file-wide ` --- ` count stays ≈ 8); no AI-tell
+   flourishes or new aphorisms; honesty framing everywhere: the reference
+   implementation "targets I1–I8, implements a subset". Verify after edits:
+   `grep -c ' --- ' paper/crossaudit.tex`.
+3. **Experiment red lines** (`experiment/v3/RUNBOOK.md` §8): scoring maps and
+   label rules never change after outputs exist (amend via dated AMENDMENT
+   sections only); no reading arm outputs before all arms finish; API keys
+   never enter the repo; the defect key is sealed before model arms run.
+4. **Document precedence.** `experiment/v3-ABLATION-REGISTRATION.md` (+
+   amendments) beats `improvements/`; `docs/architecture.md` beats READMEs.
+5. **Bilingual parity.** CONTRIBUTING requires zh/en README parity; the zh
+   README currently lags (known debt, `ROADMAP-R2.md`).
+
+## Commands
+
+- Paper: `cd paper && pdflatex -interaction=nonstopmode crossaudit.tex` (×2);
+  check `grep -cE "^!"` = 0, then page count and ` --- ` count.
+- Part C pilot: `cd experiment/v3/partC && python3 -m pytest seed_scripts -q
+  && python3 mutate_code.py mutants && python3 code_dcl.py mutants`.
+- Ledger mining: `python3 experiment/v3/mine_ledger.py <pv-science> <pv-audit>
+  experiment/v3/real-ledger`.
+- Workshop skeletons: `cd paper/submissions/neurips2026 && pdflatex
+  academia-long.tex` (official `neurips_2026.sty` auto-detected if present).
+
+## Current queue (details in paper/QUALITY-BACKLOG.md)
+
+Unblocked, in order: B5 chance-floor column → C3 keywords → A2+B7 real-loop
+numbers + trace figure into §4.2 → B4 invariants card → B6 termination
+mini-figure → D2 9-page workshop condensation. Key-gated: A1/A5 ablation arms
+(RUNBOOK stages 0–2), then A3 reframe. Operator-only: key escrow choice,
+blinded adjudication, comma-splice read-through.
+
+## Credentials
+
+Keys live in `~/.crossaudit-keys.env` (gitignored pattern), or CI secrets.
+Any token that has ever appeared in a chat transcript is burned: revoke and
+rotate before running model arms. Git push uses the operator's own auth.
