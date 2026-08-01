@@ -20,7 +20,8 @@ from ..controller import StateStore
 from ..dcl import run_checks
 from ..errors import (EXIT_BLOCKED, EXIT_CONFIG, EXIT_ESCALATED, EXIT_INTEGRITY,
                       EXIT_OK, ConfigDenial, Denial)
-from ..gitio import git, is_repo, materialise, parent, resolve
+from ..gitio import (changed_paths, entries, git, is_repo, materialise,
+                     parent, resolve)
 from ..receipt import build as build_receipt
 from ..receipt import digest as receipt_digest
 from ..receipt import load as load_receipt
@@ -38,13 +39,15 @@ writes keys to a 0600 file outside the repository.
     crossaudit init              guided setup, right here
     crossaudit init --github     the same, plus the two-repository plan
 
-Then, in order:
+Then there is one command to remember:
 
-    crossaudit doctor            preflight: offline, read-only, tells you what is missing
-    crossaudit check <dir>       the deterministic layer alone, no model involved
-    crossaudit audit --sha HEAD  a full cycle: checks, model audit, report, receipt
-    crossaudit verify <receipt>  re-derive every binding from the git trees
-    crossaudit status            where each cycle stands
+    crossaudit run               audit your latest commit; everything else is automatic
+
+It reads the increment from the commit itself, runs the deterministic checks,
+runs the model audit when a key is present, writes the ledger, and tells you
+what to do next. The precise tools underneath it, when you want them:
+
+    crossaudit doctor · check · audit · verify · status
 
 Docs: installer-design/ in the repository.
 """
@@ -318,6 +321,211 @@ def cmd_init(args: argparse.Namespace) -> int:
     return EXIT_OK
 
 
+# -------------------------------------------------------------------- run
+def _step(n: int, total: int, label: str) -> None:
+    print(f"  [{n}/{total}] {label:24s}", end="", flush=True)
+
+
+def _done(msg: str) -> None:
+    print(f"ok — {msg}")
+
+
+def cmd_run(args: argparse.Namespace) -> int:
+    """The guided verb: audit the latest commit, narrate every step, decide
+    nothing the commit itself cannot decide. `audit` remains the precise tool;
+    `run` is the one you can give a colleague with no explanation."""
+    try:
+        cfg = load()
+    except ConfigDenial:
+        if sys.stdin.isatty():
+            print("Nothing is configured here yet — starting setup.\n")
+            wizard.run(Path("."), mode="local", force=False)
+            print("\nSetup done. Run `crossaudit run` again to audit your latest commit.")
+            return EXIT_OK
+        raise
+
+    if not is_repo(cfg.root):
+        raise ConfigDenial(f"{cfg.root} is not a git repository; the loop audits commits")
+
+    sha, tree = resolve(cfg.root, args.sha or "HEAD")
+    subject = git("log", "-1", "--format=%s", cwd=cfg.root, check=False)
+
+    # The increment is what the commit changed, minus the loop's own artefacts.
+    own = {cfg.constitution, "crossaudit.yml", ".gitignore"}
+    prefix_own = (cfg.ledger_dir.rstrip("/") + "/", cfg.state_dir.rstrip("/") + "/",
+                  ".github/")
+    def science_of(s: str) -> list[str]:
+        return [f for f in changed_paths(cfg.root, s)
+                if f not in own and not f.startswith(prefix_own)]
+
+    def enclose(paths: list[str], s: str) -> list[str]:
+        """Widen a diff to the increments it touched.
+
+        A revision commit often changes results.json alone, but an increment is
+        the whole experiment directory: metadata, summary and data are read
+        together, and checks that see only the diff would report the untouched
+        files as missing. So the scope is every file under the directories the
+        commit touched, taken from the tree, which is also the containment
+        property the roadmap asks for at directory granularity.
+        """
+        dirs = {str(Path(f).parent) for f in paths}
+        dirs = {d for d in dirs if d not in (".", "")}
+        if not dirs:
+            return paths
+        widened = {f for _m, f, _b in entries(cfg.root, s)
+                   if str(Path(f).parent) in dirs
+                   and f not in own and not f.startswith(prefix_own)}
+        return sorted(widened | set(paths))
+
+    science = science_of(sha)
+    if not science and not args.sha:
+        # HEAD is a ledger or config commit (the loop's own bookkeeping moves
+        # HEAD in local mode). Walk back to the newest commit that actually
+        # changed science, instead of asking the user to think about it.
+        for cand in git("log", "--format=%H", "-n", "50", cwd=cfg.root,
+                        check=False).splitlines()[1:]:
+            found = science_of(cand)
+            if found:
+                sha, tree = resolve(cfg.root, cand)
+                subject = git("log", "-1", "--format=%s", sha, cwd=cfg.root, check=False)
+                science = found
+                print(f"  (HEAD is ledger bookkeeping; auditing the newest science "
+                      f"commit instead: {sha[:12]})")
+                break
+    if not science:
+        raise ConfigDenial(
+            f"{sha[:12]} ({subject!r}) changed no science files — only rules, "
+            f"configuration or ledger. Commit your experiment, then run again.")
+
+    dirty = git("status", "--porcelain", cwd=cfg.root, check=False)
+    key_present = bool(os.environ.get(cfg.auditor.key_env, "").strip())
+    offline = not key_present
+
+    print("CrossAudit — one increment through the loop")
+    print("=" * 60)
+    print(f"  commit     {sha[:12]}  {subject!r}")
+    touched = len(science)
+    science = enclose(science, sha)
+    scope_note = (f"{len(science)} file(s) in the touched experiment folder(s)"
+                  if len(science) != touched else f"{len(science)} file(s)")
+    print(f"  increment  {scope_note}, resolved from the commit")
+    const_commit = git("log", "-1", "--format=%H", "--", cfg.constitution,
+                       cwd=cfg.root, check=False)
+    if not const_commit:
+        raise ConfigDenial(f"{cfg.constitution} is not committed; commit it first "
+                           f"(an audit must cite the rules' commit)")
+    from ..auditor import known_rules
+    const_text = (cfg.root / cfg.constitution).read_text()
+    print(f"  rules      {cfg.constitution} @ {const_commit[:12]} "
+          f"({len(known_rules(const_text))} rules)")
+    print(f"  auditor    {cfg.auditor.provider}:{cfg.auditor.model} "
+          f"(key {'found' if key_present else 'MISSING -> deterministic checks only'})")
+    if dirty:
+        print("  note       uncommitted changes exist; the audit reads the COMMIT, "
+              "not your working tree")
+    print()
+
+    store = _state(cfg)
+    cycle = store.open_or_advance(cfg.science_repo, sha, parent(cfg.root, sha))
+    if cycle.get("already_admitted"):
+        print("  This commit was already audited, passed, and admitted. Nothing to do.")
+        return EXIT_OK
+    if cycle.get("blocked_by_escalation"):
+        print("  An earlier round ESCALATED: a human decision is pending, and new "
+              "commits cannot route around it.")
+        return EXIT_ESCALATED
+    if not cycle.get("awaiting_verdict") and cycle["active_sha"] == sha:
+        print(f"  Already audited (round {cycle['round']}, status {cycle['status']}).")
+        print(f"  Commit a fix and run again. To re-audit this same commit (a dispute "
+              f"or second opinion), use: crossaudit audit --sha {sha[:12]}")
+        return EXIT_OK
+
+    total = 2 if offline else 3
+    _step(1, total, "deterministic checks")
+    files, notes = materialise(cfg.root, sha, "", only=science)
+    outcome = run_audit(cfg=cfg, sha=sha, round_=cycle["round"], files=files, notes=notes,
+                        constitution=const_text, constitution_commit=const_commit,
+                        offline=offline,
+                        allow_custom_endpoint=args.allow_custom_endpoint,
+                        retention="sealed")
+    hard = outcome.dcl["total_hard_failures"]
+    _done("clean" if hard == 0 else f"{hard} hard failure(s)")
+    if not offline:
+        _step(2, total, "model audit")
+        if outcome.invalid_reason:
+            _done(f"rejected ({outcome.invalid_reason[:60]})")
+        elif outcome.model_reply is None:
+            _done("did not run")
+        else:
+            n = len(outcome.model_reply.get("findings", []))
+            b = sum(1 for f in outcome.model_reply["findings"]
+                    if f["severity"] == "BLOCKER")
+            _done(f"reply valid, {n} finding(s), {b} blocking")
+
+    _step(total, total, "ledger")
+    ledger = cfg.root / cfg.ledger_dir / f"{sha[:12]}-r{cycle['round']}"
+    if ledger.exists():
+        _done("cycle directory already exists (append-only); nothing rewritten")
+        raise ConfigDenial(f"{ledger} already exists; the ledger is append-only")
+    ledger.mkdir(parents=True)
+    (ledger / "report.md").write_text(outcome.report)
+    (ledger / "checks.json").write_text(json.dumps(outcome.dcl, indent=2))
+    rel = ledger.relative_to(cfg.root)
+    git("add", "--", str(rel / "report.md"), str(rel / "checks.json"), cwd=cfg.root)
+    git("commit", "-q", "-m", f"audit report {sha[:12]} r{cycle['round']}", cwd=cfg.root)
+    report_commit = git("rev-parse", "HEAD", cwd=cfg.root)
+    manifest = {p_: __import__("hashlib").sha256(b).hexdigest()
+                for p_, b in files.items()}
+    receipt = build_receipt(
+        cfg=cfg, subject={"sha": sha, "tree": tree, "scope": "changed-paths"},
+        cycle=cycle, manifest=manifest, constitution_path=cfg.constitution,
+        constitution_bytes=const_text.encode(), constitution_commit=const_commit,
+        dcl_source_sha256=dcl_source_digest(), prompt_sha256=outcome.prompt_sha256,
+        checks=cfg.checks, verdict=outcome.verdict, exchange=outcome.exchange,
+        retention="sealed", report_bytes=outcome.report.encode(),
+        report_commit=report_commit, cycle_path=str(rel),
+        audit_repo=cfg.audit_repo or "local", mode="local",
+        integrity=outcome.integrity)
+    (ledger / "receipt.json").write_text(json.dumps(receipt, indent=2, sort_keys=True))
+    git("add", "--", str(rel / "receipt.json"), cwd=cfg.root)
+    git("commit", "-q", "-m",
+        f"audit receipt {sha[:12]} r{cycle['round']} ({outcome.verdict})", cwd=cfg.root)
+    status = store.record_verdict(cycle["cycle_id"], sha, outcome.verdict,
+                                  receipt_digest(receipt), cfg.max_rounds)
+    _done("report + receipt committed")
+
+    print()
+    print(f"  VERDICT: {outcome.verdict}   (cycle {cycle['cycle_id'][:8]}, "
+          f"round {cycle['round']} of {cfg.max_rounds})")
+    print()
+    if outcome.verdict == "BLOCKED":
+        blockers = [f for f in outcome.dcl["findings"] if f["severity"] == "BLOCKER"]
+        if outcome.model_reply:
+            blockers += [f for f in outcome.model_reply["findings"]
+                         if f["severity"] == "BLOCKER"]
+        print("  What blocked it:")
+        for f in blockers:
+            print(f"    - [{f['rule']}] {f['artifact']}: {f['observation'][:100]}")
+        print()
+        if status == "ESCALATED":
+            print("  Round budget exhausted: this increment is now in human hands (I5).")
+        else:
+            print("  Fix these, commit, and run `crossaudit run` again "
+                  f"(round {cycle['round'] + 1} of {cfg.max_rounds}).")
+    elif outcome.verdict == "PASS":
+        print("  Next: consume the receipt to admit this increment:")
+        print(f"    crossaudit verify {rel}/receipt.json --admit")
+    elif outcome.verdict == "DCL_ONLY":
+        print("  Checks passed, but no model reviewed this (no API key), so it can")
+        print("  never be PASS. Add a key (`crossaudit init --force`), then re-run.")
+    else:
+        print(f"  Escalated: {outcome.invalid_reason or 'a human decision is needed'}")
+        print(f"  Report: {rel}/report.md")
+    if status == "ESCALATED":
+        return EXIT_ESCALATED
+    return {"PASS": EXIT_OK, "BLOCKED": EXIT_BLOCKED}.get(outcome.verdict, EXIT_ESCALATED)
+
+
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(prog="crossaudit", description=__doc__,
                                 formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -331,6 +539,12 @@ def build_parser() -> argparse.ArgumentParser:
     i.add_argument("--github", action="store_true", help="also plan the repository pair")
     i.add_argument("--force", action="store_true", help="overwrite an existing config")
     i.set_defaults(func=cmd_init)
+
+    r = sub.add_parser("run", help="audit your latest commit; everything else is automatic")
+    r.add_argument("--sha", help="a specific commit instead of HEAD")
+    r.add_argument("--allow-custom-endpoint", action="store_true",
+                   help=argparse.SUPPRESS)
+    r.set_defaults(func=cmd_run)
 
     d = sub.add_parser("doctor", help="preflight: offline and read-only by default")
     d.add_argument("--online", action="store_true", help="also probe gh")

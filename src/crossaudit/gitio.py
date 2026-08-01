@@ -43,6 +43,20 @@ def parent(repo: Path, sha: str) -> str | None:
     return out[1] if len(out) > 1 else None
 
 
+def changed_paths(repo: Path, sha: str) -> list[str]:
+    """The paths this commit touched: the increment, as git already knows it.
+
+    Scope derived from the commit itself rather than asked of the user. A first
+    commit has no parent, so everything in the tree counts as introduced.
+    """
+    if parent(repo, sha):
+        raw = git("diff-tree", "--no-commit-id", "--name-only", "-r", sha, cwd=repo,
+                  check=False)
+    else:
+        raw = git("ls-tree", "-r", "--name-only", sha, cwd=repo, check=False)
+    return [line for line in raw.splitlines() if line.strip()]
+
+
 def entries(repo: Path, sha: str, prefix: str = "") -> list[tuple[str, str, str]]:
     """(mode, path, blob-sha) for every file in the commit's tree under prefix."""
     args = ["ls-tree", "-r", "-z", sha]
@@ -73,7 +87,8 @@ def read_blob(repo: Path, blob: str, *, limit: int = MAX_BLOB_BYTES) -> tuple[by
     return (data[:limit], True) if len(data) > limit else (data, False)
 
 
-def materialise(repo: Path, sha: str, prefix: str = "") -> tuple[dict[str, bytes], list[str]]:
+def materialise(repo: Path, sha: str, prefix: str = "",
+                only: list[str] | None = None) -> tuple[dict[str, bytes], list[str]]:
     """Read an increment straight out of the tree.
 
     Returns (path -> bytes, notes). Symlinks and submodules are refused; a
@@ -81,7 +96,11 @@ def materialise(repo: Path, sha: str, prefix: str = "") -> tuple[dict[str, bytes
     """
     files: dict[str, bytes] = {}
     notes: list[str] = []
+    wanted = set(only) if only is not None else None
     for mode, path, blob in entries(repo, sha, prefix):
+        if wanted is not None and path not in wanted:
+            continue
+
         if mode == "120000":
             raise IntegrityDenial(f"increment contains a symlink: {path}", sha=sha)
         if mode == "160000":
