@@ -112,7 +112,7 @@ def cmd_doctor(args: argparse.Namespace) -> int:
     key_present = bool(os.environ.get(cfg.auditor.key_env, "").strip())
     add("auditor key", key_present,
         f"${cfg.auditor.key_env} " + ("is set" if key_present else "is empty"),
-        f"source {wizard.KEYS_FILE} or export {cfg.auditor.key_env}")
+        f"source {wizard.keys_file()} or export {cfg.auditor.key_env}")
 
     add("provider", cfg.auditor.provider in ("anthropic", "openai_compat", "replay"),
         f"{cfg.auditor.provider}:{cfg.auditor.model}", "check auditor.provider")
@@ -242,6 +242,16 @@ def cmd_audit(args: argparse.Namespace) -> int:
         audit_repo=cfg.audit_repo or "local", mode=args.mode,
         integrity=outcome.integrity)
     (ledger / "receipt.json").write_text(json.dumps(receipt, indent=2, sort_keys=True))
+
+    # Second phase of the ordering rule: the report was committed first so the
+    # receipt could bind its commit; now the receipt itself joins the ledger. A
+    # receipt can never contain the hash of the commit that carries it, which is
+    # why this is two commits rather than one.
+    if args.write_ledger:
+        rel = ledger.relative_to(cfg.root)
+        git("add", "--", str(rel / "receipt.json"), str(rel / "checks.json"), cwd=cfg.root)
+        git("commit", "-q", "-m",
+            f"audit receipt {sha[:12]} r{cycle['round']} ({outcome.verdict})", cwd=cfg.root)
 
     status = store.record_verdict(cycle["cycle_id"], sha, outcome.verdict,
                                   receipt_digest(receipt), cfg.max_rounds)

@@ -21,7 +21,17 @@ from ..config import CONFIG_NAME
 from ..errors import ConfigDenial
 from ..scaffold import CONFIG_TEMPLATE, read
 
-KEYS_FILE = Path.home() / ".crossaudit-keys.env"
+DEFAULT_KEYS_FILE = Path.home() / ".crossaudit-keys.env"
+
+
+def keys_file() -> Path:
+    """Where credentials are stored.
+
+    Resolved at call time and overridable through CROSSAUDIT_KEYS_FILE, so a
+    sandbox can keep everything it creates inside one directory and be deleted
+    without residue.
+    """
+    return Path(os.environ.get("CROSSAUDIT_KEYS_FILE", DEFAULT_KEYS_FILE)).expanduser()
 
 VENDOR_PRESETS = {
     "anthropic": ("anthropic", "claude-sonnet-4-5", "https://api.anthropic.com"),
@@ -65,18 +75,20 @@ def _choose(prompt: str, options: list[str], default: str) -> str:
 
 def write_keys(pairs: dict[str, str]) -> Path:
     """Append keys to a 0600 file. Existing values are kept unless replaced."""
+    path = keys_file()
     existing: dict[str, str] = {}
-    if KEYS_FILE.exists():
-        for line in KEYS_FILE.read_text().splitlines():
+    if path.exists():
+        for line in path.read_text().splitlines():
             if line.strip().startswith("export ") and "=" in line:
                 k, _, v = line.partition("=")
                 existing[k.replace("export ", "").strip()] = v
     existing.update({k: f'"{v}"' for k, v in pairs.items() if v})
     body = "# CrossAudit credentials. Never commit this file.\n" + "\n".join(
         f"export {k}={v}" for k, v in sorted(existing.items())) + "\n"
-    KEYS_FILE.write_text(body)
-    KEYS_FILE.chmod(0o600)
-    return KEYS_FILE
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(body)
+    path.chmod(0o600)
+    return path
 
 
 def github_plan(science: str, audit: str) -> list[str]:
@@ -107,7 +119,7 @@ def run(target: Path, *, mode: str, force: bool = False) -> dict:
     _say("=" * 60)
     _say("Three things to settle: who audits, what the rules are, and where the")
     _say("ledger lives. Nothing here is sent anywhere; keys go to a 0600 file")
-    _say(f"at {KEYS_FILE}, never into the repository.")
+    _say(f"at {keys_file()}, never into the repository.")
 
     # ---- 1. the auditor -----------------------------------------------------
     _say("\n[1/4] The Auditor — the model that reviews your work.")
@@ -131,7 +143,7 @@ def run(target: Path, *, mode: str, force: bool = False) -> dict:
 
     # ---- 2. keys ------------------------------------------------------------
     _say("\n[3/4] API keys. Typed input is hidden and written to "
-         f"{KEYS_FILE} (chmod 600).")
+         f"{keys_file()} (chmod 600).")
     _say("      Leave blank to skip and export the variable yourself.")
     auditor_key = _ask("Auditor API key", secret=True)
     generator_key = ""
