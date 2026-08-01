@@ -19,7 +19,7 @@ from pathlib import Path
 
 from ..config import CONFIG_NAME
 from ..errors import ConfigDenial
-from ..scaffold import CONFIG_TEMPLATE, read
+from ..scaffold import AUDIT_TREE, CONFIG_TEMPLATE, SCIENCE_TREE, read, write_tree
 
 DEFAULT_KEYS_FILE = Path.home() / ".crossaudit-keys.env"
 
@@ -99,8 +99,10 @@ def github_plan(science: str, audit: str) -> list[str]:
     admission tier they produce has to be named honestly when they land.
     """
     return [
-        f"gh repo create {science} --private --clone",
-        f"gh repo create {audit} --private --clone",
+        f"gh repo create {science} --private --clone   # then push the science shape:",
+        "#   experiments/ (README + TEMPLATE increment), cycles/README, crossaudit.yml",
+        f"gh repo create {audit} --private --clone     # then push the audit shape:",
+        "#   AUDIT_RULES.md (the Constitution), cycles/ ledger README",
         f"gh secret set CROSSAUDIT_AUDITOR_KEY --repo {audit} < (your key, via stdin)",
         f"gh api repos/{science}/branches/main/protection -X PUT ...  # required check",
         "# then: crossaudit doctor --online   (re-reads the real rules, not the plan)",
@@ -192,9 +194,16 @@ def run(target: Path, *, mode: str, force: bool = False) -> dict:
     )
     cfg_path.write_text(cfg_text)
 
+    # The repository takes its shape now, not after reading documentation:
+    # an experiments/ layout with a fill-in template, and the ledger directory
+    # explained. Existing files are never overwritten.
+    shaped = write_tree(target, SCIENCE_TREE)
+
     _say("\n" + "=" * 60)
     _say(f"wrote {cfg_path}")
     _say(f"wrote {const_path}")
+    for rel in shaped:
+        _say(f"wrote {rel}")
     if written:
         _say(f"wrote {written} (chmod 600)")
         _say(f"\n  Load the keys into this shell:  source {written}")

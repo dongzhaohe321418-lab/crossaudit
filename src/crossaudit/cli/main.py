@@ -66,6 +66,13 @@ def _state(cfg: Config) -> StateStore:
 
 
 # ----------------------------------------------------------------- doctor
+def _offer(args, prompt: str) -> bool:
+    """In --fix mode on a terminal, ask; otherwise never touch anything."""
+    if not getattr(args, "fix", False) or not sys.stdin.isatty():
+        return False
+    return input(f"       fix now — {prompt} [Y/n] ").strip().lower() in ("", "y", "yes")
+
+
 def cmd_doctor(args: argparse.Namespace) -> int:
     checks: list[dict] = []
     ok = True
@@ -93,8 +100,11 @@ def cmd_doctor(args: argparse.Namespace) -> int:
         cfg = load()
     except ConfigDenial as exc:
         add("config", False, exc.reason, f"run `crossaudit init` to write {CONFIG_NAME}")
-        _emit({"ok": False, "checks": checks}, args.json,
-              _render_doctor(checks, False))
+        print(_render_doctor(checks, False))
+        if _offer(args, "run the setup wizard here"):
+            wizard.run(Path("."), mode="local", force=False)
+            print("\nSetup written — running doctor again:\n")
+            return cmd_doctor(args)
         return EXIT_CONFIG
 
     add("config", True, str(cfg.path))
@@ -113,6 +123,15 @@ def cmd_doctor(args: argparse.Namespace) -> int:
         "declare generator.vendor, and make it differ from auditor.vendor")
 
     key_present = bool(os.environ.get(cfg.auditor.key_env, "").strip())
+    if not key_present and _offer(args, f"enter the auditor API key (hidden, saved to "
+                                        f"{wizard.keys_file()})"):
+        import getpass
+        entered = getpass.getpass("       auditor API key: ").strip()
+        if entered:
+            written = wizard.write_keys({cfg.auditor.key_env: entered})
+            os.environ[cfg.auditor.key_env] = entered
+            key_present = True
+            print(f"       saved; future shells: source {written}")
     add("auditor key", key_present,
         f"${cfg.auditor.key_env} " + ("is set" if key_present else "is empty"),
         f"source {wizard.keys_file()} or export {cfg.auditor.key_env}")
@@ -125,8 +144,23 @@ def cmd_doctor(args: argparse.Namespace) -> int:
     add("state store", writable, str(state_dir / "state.json"),
         "the controller must be able to persist consumed receipts")
 
-    add("science repo is git", is_repo(cfg.root), str(cfg.root),
+    repo_ok = is_repo(cfg.root)
+    if not repo_ok and _offer(args, f"run git init in {cfg.root}"):
+        git("init", "-q", "-b", "main", cwd=cfg.root)
+        repo_ok = is_repo(cfg.root)
+    add("science repo is git", repo_ok, str(cfg.root),
         "run `git init` — the ledger is git, not a directory")
+    if repo_ok:
+        const_committed = bool(git("log", "-1", "--format=%H", "--", cfg.constitution,
+                                   cwd=cfg.root, check=False))
+        if not const_committed and _offer(args, f"commit {cfg.constitution} so audits "
+                                                f"can cite its version"):
+            git("add", "--", cfg.constitution, cwd=cfg.root)
+            git("commit", "-q", "-m", "constitution: initial version", cwd=cfg.root)
+            const_committed = True
+        add("constitution committed", const_committed,
+            "audits cite the commit that versioned the rules (I3)",
+            f"git add {cfg.constitution} && git commit")
 
     if args.online:
         gh_ok, gh_detail = wizard.gh_available()
@@ -311,6 +345,13 @@ def cmd_status(args: argparse.Namespace) -> int:
               f"{r['active_sha']}  {r['consumed']}" for r in rows] or ["(no cycles yet)"]
     _emit({"cycles": rows}, args.json, "\n".join(human))
     return EXIT_OK
+
+
+# ------------------------------------------------------------------ watch
+def cmd_watch(args: argparse.Namespace) -> int:
+    from .watch import run_watch
+
+    return run_watch(load())
 
 
 # ------------------------------------------------------------------- init
@@ -546,8 +587,10 @@ def build_parser() -> argparse.ArgumentParser:
                    help=argparse.SUPPRESS)
     r.set_defaults(func=cmd_run)
 
-    d = sub.add_parser("doctor", help="preflight: offline and read-only by default")
+    d = sub.add_parser("doctor", help="preflight; --fix walks you through repairs")
     d.add_argument("--online", action="store_true", help="also probe gh")
+    d.add_argument("--fix", action="store_true",
+                   help="offer to repair each failure interactively")
     d.set_defaults(func=cmd_doctor)
 
     c = sub.add_parser("check", help="run the deterministic layer, no model involved")
@@ -582,6 +625,9 @@ def build_parser() -> argparse.ArgumentParser:
 
     s = sub.add_parser("status", help="where each cycle stands")
     s.set_defaults(func=cmd_status)
+
+    w = sub.add_parser("watch", help="live view: generator, auditor, and their conversation")
+    w.set_defaults(func=cmd_watch)
     return p
 
 
@@ -589,6 +635,20 @@ def main(argv: list[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
     if not getattr(args, "verb", None):
+        # First-run funnel: pip cannot run a wizard at install time (and must
+        # not — constraint 7), so the first bare invocation is the doorway.
+        try:
+            load()
+        except Denial:
+            if sys.stdin.isatty():
+                print("CrossAudit is installed but this directory is not set up.")
+                if input("Set it up now? [Y/n] ").strip().lower() in ("", "y", "yes"):
+                    wizard.run(Path("."), mode="local", force=False)
+                    print("\nNow: `crossaudit doctor --fix` to finish, then "
+                          "`crossaudit run`.")
+                    return EXIT_OK
+            print(GETTING_STARTED.format(version=__version__))
+            return EXIT_OK
         print(GETTING_STARTED.format(version=__version__))
         return EXIT_OK
     try:
