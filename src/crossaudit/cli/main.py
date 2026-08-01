@@ -252,10 +252,12 @@ def cmd_audit(args: argparse.Namespace) -> int:
 
     # Ledger write, in the only order that can be honest: report first, then a
     # receipt that binds the report's commit.
-    ledger = cfg.root / cfg.ledger_dir / f"{sha[:12]}-r{cycle['round']}"
-    if ledger.exists() and not args.force:
-        raise ConfigDenial(f"cycle directory {ledger} already exists; append-only")
-    ledger.mkdir(parents=True, exist_ok=True)
+    base = cfg.root / cfg.ledger_dir / f"{sha[:12]}-r{cycle['round']}"
+    ledger, attempt = base, 2
+    while ledger.exists():
+        ledger = Path(f"{base}.{attempt}")
+        attempt += 1
+    ledger.mkdir(parents=True)
     report_path = ledger / "report.md"
     report_path.write_text(outcome.report)
     (ledger / "checks.json").write_text(json.dumps(outcome.dcl, indent=2))
@@ -347,6 +349,22 @@ def cmd_status(args: argparse.Namespace) -> int:
     return EXIT_OK
 
 
+# ---------------------------------------------------------------- resolve
+def cmd_resolve(args: argparse.Namespace) -> int:
+    """The human principal rules on an escalated cycle. Interactive only: this
+    is a human act and must not be scriptable by the agents themselves."""
+    if not sys.stdin.isatty():
+        raise ConfigDenial("resolve is a human act; it refuses to run without a terminal")
+    cfg = load()
+    action = "reopen" if args.reopen else "close"
+    c = _state(cfg).resolve_escalation(args.cycle_id, action, args.because)
+    print(f"ruling recorded: {args.cycle_id} {action} — {args.because}")
+    print(f"cycle is now {c['status']} (round {c['round']}); "
+          + ("run `crossaudit run` to re-audit." if action == "reopen"
+             else "the increment stays out of the record."))
+    return EXIT_OK
+
+
 # ------------------------------------------------------------------ watch
 def cmd_watch(args: argparse.Namespace) -> int:
     from .watch import run_watch
@@ -396,8 +414,16 @@ def cmd_run(args: argparse.Namespace) -> int:
     prefix_own = (cfg.ledger_dir.rstrip("/") + "/", cfg.state_dir.rstrip("/") + "/",
                   ".github/")
     def science_of(s: str) -> list[str]:
-        return [f for f in changed_paths(cfg.root, s)
-                if f not in own and not f.startswith(prefix_own)]
+        picked = [f for f in changed_paths(cfg.root, s)
+                  if f not in own and not f.startswith(prefix_own)]
+        if cfg.scope_dirs:
+            # The deployment names its science directories (the reference
+            # implementation always did: pushes under experiments/ trigger).
+            # Tooling and housekeeping commits outside them are not increments
+            # and are not forced through the experiment format.
+            picked = [f for f in picked
+                      if f.split("/", 1)[0] in cfg.scope_dirs]
+        return picked
 
     def enclose(paths: list[str], s: str) -> list[str]:
         """Widen a diff to the increments it touched.
@@ -439,8 +465,17 @@ def cmd_run(args: argparse.Namespace) -> int:
             f"configuration or ledger. Commit your experiment, then run again.")
 
     dirty = git("status", "--porcelain", cwd=cfg.root, check=False)
+    from ..providers.registry import NEEDS_KEY
     key_present = bool(os.environ.get(cfg.auditor.key_env, "").strip())
-    offline = not key_present
+    key_needed = NEEDS_KEY.get(cfg.auditor.provider, True)
+    offline = key_needed and not key_present
+    if not offline:
+        het_ok, het_why = heterogeneity(cfg)
+        if not het_ok:
+            # Refused before a cycle opens or a request leaves: a same-vendor
+            # pair is same-source supervision, the thing this protocol exists
+            # to prevent (I1).
+            raise ConfigDenial(het_why)
 
     print("CrossAudit — one increment through the loop")
     print("=" * 60)
@@ -460,7 +495,7 @@ def cmd_run(args: argparse.Namespace) -> int:
     print(f"  rules      {cfg.constitution} @ {const_commit[:12]} "
           f"({len(known_rules(const_text))} rules)")
     print(f"  auditor    {cfg.auditor.provider}:{cfg.auditor.model} "
-          f"(key {'found' if key_present else 'MISSING -> deterministic checks only'})")
+          f"({'no key needed' if not key_needed else 'key found' if key_present else 'key MISSING -> deterministic checks only'})")
     if dirty:
         print("  note       uncommitted changes exist; the audit reads the COMMIT, "
               "not your working tree")
@@ -474,6 +509,8 @@ def cmd_run(args: argparse.Namespace) -> int:
     if cycle.get("blocked_by_escalation"):
         print("  An earlier round ESCALATED: a human decision is pending, and new "
               "commits cannot route around it.")
+        print(f"  You are the human here. Rule on it:  crossaudit resolve "
+              f"{cycle['cycle_id']} --reopen --because '<why>'")
         return EXIT_ESCALATED
     if not cycle.get("awaiting_verdict") and cycle["active_sha"] == sha:
         print(f"  Already audited (round {cycle['round']}, status {cycle['status']}).")
@@ -504,10 +541,15 @@ def cmd_run(args: argparse.Namespace) -> int:
             _done(f"reply valid, {n} finding(s), {b} blocking")
 
     _step(total, total, "ledger")
-    ledger = cfg.root / cfg.ledger_dir / f"{sha[:12]}-r{cycle['round']}"
-    if ledger.exists():
-        _done("cycle directory already exists (append-only); nothing rewritten")
-        raise ConfigDenial(f"{ledger} already exists; the ledger is append-only")
+    # Append-only with legitimate re-audits: a resumed or human-reopened round
+    # re-runs the same round number, so the directory takes the next attempt
+    # suffix instead of overwriting anything. The voided attempt stays visible
+    # beside its replacement, which is what an append-only ledger means.
+    base = cfg.root / cfg.ledger_dir / f"{sha[:12]}-r{cycle['round']}"
+    ledger, attempt = base, 2
+    while ledger.exists():
+        ledger = Path(f"{base}.{attempt}")
+        attempt += 1
     ledger.mkdir(parents=True)
     (ledger / "report.md").write_text(outcome.report)
     (ledger / "checks.json").write_text(json.dumps(outcome.dcl, indent=2))
@@ -628,6 +670,14 @@ def build_parser() -> argparse.ArgumentParser:
 
     w = sub.add_parser("watch", help="live view: generator, auditor, and their conversation")
     w.set_defaults(func=cmd_watch)
+
+    res = sub.add_parser("resolve", help="rule on an escalated cycle (human only)")
+    res.add_argument("cycle_id")
+    g = res.add_mutually_exclusive_group(required=True)
+    g.add_argument("--reopen", action="store_true", help="return it to the loop")
+    g.add_argument("--close", action="store_true", help="end it without admission")
+    res.add_argument("--because", required=True, help="the reason; it enters the ledger")
+    res.set_defaults(func=cmd_resolve)
     return p
 
 

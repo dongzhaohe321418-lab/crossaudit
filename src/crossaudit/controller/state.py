@@ -214,6 +214,36 @@ class StateStore:
             c["status"] = CONSUMED
             self._log(state, "admit", cycle=cycle_id, sha=sha, receipt=receipt_hash[:16])
 
+    def resolve_escalation(self, cycle_id: str, action: str, reason: str) -> dict:
+        """The human principal rules on an escalation (I6's other half).
+
+        Escalation hands an increment to a human; this is the verb the human
+        answers with. `reopen` returns the increment to the loop for another
+        audit round; `close` ends the cycle without admission. Either way the
+        decision and its stated reason enter the ledger, because a ruling that
+        leaves no record is exactly what this protocol exists to prevent.
+        """
+        if action not in ("reopen", "close"):
+            raise IntegrityDenial(f"unknown resolution {action!r}; use reopen or close")
+        if not reason.strip():
+            raise IntegrityDenial("a resolution must state its reason; it becomes ledger")
+        with self._locked() as state:
+            c = state["cycles"].get(cycle_id)
+            if c is None:
+                raise IntegrityDenial("unknown cycle", cycle_id=cycle_id)
+            if c["status"] != ESCALATED:
+                raise IntegrityDenial(f"cycle is {c['status']}, not ESCALATED; only an "
+                                      f"escalated cycle needs a human ruling")
+            if action == "reopen":
+                c["status"] = OPEN
+                c["awaiting_verdict"] = True
+            else:
+                c["status"] = BLOCKED
+                c["closed_by_human"] = True
+            self._log(state, "human_resolution", cycle=cycle_id, action=action,
+                      reason=reason[:400])
+            return dict(c, cycle_id=cycle_id)
+
     def mark_deadlettered(self, cycle_id: str, issue_ref: str) -> None:
         with self._locked() as state:
             c = state["cycles"].get(cycle_id)

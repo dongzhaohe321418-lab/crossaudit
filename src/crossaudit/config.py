@@ -20,8 +20,8 @@ CONFIG_NAME = "crossaudit.yml"
 ISOLATION_DIMS = ("parametric", "contextual", "permissive")
 
 _ALLOWED_TOP = {"version", "science_repo", "audit_repo", "constitution", "max_rounds",
-                "auditor", "generator", "isolation", "state", "ledger", "checks",
-                "plugins"}
+                "auditor", "generator", "isolation", "state", "ledger", "scope",
+                "checks", "plugins"}
 _ALLOWED_ROLE = {"provider", "model", "base_url", "key_env", "vendor"}
 
 
@@ -46,6 +46,7 @@ class Config:
     isolation_minimum: dict
     state_dir: str
     ledger_dir: str
+    scope_dirs: list[str] | None
     checks: list[str]
     plugins: list[str] = field(default_factory=list)
 
@@ -121,6 +122,11 @@ def load(path: Path | None = None) -> Config:
             f"store is gitignored and the ledger must be committable, so one directory "
             f"cannot serve both", file=str(p))
 
+    scope_dirs = (raw.get("scope") or {}).get("dirs")
+    if scope_dirs is not None and (not isinstance(scope_dirs, list)
+                                   or not all(isinstance(d, str) and d for d in scope_dirs)):
+        raise ConfigDenial("scope.dirs must be a list of directory names", file=str(p))
+
     checks = raw.get("checks") or ["schema", "units", "convergence", "provenance"]
     if not isinstance(checks, list) or not all(isinstance(c, str) for c in checks):
         raise ConfigDenial("checks must be a list of names", file=str(p))
@@ -136,6 +142,7 @@ def load(path: Path | None = None) -> Config:
         isolation_minimum={d: bool(minimum.get(d, False)) for d in ISOLATION_DIMS},
         state_dir=state_dir,
         ledger_dir=ledger_dir,
+        scope_dirs=scope_dirs,
         checks=checks,
         plugins=raw.get("plugins") or [],
     )
