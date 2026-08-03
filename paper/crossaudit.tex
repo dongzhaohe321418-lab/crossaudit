@@ -49,10 +49,11 @@
 \maketitle
 
 \begin{abstract}
-\noindent Autonomous ``AI scientist'' systems increasingly generate, execute, and review research. In the frontier systems we surveyed, the reviewing agent is typically an internal critic selected by the same operator and often drawn from the same model family or vendor as the generating agent. This arrangement leaves the supervision process vulnerable to self-preference bias and to blind spots shared across a common training pipeline; the supervision trace, moreover, usually lives in opaque platform logs rather than in an artefact a third party can replay. We present \textbf{CrossAudit}, a lightweight, infrastructure-minimal protocol for supervising autonomous research pipelines, built on three commitments. First, heterogeneity: every experiment increment produced by a generator agent is audited by an agent from a different model vendor, against a versioned, human-authored rulebook (the Constitution). Second, a git-native ledger: experimental increments, audit reports, verdicts, disputes, and escalations are all recorded as commits, allowing the supervision history to be revisited, compared, and cited by third parties. Third, graded human oversight: deterministic, model-free checks and clear inconsistencies can block the pipeline, whereas matters of judgement cannot; unresolved blockers are instead passed through a bounded revision loop and, if necessary, escalated to a human principal. \par
-We define the protocol through eight invariants and describe a public reference implementation built with GitHub Actions and a few hundred lines of dependency-light Python. The implementation \emph{targets} all eight invariants but currently enforces only a subset, including deterministic checks, reply validation, receipt generation, and anchored callbacks; receipt-verified, fail-closed admission is specified but not yet enforced. We also report a live deployment of a closely related variant in a computational-chemistry pipeline, in which the Claude-based generator, GPT-lineage auditor, and cloud-HPC compute layer are mutually decoupled. \par
-We conducted an exploratory seeded-defect trial comprising 30 synthetic increments and 43 defects. The intended blinding was subsequently invalidated by a cross-vendor audit of our own repository; we accepted its findings and committed them alongside the trial data. Under the frozen scoring scheme, the same-family auditor identified 38 of 43 defects at both the lenient and strict tiers, with no false-positive blockers. The cross-vendor auditor identified 41 of 43 defects at the lenient tier and 37 of 43 at the strict tier, but returned \texttt{BLOCKED} on all 30 increments. Because recall under the frozen scorer increases with finding volume, and the three arms produced 17, 63, and 113 findings respectively, permutation-corrected agreement places the two model arms within noise at the lenient tier and reverses their ordering at the strict tier. \par
-The trial therefore demonstrates that vendors can interpret the same rulebook differently; it does not establish that either auditor is superior. The strongest evidence in the repository is instead the committed record of cross-vendor audits applied to this paper itself. We argue that audit trails of this kind provide a practical basis for accountable machine science and can be adopted by an individual researcher using existing infrastructure.
+\noindent An AI scientist should not grade its own homework. Yet in the systems we surveyed, the reviewing agent comes from the same model family as the agent that produced the work, or at least from the same vendor. Model evaluators favour their own generations, and models trained together tend to share blind spots. The record of what was flagged and what was waved through usually sits in platform logs that nobody outside can replay.
+
+We present \textbf{CrossAudit}, a protocol for supervising autonomous research pipelines. It rests on three commitments. Each increment of work is audited by an agent from a \emph{different} vendor, against a rulebook a human wrote and versioned. Every artefact of that supervision is a git commit, so the history can be re-read and cited by anyone. Scripted checks run before any model does. Judgement calls never gate the pipeline. Blockers that survive a bounded number of revision rounds go to a person.
+
+We state the protocol as eight invariants. We describe a reference implementation built from GitHub Actions and a few hundred lines of Python, and report a live deployment in a computational-chemistry pipeline. We also ran a seeded-defect trial. A cross-vendor audit of our own repository then voided its blinding. We adopt that audit's findings and report the corrected results. The trial shows that two vendors read the same rulebook differently. It does not show that either is better. The strongest evidence here is the committed record of cross-vendor audits of this paper itself.
 \end{abstract}
 
 \vspace{5pt}\noindent{\small\textbf{Keywords:} agentic science; AI scientist; scalable oversight; cross-vendor auditing; LLM-as-a-judge; self-preference bias; research integrity; human-in-the-loop.}
@@ -423,17 +424,17 @@ CrossAudit reframes supervision of autonomous research from a platform feature i
 \begin{thebibliography}{99}\small
 
 \bibitem{lu2024aiscientist}
-C.~Lu, C.~Lu, R.~T. Lange, J.~Foerster, J.~Clune, and D.~Ha.
+C.~Lu, C.~Lu, R.~T. Lange, et~al.
 \newblock The {AI} {Scientist}: Towards fully automated open-ended scientific discovery.
 \newblock \emph{arXiv:2408.06292}, 2024.
 
 \bibitem{yamada2025aisv2}
-Y.~Yamada, R.~T. Lange, C.~Lu, S.~Hu, C.~Lu, J.~Foerster, J.~Clune, and D.~Ha.
+Y.~Yamada, R.~T. Lange, C.~Lu, et~al.
 \newblock The {AI} {Scientist}-v2: Workshop-level automated scientific discovery via agentic tree search.
 \newblock \emph{arXiv:2504.08066}, 2025.
 
 \bibitem{lu2026nature}
-C.~Lu, C.~Lu, R.~T. Lange, Y.~Yamada, S.~Hu, J.~Foerster, D.~Ha, and J.~Clune.
+C.~Lu, C.~Lu, R.~T. Lange, et~al.
 \newblock Towards end-to-end automation of {AI} research.
 \newblock \emph{Nature}, 651:914--919, 2026.
 
@@ -456,7 +457,7 @@ L.~Zheng, W.-L. Chiang, Y.~Sheng, S.~Zhuang, et~al.
 \bibitem{norman2026reliability}
 J.~D. Norman, M.~U. Rivera, and D.~A. Hughes.
 \newblock Reliability without validity: a systematic, large-scale evaluation of {LLM}-as-a-judge models across agreement, consistency, and bias.
-\newblock \emph{arXiv:2606.19544}, 2026.
+\newblock \emph{arXiv:2606.19544} (preprint), 2026.
 \newblock arXiv:2306.05685.
 
 \bibitem{boiko2023}
@@ -501,7 +502,7 @@ S.~Schmidgall et~al.
 \newblock \url{https://edisonscientific.com/news/announcing-kosmos}.
 
 \bibitem{verga2024poll}
-P.~Verga, S.~Hofst\"atter, S.~Althammer, et~al.
+P.~Verga, S.~Hofst\"atter, S.~Althammer, Y.~Su, et~al.
 \newblock Replacing judges with juries: Evaluating {LLM} generations with a panel of diverse models.
 \newblock \emph{arXiv:2404.18796}, 2024.
 
