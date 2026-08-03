@@ -51,7 +51,7 @@
 - ⬜ **C1. 逗号拼接人工通读**：~67 处候选点（清单在
   `paper/reviews/STYLE_DEAI_2026-07-31.md`，由你本地 agent 生成）。
   执行：你通读定夺，Claude 批量执行修改。
-- ⬜ **C2. §5 要点节奏变化**（bullet 句式过齐）与 **§6 段落合并**。
+- ✅ **C2. §5 要点节奏变化**（bullet 句式过齐）与 **§6 段落合并**。
   执行：Claude；此前定为 Major Revision 项，可与 A3 一起做。
 - ✅ **C3. Keywords 行插入摘要下方**（主选 8 个已定：agentic science,
   AI scientist, scalable oversight, cross-vendor auditing, LLM-as-a-judge,
