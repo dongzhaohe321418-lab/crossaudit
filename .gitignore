@@ -39,3 +39,7 @@ dist/
 
 # Build artefacts
 /dist/
+
+# local read-only clones of the science repos (never committed)
+pv-science/
+pv-audit/
