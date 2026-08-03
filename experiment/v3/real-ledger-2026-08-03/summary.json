@@ -1,0 +1,63 @@
+{
+ "freeze": {
+  "science_head": "485106fa144ccd74fff77144634b65e15c38eb71",
+  "audit_head": "abb10a4781d954a66412201f103246852f1540f3"
+ },
+ "n_cycles": 21,
+ "decisions": [
+  "BLOCK",
+  "BLOCK",
+  "BLOCK",
+  "BLOCK",
+  "BLOCK",
+  "PASS_WITH_CAVEATS",
+  "PASS",
+  "PASS",
+  "PASS_WITH_CAVEATS",
+  "PASS_WITH_CAVEATS",
+  "BLOCK",
+  "BLOCK",
+  "PASS",
+  "BLOCK",
+  "BLOCK",
+  "BLOCK",
+  "BLOCK",
+  "BLOCK",
+  "BLOCK",
+  "BLOCK",
+  "BLOCK"
+ ],
+ "findings_per_cycle": [
+  7,
+  4,
+  3,
+  2,
+  1,
+  1,
+  0,
+  0,
+  1,
+  1,
+  1,
+  1,
+  0,
+  1,
+  1,
+  3,
+  3,
+  1,
+  3,
+  2,
+  3
+ ],
+ "n_distinct_findings": 23,
+ "n_confirmed_real": 20,
+ "n_unresolved": 3,
+ "models": [
+  "GPT-5",
+  "gpt-5",
+  "gpt-5.6",
+  "gpt-5.6-sol"
+ ],
+ "n_science_fix_commits": 22
+}
