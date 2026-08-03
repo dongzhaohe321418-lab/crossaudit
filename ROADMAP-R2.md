@@ -90,7 +90,11 @@ follows the receipt's own cycle dir (dispute rounds verify); anchor checkout bir
 "unversioned" constitution now DENIES; MAX_ROUNDS read from crossaudit.yml; same-sha
 re-dispatch advances rounds (no cycle reset), ESCALATED unbypassable by child commits;
 deadletter dedup via state writeback; run-audit concurrency group; example README ships
-controller/; CA-META-004 added to demo Constitution. Open: one-shot dispute enforcement in
-code (on-dispute.yml is an unbounded re-dispatch trigger today; rounds bound it, per-finding
-one-shot does not exist yet); zh README + faq two revisions behind; ratchet N/M thresholds
-unbound.
+controller/; CA-META-004 added to demo Constitution. Open: zh README + faq two revisions behind; ratchet N/M thresholds unbound.
+
+> Per-finding one-shot dispute enforcement, listed open above, is closed in the
+> product line (`crossaudit_v3`, `dispute.py`): a per-cycle dispute log refuses a
+> second trip for the same finding, the generator cannot dispute at all, and a
+> rule can only be amended, never disputed. The reference implementation here
+> still bounds disputes by rounds alone; the line above stands unedited as what
+> was true of this repository.
