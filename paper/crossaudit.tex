@@ -49,7 +49,7 @@
 \maketitle
 
 \begin{abstract}
-\noindent An AI scientist should not grade its own homework. Yet in the systems we surveyed, the reviewing agent comes from the same model family as the agent that produced the work, or at least from the same vendor. Model evaluators favour their own generations, and models trained together tend to share blind spots. The record of what was flagged and what was waved through usually sits in platform logs that nobody outside can replay.
+\noindent An AI scientist should not grade its own homework. Yet in the systems we surveyed, the agent that reviews the work usually comes from the same model family as the agent that produced it, or at least from the same vendor. Model evaluators are known to favour their own generations. Whether models trained alike also share blind spots is a conjecture rather than a settled finding, but if they do, the reviewer inherits the author's. The record of what was flagged and what was waved through often sits in platform logs that nobody outside can replay.
 
 We present \textbf{CrossAudit}, a protocol for supervising autonomous research pipelines. It rests on three commitments. Each increment of work is audited by an agent from a \emph{different} vendor, against a rulebook a human wrote and versioned. Every artefact of that supervision is a git commit, so the history can be re-read and cited by anyone. Scripted checks run before any model does. Judgement calls never gate the pipeline. Blockers that survive a bounded number of revision rounds go to a person.
 

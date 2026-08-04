@@ -45,3 +45,21 @@ No fabricated entry, no invented venue, no citation without a bibliography
 entry, and no entry in the list that the text never uses. Two non-paper
 sources (a vendor announcement, a consortium website) are cited in footnotes
 and described as what they are rather than dressed as literature.
+
+
+## A note on the abstract
+
+The abstract carries no citation markers, which is the convention: an abstract
+is indexed and read on its own, where a bracketed number resolves to nothing.
+Both abstracts we checked as style references (Lu et al. 2024, Panickssery et
+al. 2024) cite nothing either, and the arXiv abstract field is plain text, so a
+marker there would print literally.
+
+The convention has a condition attached, and checking it found a real defect.
+An uncited abstract may state established findings as background, but it may
+not state the authors' own conjecture as though it were established. Ours did:
+it said models trained together *tend to* share blind spots, while §1 and §2
+say they *may*, and call the generalisation a hypothesis. The abstract now
+separates the two. Self-preference is reported as the demonstrated finding it
+is; shared blind spots are named as a conjecture, with the consequence stated
+conditionally.
