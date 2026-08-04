@@ -9,9 +9,9 @@ authors visible (arXiv is not blind).
 
 `crossaudit.tex` alone. The paper is fully self-contained: bibliography is an
 embedded `thebibliography`, every figure is TikZ drawn in-document, there are
-no `\input`/`\includegraphics` and no external assets. Verified 2026-07-31 by
+no `\input`/`\includegraphics` and no external assets. Re-verified 2026-08-03 by
 compiling the single file in an empty directory: two pdflatex passes, zero
-errors, 15 pages (TeX Live 2025; arXiv runs TeX Live, pdflatex path).
+errors, 17 pages (TeX Live 2025; arXiv runs TeX Live, pdflatex path).
 
 No `.bbl`, no figures directory, no ancillary files needed. If arXiv's
 AutoTeX complains about anything, it will be package-environment drift; all
@@ -24,46 +24,42 @@ enumitem, hyperref, caption) are standard TeX Live.
   Science
 - **Authors:** Zhaohe Dong (University of Cambridge), Yuhao Chen (University
   of Wisconsin–Madison)
-- **Comments:** 15 pages, 3 figures, 2 tables. Reference implementation,
+- **Comments:** 17 pages, 3 figures, 2 tables. Reference implementation,
   audit ledger, and experiment artefacts:
   https://github.com/dongzhaohe321418-lab/crossaudit
 - **Primary category:** cs.AI. Suggested cross-lists: cs.SE (the mechanism is
   CI/git machinery), cs.CY (research integrity and accountability).
 - **License:** arXiv non-exclusive license v1.0 is sufficient and keeps later
   venue options open; choose CC BY 4.0 only if you want to commit to it now.
-- **Abstract field:** the paper's abstract is 2,781 plain characters and the
-  form caps at 1,920, so the field takes the condensed version below
-  (1,894 chars). The in-paper abstract is untouched; the condensation drops
-  the blinding-voided parenthetical and the strongest-evidence sentence,
-  which the paper itself states in full.
+- **Abstract field:** the paper's abstract is 1,627 plain characters and the
+  form caps at 1,920, so the paper's own abstract goes in verbatim. No
+  condensation is needed and none should be invented: an abstract that differs
+  between the listing and the PDF is a small dishonesty of exactly the kind
+  this paper is about. Regenerate this block after any abstract edit.
 
 ```text
-Autonomous "AI scientist" systems increasingly generate, execute, and review
-research. In the frontier systems we survey, the reviewing agent is an
-internal critic chosen by the same operator, often from the same model family
-or vendor as the generating agent, exposing supervision to self-preference
-bias and to shared blind spots; the supervision trace usually lives in opaque
-platform logs rather than in an artefact a third party can replay. We present
-CrossAudit, a lightweight protocol for supervising autonomous research
-pipelines, built on three commitments: heterogeneity (every experiment
-increment produced by a generator agent is audited by an agent from a
-different model vendor, against a versioned, human-authored rulebook); a
-git-native ledger (experiments, audit reports, verdicts, disputes and
-escalations are all commits, so the supervision history can be re-read,
-diffed, and cited); and graded human oversight (deterministic checks gate the
-pipeline, judgement calls do not, and a bounded revision loop escalates
-unresolved blockers to a human principal). We specify the protocol as eight
-invariants; describe a public reference implementation that targets them and
-implements a subset; and report a live deployment in a computational-chemistry
-pipeline. In an exploratory seeded-defect trial (30 synthetic increments, 43
-defects), a same-family auditor scored 38/43 with zero false-positive
-blockers, while a cross-vendor auditor scored 41/43 at a lenient scoring tier
-but 37/43 at a strict tier and blocked all thirty increments;
-permutation-corrected agreement places the two model arms within noise at the
-lenient tier and reverses their order at the strict tier. The trial shows
-that vendors disagree, not that either is better. We argue that cross-vendor
-audit trails are a practical basis for accountable machine science, and one a
-single researcher can adopt today.
+An AI scientist should not grade its own homework. Yet in the systems we
+surveyed, the agent that reviews the work usually comes from the same model
+family as the agent that produced it, or at least from the same vendor. Model
+evaluators are known to favour their own generations. Whether models trained
+alike also share blind spots is a conjecture rather than a settled finding,
+but if they do, the reviewer inherits the author's. The record of what was
+flagged and what was waved through often sits in platform logs that nobody
+outside can replay. We present CrossAudit, a protocol for supervising
+autonomous research pipelines. It rests on three commitments. Each increment
+of work is audited by an agent from a different vendor, against a rulebook a
+human wrote and versioned. Every artefact of that supervision is a git commit,
+so the history can be re-read and cited by anyone. Scripted checks run before
+any model does. Judgement calls never gate the pipeline. Blockers that survive
+a bounded number of revision rounds go to a person. We state the protocol as
+eight invariants. We describe a reference implementation built from GitHub
+Actions and a few hundred lines of Python, and report a live deployment in a
+computational-chemistry pipeline. We also ran a seeded-defect trial. A cross-
+vendor audit of our own repository then voided its blinding. We adopt that
+audit's findings and report the corrected results. The trial shows that two
+vendors read the same rulebook differently. It does not show that either is
+better. The strongest evidence here is the committed record of cross-vendor
+audits of this paper itself.
 ```
 
 ## Operator checklist (the upload is yours)
