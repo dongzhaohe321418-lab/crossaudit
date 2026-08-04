@@ -23,6 +23,8 @@ import argparse, json, math, random, re
 from collections import defaultdict
 from pathlib import Path
 
+from reply_schema import partition, referrals
+
 LADDER = ["L1", "L2", "L3", "L4", "L4b", "L5"]
 
 def norm(s: str) -> set:
@@ -116,10 +118,18 @@ def clopper(k, n, alpha=0.05):
     return round(lo, 3), round(hi, 3)
 
 def load_arm(d: Path):
+    """Normalise every arm's replies through one partition, so no arm is read
+    on terms another was not. `findings` after this call means "entries the
+    auditor still stood behind"; entries it withdrew, and pairs it referred to a
+    deterministic check, are kept beside them and reported, never scored."""
     out = {}
     for p in sorted(d.glob("INC-*.json")):
         rec = json.loads(p.read_text())
-        out[rec["increment"]] = rec.get("parsed") or {"findings": []}
+        parsed = rec.get("parsed")
+        found, withdrawn = partition(parsed)
+        out[rec["increment"]] = {**(parsed or {}), "findings": found,
+                                 "_withdrawn": withdrawn,
+                                 "_referred": referrals(parsed)}
     return out
 
 def main():
@@ -156,6 +166,8 @@ def main():
         per_arm[rung] = {
             "recall": sum(hits.values()), "of": total,
             "findings_emitted": n_find,
+            "withdrawn_by_author": sum(len((arm.get(i) or {}).get("_withdrawn", [])) for i in arm),
+            "referred_to_tools": sum(len((arm.get(i) or {}).get("_referred", [])) for i in arm),
             "chance_floor": permutation_floor(key, arm, a.shuffles, a.seed),
             "false_block_rate": {"blocked": len(blocked), "clean": len(clean),
                                  "ci95": [lo, hi]},

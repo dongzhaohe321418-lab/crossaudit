@@ -47,6 +47,36 @@ jobs:
           echo "seal ok: $HAVE (custody: $MODE)"
           [ "$MODE" = "hash-only" ] && echo "::warning::hash-only custody; no blinding claim is supported"
 
+      # The corpus gate. check_corpus.py needs the defect key, which is escrowed
+      # outside this repository by design, so CI cannot re-run it. What CI can do
+      # is refuse an arm unless a green report is committed AND was produced
+      # against this exact corpus and this exact checker -- a report that does not
+      # pin what it was run against is a claim, not evidence.
+      - name: Refuse to run without a green, corpus-bound check report
+        run: |
+          CORPUS="experiment/v3/${{ inputs.corpus }}"
+          REPORT="$CORPUS/CORPUS-CHECK.json"
+          test -f "$REPORT" || { echo "::error::no committed corpus check at $REPORT. Run check_corpus.py where the key lives."; exit 1; }
+          python3 - "$CORPUS" "$REPORT" <<'PY'
+          import json, sys
+          sys.path.insert(0, "experiment/v3")
+          from hashlib import sha256
+          from pathlib import Path
+          from check_corpus import corpus_digest
+          corpus, report = Path(sys.argv[1]), json.loads(Path(sys.argv[2]).read_text())
+          bad = report.get("increments_with_problems")
+          if bad:
+              sys.exit(f"::error::the committed corpus check reports {bad} increment(s) with problems")
+          have = corpus_digest(corpus)
+          if have != report.get("corpus_sha256"):
+              sys.exit("::error::the committed check was run against a different corpus "
+                       f"({report.get('corpus_sha256')}) than the one here ({have})")
+          mine = sha256(Path("experiment/v3/check_corpus.py").read_bytes()).hexdigest()
+          if mine != report.get("checker_sha256"):
+              sys.exit("::error::the committed check was produced by a different checker than the one here")
+          print(f"corpus check ok: {report['increments_checked']} increments, 0 problems")
+          PY
+
       - name: Install pinned dependencies
         run: pip install --require-hashes -r constraints.txt || pip install -r constraints.txt
 

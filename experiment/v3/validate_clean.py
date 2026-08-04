@@ -23,6 +23,8 @@ from __future__ import annotations
 import argparse, json, os, random, subprocess, sys
 from pathlib import Path
 
+from reply_schema import partition, referrals
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--corpus", required=True); ap.add_argument("--key", required=True)
@@ -49,13 +51,15 @@ def main():
                        capture_output=True, text=True)
     if r.returncode: sys.exit(f"the audit call failed: {r.stdout}\n{r.stderr}")
 
-    total, report = 0, {}
+    total, n_withdrawn, n_referred, report = 0, 0, 0, {}
     for p in sorted(out.glob("INC-*.json")):
         rec = json.loads(p.read_text())
-        fs = (rec.get("parsed") or {}).get("findings", [])
-        total += len(fs)
+        fs, withdrawn = partition(rec.get("parsed"))
+        total += len(fs); n_withdrawn += len(withdrawn)
+        n_referred += len(referrals(rec.get("parsed")))
         report[rec["increment"]] = [{"rule": f.get("rule"), "why": f.get("description")} for f in fs]
     print(json.dumps({"clean_increments_sampled": len(pick), "findings": total,
+                      "withdrawn_by_author": n_withdrawn, "referred_to_tools": n_referred,
                       "detail": report}, indent=1))
     if total:
         print(f"\n{total} finding(s) on increments nobody seeded. Each is either a corpus "

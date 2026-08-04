@@ -38,6 +38,24 @@ BASES = ["def2-SVP", "def2-TZVP", "cc-pVDZ", "aug-cc-pVTZ"]
 SYSTEMS = {"water dimer": 6, "ammonia dimer": 8, "methane--water complex": 8,
            "HF dimer": 4, "formic acid dimer": 10, "benzene--water complex": 15,
            "methanol dimer": 12}
+
+# The elements each system is actually made of. The geometry files used to carry
+# `X` dummy atoms, and an auditor reading "formic acid dimer" above a column of X
+# called the contradiction correctly -- on a clean increment, where it scored as a
+# false alarm. The composition is a claim the corpus can honour cheaply and
+# exactly; the coordinates are not, and line 2 of each file now says so instead of
+# implying a geometry nobody computed.
+COMPOSITION = {
+    "water dimer": ["O", "H", "H"] * 2,
+    "ammonia dimer": ["N", "H", "H", "H"] * 2,
+    "methane--water complex": ["C", "H", "H", "H", "H", "O", "H", "H"],
+    "HF dimer": ["F", "H"] * 2,
+    "formic acid dimer": ["C", "O", "O", "H", "H"] * 2,
+    "benzene--water complex": ["C"] * 6 + ["H"] * 6 + ["O", "H", "H"],
+    "methanol dimer": ["C", "O", "H", "H", "H", "H"] * 2,
+}
+assert all(len(COMPOSITION[s]) == n for s, n in SYSTEMS.items()), \
+    "a system's composition must contain exactly the atoms its record counts"
 HARTREE_EV = 27.211386245988
 
 # class -> (cheapest expected channel, one-line rationale kept with the key)
@@ -110,11 +128,11 @@ def base_increment(rng, idx):
         "results": {
             "quantities": [
                 {"name": "binding_energy", "value": be, "unit": "kcal/mol",
-                 "source": f"{script}@c{idx:03d}beef"},
+                 "source": f"scripts/{script}@c{idx:03d}beef"},
                 {"name": "intermolecular_distance", "value": dist, "unit": "angstrom",
-                 "source": f"{script}@c{idx:03d}beef"},
+                 "source": f"scripts/{script}@c{idx:03d}beef"},
                 {"name": "total_energy", "value": round(e_printed_ha * HARTREE_EV, 4),
-                 "unit": "eV", "source": "logs/scf.log"},
+                 "unit": "eV", "source": "scf.log"},
             ],
             "convergence": {"converged": True, "threshold": thr, "achieved": ach,
                             "unit": "hartree"},
@@ -122,7 +140,11 @@ def base_increment(rng, idx):
         "structure": {"pair_distance_angstrom": dist, "n_atoms": SYSTEMS[system]},
         "summary": (f"We compute the counterpoise-corrected binding energy of the {system} "
                     f"at {func}/{basis}, obtaining {be} kcal/mol at an intermolecular "
-                    f"distance of {dist} angstrom. SCF convergence reached {ach:.2e} Ha "
+                    # Quote the convergence figure with the digits results.json carries.
+                    # Rounding it for prose (3.34e-07 against a recorded 3.33941e-07) is a
+                    # mismatch an auditor is right to report, and it fires on clean
+                    # increments, so it would price into every arm's false-block rate.
+                    f"distance of {dist} angstrom. SCF convergence reached {json.dumps(ach)} Ha "
                     f"against a {thr:.0e} Ha threshold. All runs are reported; none were excluded."),
     }
 
@@ -143,12 +165,12 @@ def inject(rng, inc, cls):
         loc, desc = "metadata.yml code_version", "required field removed"
     elif cls == "T1":
         r["quantities"][2]["value"] = round(r["quantities"][2]["value"] * 1.004, 4)
-        loc = "results.json quantities[2].value vs logs/scf.log"
+        loc = "results.json quantities[2].value vs scf.log"
         desc = "reported total energy does not match the log's final step"
     elif cls == "T2":
         s = inc["steps"]
         s[-1] = (s[-1][0], s[-1][1], inc["thr"] * 8)
-        loc, desc = "logs/scf.log final dE vs convergence.threshold", "log's last step is above the stated threshold while the record claims convergence"
+        loc, desc = "scf.log final dE vs convergence.threshold", "log's last step is above the stated threshold while the record claims convergence"
     elif cls == "T3":
         inc["structure"]["pair_distance_angstrom"] = round(inc["dist"] + rng.uniform(0.15, 0.4), 2)
         loc, desc = "structure.json vs results quantities[1]", "structure record and reported distance disagree"
@@ -167,7 +189,7 @@ def inject(rng, inc, cls):
                            f"earlier {other} value, confirming the trend.")
         loc, desc = "SUMMARY final sentence", f"cross-basis comparison ({other}) without caveat"
     elif cls == "L4":
-        r["quantities"][0]["source"] = f"legacy_fit.py@{rng.randrange(16**7):07x}"
+        r["quantities"][0]["source"] = f"scripts/legacy_fit.py@{rng.randrange(16**7):07x}"
         loc, desc = "results.json quantities[0].source", "source script not among declared inputs"
     elif cls == "L5":
         inc["summary"] = inc["summary"].replace(f"obtaining {inc['be']}",
@@ -190,6 +212,13 @@ def yaml_dump(d, ind=0):
         if isinstance(v, dict):
             out.append(f"{pad}{k}:"); out.append(yaml_dump(v, ind + 1))
         elif isinstance(v, list):
+            # An empty list must render as [] and not as a bare key. A bare key parses
+            # to null, and an auditor reading "exclusions: null" is entitled to call the
+            # field unset -- on a clean increment, which would be a corpus-made false
+            # positive, and L2's whole signal is "summary admits dropped runs while
+            # exclusions is empty".
+            if not v:
+                out.append(f"{pad}{k}: []"); continue
             out.append(f"{pad}{k}:")
             for it in v:
                 out.append(f"{pad}  - {json.dumps(it) if isinstance(it,(dict,list)) else it}")
@@ -198,8 +227,31 @@ def yaml_dump(d, ind=0):
     return "\n".join(x for x in out if x)
 
 
+def xyz(inc):
+    """Right elements, declared-placeholder coordinates.
+
+    XYZ line 2 is free-text, so the file can state exactly what it is and is not.
+    An increment that disclaims its coordinates offers nothing to contradict; one
+    that ships dummy atoms under a chemical name offers a real contradiction, and
+    the auditor that reports it is right.
+    """
+    els = COMPOSITION[inc["system"]]
+    head = (f"{len(els)}\n{inc['system']}: composition is the system's; coordinates are "
+            f"placeholders on a 2.0 A grid, not a computed geometry. Synthetic corpus item.\n")
+    rows = "".join(f"{e} {(j % 4) * 2.0:.3f} {(j // 4) * 2.0:.3f} 0.000\n"
+                   for j, e in enumerate(els))
+    return head + rows
+
+
 def scf_log(inc):
-    lines = [f"# SCF log for {inc['script']} ({inc['func']}/{inc['basis']})"]
+    # Name the convergence metric in the log. Without the label, dE is a column an
+    # auditor can reasonably read as something other than the quantity results.json
+    # calls `convergence.achieved`, and it reported exactly that ambiguity on a clean
+    # increment. The corpus should not require a guess it can simply state.
+    lines = [f"# SCF log for {inc['script']} ({inc['func']}/{inc['basis']})",
+             "# convergence metric: dE, the energy change between successive SCF",
+             "# iterations, in hartree. results.json convergence.achieved is the dE",
+             "# of the final step below."]
     for k, e, de in inc["steps"]:
         lines.append(f"STEP {k} E={e:.8f} dE={de:.6e}")
     lines.append(f"# final energy {inc['e_final_ha']:.6f} hartree")
@@ -252,9 +304,7 @@ def main():
         # own terms. Every declared path is written, so a clean increment is clean
         # against the rulebook and not merely against the defect key.
         for sub, body in (
-            (f"geometries/{i:03d}.xyz",
-             f"{inc['structure']['n_atoms']}\n{inc['system']} geometry, synthetic\n" +
-             "".join(f"X {j*0.7:.3f} 0.000 0.000\n" for j in range(inc['structure']['n_atoms']))),
+            (f"geometries/{i:03d}.xyz", xyz(inc)),
             (f"scripts/{inc['script']}",
              f"# {inc['func']}/{inc['basis']} single point, synthetic corpus item\n"
              f"# rerun: python {inc['script']}\n"),
