@@ -33,8 +33,11 @@ from pathlib import Path
 
 FUNCTIONALS = ["PBE0", "B3LYP", "PBE", "wB97X-D", "M06-2X"]
 BASES = ["def2-SVP", "def2-TZVP", "cc-pVDZ", "aug-cc-pVTZ"]
-SYSTEMS = ["water dimer", "ammonia dimer", "methane--water complex", "HF dimer",
-           "formic acid dimer", "benzene--water complex", "methanol dimer"]
+# System -> atom count. A random integer here is a defect nobody seeded: an
+# auditor with chemistry knows an HF dimer has four atoms, and will say so.
+SYSTEMS = {"water dimer": 6, "ammonia dimer": 8, "methane--water complex": 8,
+           "HF dimer": 4, "formic acid dimer": 10, "benzene--water complex": 15,
+           "methanol dimer": 12}
 HARTREE_EV = 27.211386245988
 
 # class -> (cheapest expected channel, one-line rationale kept with the key)
@@ -65,7 +68,8 @@ EXCLUSIVE = [{"D1", "L4"}, {"D3", "T2"}, {"D3", "L6"}, {"T1", "L5"}, {"T2", "L6"
 
 
 def base_increment(rng, idx):
-    func, basis, system = rng.choice(FUNCTIONALS), rng.choice(BASES), rng.choice(SYSTEMS)
+    func, basis = rng.choice(FUNCTIONALS), rng.choice(BASES)
+    system = rng.choice(sorted(SYSTEMS))
     be = round(-rng.uniform(2.5, 7.5), 2)
     dist = round(rng.uniform(2.6, 3.3), 2)
     thr = 1e-6
@@ -79,17 +83,29 @@ def base_increment(rng, idx):
         e += de
         steps.append((k, round(e, 8), abs(round(de, 10))))
     steps.append((len(steps) + 1, e_final_ha, ach))
+    # The log prints eight decimals; derive the reported eV from the printed value,
+    # not from the float, so the two agree to the digit rather than to a tolerance.
+    # A clean increment that disagrees with its own evidence at the fifth decimal
+    # is a corpus defect that every auditor will report, and the false-block rate
+    # would then be measuring the corpus.
+    e_printed_ha = float(f"{e_final_ha:.8f}")
     return {
         "idx": idx, "system": system, "func": func, "basis": basis, "be": be,
         "dist": dist, "thr": thr, "ach": ach, "script": script,
-        "e_final_ha": e_final_ha, "steps": steps,
+        "e_final_ha": e_printed_ha, "steps": steps,
         "metadata": {
             "objective": f"Counterpoise-corrected binding energy of the {system} at {func}/{basis}. Synthetic corpus item.",
-            "inputs": [f"geometries/{idx:03d}.xyz", f"scripts/{script}", "logs/scf.log"],
+            "inputs": [f"geometries/{idx:03d}.xyz", f"scripts/{script}",
+                       f"envs/lock-{idx:03d}.txt"],
+            "outputs": ["scf.log", "results.json", "structure.json"],
             "method": {"functional": func, "basis_set": basis,
-                       "corrections": ["counterpoise"], "thresholds": {"scf": thr}},
-            "code_version": f"c{idx:03d}beef", "environment": "container:demo/psi4:1.9",
-            "exclusions": [], "rerun": f"python {script}",
+                       "corrections": ["counterpoise"],
+                       "thresholds": {"scf": thr, "scf_unit": "hartree"}},
+            "code_version": f"c{idx:03d}beef",
+            "environment": {"container": "demo/psi4:1.9",
+                            "lockfile": f"envs/lock-{idx:03d}.txt",
+                            "lockfile_sha256": hashlib.sha256(f"lock-{idx:03d}".encode()).hexdigest()[:16]},
+            "exclusions": [], "rerun": f"python scripts/{script}",
         },
         "results": {
             "quantities": [
@@ -97,13 +113,13 @@ def base_increment(rng, idx):
                  "source": f"{script}@c{idx:03d}beef"},
                 {"name": "intermolecular_distance", "value": dist, "unit": "angstrom",
                  "source": f"{script}@c{idx:03d}beef"},
-                {"name": "total_energy", "value": round(e_final_ha * HARTREE_EV, 4),
+                {"name": "total_energy", "value": round(e_printed_ha * HARTREE_EV, 4),
                  "unit": "eV", "source": "logs/scf.log"},
             ],
             "convergence": {"converged": True, "threshold": thr, "achieved": ach,
                             "unit": "hartree"},
         },
-        "structure": {"pair_distance_angstrom": dist, "n_atoms": rng.randrange(6, 24)},
+        "structure": {"pair_distance_angstrom": dist, "n_atoms": SYSTEMS[system]},
         "summary": (f"We compute the counterpoise-corrected binding energy of the {system} "
                     f"at {func}/{basis}, obtaining {be} kcal/mol at an intermolecular "
                     f"distance of {dist} angstrom. SCF convergence reached {ach:.2e} Ha "
@@ -185,7 +201,7 @@ def yaml_dump(d, ind=0):
 def scf_log(inc):
     lines = [f"# SCF log for {inc['script']} ({inc['func']}/{inc['basis']})"]
     for k, e, de in inc["steps"]:
-        lines.append(f"STEP {k} E={e:.8f} dE={de:.3e}")
+        lines.append(f"STEP {k} E={e:.8f} dE={de:.6e}")
     lines.append(f"# final energy {inc['e_final_ha']:.6f} hartree")
     return "\n".join(lines) + "\n"
 
@@ -232,6 +248,19 @@ def main():
         (d / "structure.json").write_text(json.dumps(inc["structure"], indent=1) + "\n")
         (d / "scf.log").write_text(scf_log(inc))
         (d / "SUMMARY.md").write_text(f"# {inc['system']}\n\n{inc['summary']}\n")
+        # An increment that names inputs it does not ship fails CA-REPRO-001 on its
+        # own terms. Every declared path is written, so a clean increment is clean
+        # against the rulebook and not merely against the defect key.
+        for sub, body in (
+            (f"geometries/{i:03d}.xyz",
+             f"{inc['structure']['n_atoms']}\n{inc['system']} geometry, synthetic\n" +
+             "".join(f"X {j*0.7:.3f} 0.000 0.000\n" for j in range(inc['structure']['n_atoms']))),
+            (f"scripts/{inc['script']}",
+             f"# {inc['func']}/{inc['basis']} single point, synthetic corpus item\n"
+             f"# rerun: python {inc['script']}\n"),
+            (f"envs/lock-{i:03d}.txt",
+             f"psi4==1.9.0\nnumpy==1.26.4\n# lock for container demo/psi4:1.9\n")):
+            fp = d / sub; fp.parent.mkdir(parents=True, exist_ok=True); fp.write_text(body)
         (d / "transcript.md").write_text(
             "<!-- Reserved for the L1/L2 ladder rungs. The generating model writes its\n"
             "     rationale here, blind to the defect key. Empty in the corpus as sealed. -->\n")

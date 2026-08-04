@@ -103,8 +103,13 @@ def main():
     for d in incs:
         if d.name in done:
             manifest["results"][d.name] = "already present"; continue
-        payload = {p.name: (d / p.name).read_text()
-                   for p in sorted(d.iterdir()) if p.is_file() and p.name != "transcript.md"}
+        # Walk the whole increment, not just its top level. An increment that
+        # declares geometries/, scripts/ and envs/ and then hands the auditor
+        # only the files beside metadata.yml is asking to be told those inputs
+        # are missing, and the auditor would be right.
+        payload = {str(f.relative_to(d)): f.read_text(errors="replace")
+                   for f in sorted(d.rglob("*"))
+                   if f.is_file() and f.name != "transcript.md"}
         user = "\n\n".join(f"=== {k} ===\n{v}" for k, v in payload.items())
         t0 = time.time()
         try:
