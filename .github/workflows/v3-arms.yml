@@ -1,0 +1,91 @@
+name: "v3 ablation: isolation-ladder arms"
+
+# Dispatch-only. Nothing about this runs on a push, because an experiment that
+# can be started by an ordinary commit will eventually be started by accident.
+on:
+  workflow_dispatch:
+    inputs:
+      rung:
+        description: "Ladder rung to run (L3 bare, L4 constitution, L4b same-vendor-other-model, L5 cross-vendor)"
+        required: true
+        type: choice
+        options: [L3, L4, L4b, L5]
+      corpus:
+        description: "Corpus directory under experiment/v3/"
+        required: true
+        default: corpus3
+      confirm_seal:
+        description: "Type the SEAL file's defect_key_sha256 to confirm it is committed"
+        required: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: v3-arms
+  cancel-in-progress: false
+
+jobs:
+  arm:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with: { python-version: "3.12" }
+
+      # The red line, enforced rather than remembered: no arm runs before the
+      # seal is committed, and the operator must be able to name its digest.
+      - name: Refuse to run without a committed, matching seal
+        run: |
+          SEAL=experiment/results/SEAL-v3.json
+          test -f "$SEAL" || { echo "::error::no committed seal at $SEAL"; exit 1; }
+          HAVE=$(python3 -c "import json;print(json.load(open('$SEAL'))['defect_key_sha256'])")
+          if [ "$HAVE" != "${{ inputs.confirm_seal }}" ]; then
+            echo "::error::seal digest $HAVE does not match the confirmation given"; exit 1
+          fi
+          MODE=$(python3 -c "import json;print(json.load(open('$SEAL'))['custody_mode'])")
+          echo "seal ok: $HAVE (custody: $MODE)"
+          [ "$MODE" = "hash-only" ] && echo "::warning::hash-only custody; no blinding claim is supported"
+
+      - name: Install pinned dependencies
+        run: pip install --require-hashes -r constraints.txt || pip install -r constraints.txt
+
+      - name: Resolve the arm's vendor and model
+        id: cfg
+        run: |
+          case "${{ inputs.rung }}" in
+            L3|L4)  echo "vendor=anthropic" >> $GITHUB_OUTPUT
+                    echo "model=${{ vars.EXP_MODEL_ANTHROPIC }}" >> $GITHUB_OUTPUT ;;
+            L4b)    echo "vendor=anthropic" >> $GITHUB_OUTPUT
+                    echo "model=${{ vars.EXP_MODEL_ANTHROPIC_ALT }}" >> $GITHUB_OUTPUT ;;
+            L5)     echo "vendor=openai" >> $GITHUB_OUTPUT
+                    echo "model=${{ vars.EXP_MODEL_OPENAI }}" >> $GITHUB_OUTPUT ;;
+          esac
+          echo "constitution=$([ "${{ inputs.rung }}" = "L3" ] && echo none || echo full)" >> $GITHUB_OUTPUT
+
+      - name: Fail closed on an unresolved model id
+        run: |
+          test -n "${{ steps.cfg.outputs.model }}" || {
+            echo "::error::model id is empty. Pin it as a repository variable, not a secret: a model id is not secret and pinning it openly is part of the provenance."; exit 1; }
+
+      - name: Run the arm
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.EXP_ANTHROPIC_KEY }}
+          OPENAI_API_KEY: ${{ secrets.EXP_OPENAI_KEY }}
+        run: |
+          python3 experiment/v3/run_rung.py \
+            --rung "${{ inputs.rung }}" \
+            --vendor "${{ steps.cfg.outputs.vendor }}" \
+            --model "${{ steps.cfg.outputs.model }}" \
+            --constitution "${{ steps.cfg.outputs.constitution }}" \
+            --corpus "experiment/v3/${{ inputs.corpus }}" \
+            --out "experiment/v3/results/${{ inputs.rung }}"
+
+      - name: Commit the arm's outputs, append-only
+        run: |
+          git config user.name "crossaudit-ci"
+          git config user.email "ci@crossaudit.invalid"
+          git add experiment/v3/results
+          git diff --cached --quiet && { echo "nothing produced"; exit 1; }
+          git commit -m "v3 arm ${{ inputs.rung }}: ${{ steps.cfg.outputs.vendor }} ${{ steps.cfg.outputs.model }}, run ${{ github.run_id }}"
+          git push
