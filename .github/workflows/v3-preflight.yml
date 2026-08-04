@@ -1,0 +1,98 @@
+name: "v3 preflight: per-vendor reply-discipline calibration"
+
+# Dispatch-only, like the arms. This runs BEFORE any arm and measures one thing:
+# how often each vendor's auditor files an entry against material with nothing
+# wrong in it. AMENDMENT 3 registers that rate as a limitation to report, not a
+# threshold to pass, so this workflow never fails on a number -- it publishes it.
+#
+# Why a purpose-built calibration corpus rather than the study corpus: the study
+# corpus needs the defect key to tell clean increments from seeded ones, and the
+# key is escrowed outside this repository. A corpus generated with zero defects
+# needs no key, carries no key material, and measures exactly the quantity in
+# question. It is regenerated here from the committed generator at a fixed seed
+# rather than committed, so it cannot drift away from the generator.
+on:
+  workflow_dispatch:
+    inputs:
+      seed:
+        description: "Calibration corpus seed (keep fixed across vendors in one comparison)"
+        required: true
+        default: "20260804"
+      n_clean:
+        description: "Number of clean increments per vendor"
+        required: true
+        default: "20"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: v3-preflight
+  cancel-in-progress: false
+
+jobs:
+  calibrate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with: { python-version: "3.12" }
+
+      - name: Install pinned dependencies
+        run: pip install --require-hashes -r constraints.txt || pip install -r constraints.txt
+
+      - name: Fail closed on unresolved model ids
+        run: |
+          test -n "${{ vars.EXP_MODEL_ANTHROPIC }}" || { echo "::error::EXP_MODEL_ANTHROPIC unset"; exit 1; }
+          test -n "${{ vars.EXP_MODEL_OPENAI }}"    || { echo "::error::EXP_MODEL_OPENAI unset"; exit 1; }
+
+      # Zero defects, so the key is empty and holds nothing worth blinding.
+      - name: Build the calibration corpus
+        run: |
+          python3 experiment/v3/generate_corpus_v3.py \
+            --out "$RUNNER_TEMP/calib" --key "$RUNNER_TEMP/calib-key.json" \
+            --seed "${{ inputs.seed }}" --n-clean "${{ inputs.n_clean }}" --n-defective 0
+          python3 experiment/v3/check_corpus.py \
+            --corpus "$RUNNER_TEMP/calib" --key "$RUNNER_TEMP/calib-key.json" \
+            --json "$RUNNER_TEMP/calib-check.json"
+
+      - name: Anthropic
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.EXP_ANTHROPIC_KEY }}
+        working-directory: experiment/v3
+        run: |
+          python3 validate_clean.py --corpus "$RUNNER_TEMP/calib" --key "$RUNNER_TEMP/calib-key.json" \
+            --vendor anthropic --model "${{ vars.EXP_MODEL_ANTHROPIC }}" \
+            --sample "${{ inputs.n_clean }}" > "$RUNNER_TEMP/anthropic.json" || true
+          tail -5 "$RUNNER_TEMP/anthropic.json"
+
+      - name: OpenAI
+        env:
+          OPENAI_API_KEY: ${{ secrets.EXP_OPENAI_KEY }}
+        working-directory: experiment/v3
+        run: |
+          python3 validate_clean.py --corpus "$RUNNER_TEMP/calib" --key "$RUNNER_TEMP/calib-key.json" \
+            --vendor openai --model "${{ vars.EXP_MODEL_OPENAI }}" \
+            --sample "${{ inputs.n_clean }}" > "$RUNNER_TEMP/openai.json" || true
+          tail -5 "$RUNNER_TEMP/openai.json"
+
+      # The comparison is the point. A large gap does not stop the study; it
+      # changes what the study is allowed to say about L5's false-block rate.
+      - name: Report both rates side by side
+        run: |
+          python3 experiment/v3/preflight_report.py \
+            --anthropic "$RUNNER_TEMP/anthropic.json" \
+            --openai "$RUNNER_TEMP/openai.json" \
+            --corpus-check "$RUNNER_TEMP/calib-check.json" \
+            --seed "${{ inputs.seed }}" \
+            --models "${{ vars.EXP_MODEL_ANTHROPIC }}" "${{ vars.EXP_MODEL_OPENAI }}" \
+            --out experiment/v3/PREFLIGHT.json | tee -a "$GITHUB_STEP_SUMMARY"
+
+      - name: Commit the calibration, append-only
+        run: |
+          git config user.name "crossaudit-ci"
+          git config user.email "ci@crossaudit.invalid"
+          git add experiment/v3/PREFLIGHT.json
+          git diff --cached --quiet && { echo "nothing produced"; exit 1; }
+          git commit -m "v3 preflight: per-vendor reply-discipline rates, run ${{ github.run_id }}"
+          git push

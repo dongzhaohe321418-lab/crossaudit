@@ -39,6 +39,30 @@ def partition(parsed: dict | None) -> tuple[list, list]:
     return out, withdrawn
 
 
+RULE_ID = __import__("re").compile(r"\bCA-[A-Z]{2,6}-\d{3}\b")
+
+
+def rulebook_ids(rules_text: str) -> set:
+    """Every rule identifier the Auditor was actually given."""
+    return set(RULE_ID.findall(rules_text or ""))
+
+
+def ungrounded(findings: list, known: set) -> list:
+    """Findings citing a rule that was never in the rulebook sent.
+
+    `CA-META-002` already says a report citing rules it was not given is invalid.
+    Nothing checked it until an auditor, sent nine rules, returned findings under
+    `CA-DOM-002` and `CA-METH-001` -- identifiers from the deployment Constitution
+    it was never shown. These are counted and published rather than dropped: an
+    alarm raised against a clean increment is an alarm whatever it cites, and how
+    often an auditor legislates from memory is a property worth a number.
+    """
+    if not known:
+        return []
+    return [f for f in findings
+            if isinstance(f, dict) and f.get("rule") and f["rule"] not in known]
+
+
 def referrals(parsed: dict | None) -> list:
     """Pairs the auditor routed to a deterministic check rather than adjudicating.
 

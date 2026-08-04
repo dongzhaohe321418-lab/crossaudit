@@ -23,7 +23,7 @@ from __future__ import annotations
 import argparse, json, os, random, subprocess, sys
 from pathlib import Path
 
-from reply_schema import partition, referrals
+from reply_schema import partition, referrals, rulebook_ids, ungrounded
 
 def main():
     ap = argparse.ArgumentParser()
@@ -51,15 +51,22 @@ def main():
                        capture_output=True, text=True)
     if r.returncode: sys.exit(f"the audit call failed: {r.stdout}\n{r.stderr}")
 
-    total, n_withdrawn, n_referred, report = 0, 0, 0, {}
+    known = rulebook_ids((here / "AUDIT_RULES_scoped.md").read_text()
+                         if (here / "AUDIT_RULES_scoped.md").exists() else "")
+    total, n_withdrawn, n_referred, n_ungrounded, report = 0, 0, 0, 0, {}
     for p in sorted(out.glob("INC-*.json")):
         rec = json.loads(p.read_text())
         fs, withdrawn = partition(rec.get("parsed"))
         total += len(fs); n_withdrawn += len(withdrawn)
         n_referred += len(referrals(rec.get("parsed")))
-        report[rec["increment"]] = [{"rule": f.get("rule"), "why": f.get("description")} for f in fs]
+        bad = {id(f) for f in ungrounded(fs, known)}
+        n_ungrounded += len(bad)
+        report[rec["increment"]] = [{"rule": f.get("rule"), "why": f.get("description"),
+                                     **({"rule_not_in_rulebook": True} if id(f) in bad else {})}
+                                    for f in fs]
     print(json.dumps({"clean_increments_sampled": len(pick), "findings": total,
                       "withdrawn_by_author": n_withdrawn, "referred_to_tools": n_referred,
+                      "findings_citing_unknown_rules": n_ungrounded,
                       "detail": report}, indent=1))
     if total:
         print(f"\n{total} finding(s) on increments nobody seeded. Each is either a corpus "

@@ -1,8 +1,10 @@
 # Constitution, scoped to the v3 synthetic corpus
 
-**Status.** Proposed 2026-08-04. Not in force until the operator enacts it as a
-dated amendment to `experiment/v3-ABLATION-REGISTRATION.md`. The loop may
-propose rules; only the principal enacts them.
+**Status.** Proposed 2026-08-04; **enacted the same day** by the principal, as
+AMENDMENT 3 of `experiment/v3-ABLATION-REGISTRATION.md`, which records the
+authority the enactment rests on. The loop proposed; the principal enacted.
+`AUDIT_RULES_scoped.md` is the Constitution of record for the v3 study from
+that amendment onward, and `run_rung.py` records its hash in every manifest.
 
 ## Why a scoped rulebook, and what scoping costs
 

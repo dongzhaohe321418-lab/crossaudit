@@ -226,3 +226,79 @@ new), and `CA-NUM-001`'s criterion. The scoped rulebook remains a proposal.
 The corpus these numbers were measured against has digest
 `f97635563ad5410194e5b1026cf5f02f3dedda3bba05fcdde0f4b9489f775b8d` under
 `check_corpus.py`'s tree hash, seed 20260804.
+
+---
+
+# Round five, 2026-08-04: a second clean sample, and why one sample was not enough
+
+Forty more calls. The round-four write-up reported 18 of 20 clean increments
+drawing nothing and called the residual reply discipline. That was one sample.
+An independent one, drawn from a purpose-built all-clean calibration corpus,
+returned 7 of 20 — and the gap was not noise.
+
+## What the second sample found that the first did not
+
+The two corpora share a generator and a seed but consume the random stream
+differently, so their increments differ. Four defects lived in the increments
+the first sample happened not to draw.
+
+- **The geometry fix had bought a new contradiction.** Round four replaced dummy
+  `X` atoms with the system's real elements on a 2.0 Å lattice and declared the
+  coordinates placeholders. An auditor then observed that `results.json` reports
+  an intermolecular distance of 2.88 Å which does not appear anywhere in a file
+  laid out on a 2.0 Å grid, and that the increment computes a derived property
+  on a geometry it disclaims. Both correct. The geometry now ships two named
+  fragments whose centroids are separated by exactly the reported distance, and
+  says so on line 2, so the one number an auditor can measure is the number the
+  record reports. `check_corpus.py` gained a check that recomputes it.
+- **The scripts were two comments.** Asked whether the declared functional,
+  basis and threshold were the ones actually run, an auditor said it could not
+  tell from a file containing no code. It could not. The scripts now name every
+  declared parameter in executable form.
+- **One quantity, two field names.** `metadata.yml` carried `scf_unit` where
+  `results.json` carried `unit`. Reported as a contradiction, and defensibly:
+  the same quantity should not change name between two files of one increment.
+- **A sixth arithmetic failure, the largest yet.** On INC-014 the auditor
+  converted −105.803147 Ha and stated −2879.69 eV against a recorded −2879.0503.
+  The true product is −2879.050273: the record was right to 2.7e-5 eV and the
+  auditor was wrong by 0.64 eV, an error some twenty-four thousand times the
+  discrepancy it was adjudicating. This is the same failure round four measured
+  five times, and it is why `CA-NUM-001` now routes conversions to the tools.
+  After the rewrite the auditor referred 24 such pairs and computed none.
+
+After the four repairs the calibration sample went 7/20 to 2/20, and the study
+corpus's own clean subset returned 1/20.
+
+## The finding that matters more than the count
+
+All three remaining entries, across both samples, cite **`CA-DOM-002`** — a
+geometry-provenance rule of the deployment Constitution that AMENDMENT 3
+deliberately removed from the study's rulebook. The Auditor was sent nine rules
+and answered under a tenth it remembered. One entry also cited `CA-METH-001`,
+likewise never sent.
+
+Nothing in the harness checked this, although `CA-META-002` has said since the
+first Constitution that a report citing rules it was not given is invalid.
+`reply_schema.ungrounded()` now compares every citation against the rulebook
+actually sent, whose hash already travels in each manifest, and every arm
+publishes `findings_citing_unknown_rules` beside its recall.
+
+Read against that check, the Anthropic auditor's numbers on clean material are:
+**0 of 40 valid alarms**, CI95 [0%, 8.8%], and **3 of 40 rules invented from
+memory**, CI95 [1.6%, 20.4%].
+
+The second number is the interesting one, because it bounds what scoping can
+buy. Scoping a rulebook constrains what the Auditor is *told*; it does not
+constrain what the Auditor *recalls*. Any study reporting performance under
+rulebook R is reporting performance under R plus whatever the model brings, and
+the honest response is to measure the gap rather than assume it away. It is now
+a registered, published quantity rather than an assumption.
+
+## Method note, recorded against ourselves
+
+Round four's headline was a single sample. It was not wrong, but it was thinner
+than it sounded, and a second draw from the same generator moved it by a factor
+of three. Two samples are still two. The pooled figures above are what this
+repository is prepared to defend, and the per-vendor comparison the ladder
+actually depends on remains unmeasured until `v3-preflight.yml` runs on a runner
+that can reach both vendors.

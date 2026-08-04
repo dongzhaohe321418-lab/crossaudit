@@ -188,3 +188,91 @@ Part B tie-in: the deployment's own scripts at the frozen SHAs may be
 re-audited under B4–B6, with findings adjudicated by the principal; no
 mutation ground truth exists there, so real-code results report precision
 only.
+
+## AMENDMENT 3 (2026-08-04, operator-enacted) — the rulebook is scoped to the corpus
+
+**Authority.** Enacted by the principal in session on 2026-08-04, instruction
+「全部执行」, in reply to a message that put this decision and the two-vendor
+preflight before him as the two items reserved to him. Recorded verbatim
+because the protocol's own rule is that the loop may propose rules and only the
+principal enacts them; an amendment that cannot say whose decision it was has
+not met that rule. Reversing it is one commit.
+
+**What is enacted.** `experiment/v3/AUDIT_RULES_scoped.md` is the Constitution
+of record for the v3 study, in force from this amendment. `run_rung.py` sends
+it and records its SHA-256 in every arm's manifest. The rationale, the six
+deployment rules dropped and why, and the one rule added are in
+`experiment/v3/AUDIT_RULES_v3-study.md`. Eight rules are in scope:
+`CA-DATA-001/002/003`, `CA-METH-002`, `CA-REPRO-001/002`, `CA-META-001/002`,
+plus `CA-NUM-001`.
+
+**Why option 1 and not option 2.** The alternative was to draw the corpus from
+the live deployment's history and mutate real increments. That is the better
+experiment and it is not available: the standing rule keeping
+`perovskite-screening` and `perovskite-screening-audit` read-only is a
+research-integrity commitment, not a convenience, and an experiment that
+mutates the science repository to study auditing would trade the thing being
+protected for the thing being measured. Option 1 is chosen with its cost
+stated rather than discovered by a reader.
+
+**What the scoping costs.** Recall and false-block rates under this amendment
+are rates against eight rules, on template-generated data. They answer the
+registered question about isolation. They answer nothing about domain
+competence, and the write-up states this in the same sentence as the numbers.
+A rule the corpus cannot satisfy is not decidable against that corpus, and
+decidability is what the protocol asks of every rule, so scoping is the
+criterion applied honestly rather than a concession.
+
+**`CA-NUM-001`, and why it was rewritten before enactment.** Its first draft
+required the Auditor to convert units and state a tolerance before alleging a
+numeric disagreement. It complied, and the conversions were then checked:
+across five clean increments it quoted the right constant, read the right
+inputs, and misevaluated the product by up to 1.8e-3 eV while adjudicating a
+gap of 8.8e-5 eV, its verdicts tracking its own arithmetic error rather than
+the data. The rule now routes such pairs to the deterministic channel instead.
+Evidence in `experiment/v3/SMOKE-FINDINGS.md`, round four.
+
+**Gates that must pass before any arm runs**, all enforced in CI rather than
+remembered:
+
+1. `check_corpus.py` green on the corpus, its report committed as
+   `CORPUS-CHECK.json`, its corpus and checker digests matching the tree
+   (`v3-arms.yml` refuses otherwise).
+2. `validate_clean.py` run against **both** vendors by `v3-preflight.yml`, the
+   two residual rates committed side by side. This is a measurement, not a
+   pass/fail gate: see the confound below.
+3. The defect key sealed, `SEAL-v3.json` committed, its digest typed by the
+   operator at dispatch.
+
+**Pre-registered confound: reply discipline across vendors.** The reply
+contract is worded identically on every rung, so the residual clean-set rate it
+produces should bias the rungs equally. Measured on Anthropic across two
+independent samples of twenty clean increments each (the calibration corpus and
+the study corpus's own clean subset): 3 of 40 increments drew any entry, 7.5%,
+Clopper-Pearson 95% CI [1.6%, 20.4%]. It has not been measured on OpenAI, and
+`api.openai.com` is unreachable from the environment the rest of this work was
+done in, so `v3-preflight.yml` exists to measure it on the operator's runner. If
+the two rates differ materially, L5's false-block rate moves for reasons
+unrelated to audit quality, and L5 is the rung the paper's thesis rests on.
+Registered here, before the arms, as a limitation to report rather than a result
+to discover: the preflight numbers are published beside the arm results
+whichever way they fall, and no correction is applied post hoc. Committed as
+`experiment/v3/PREFLIGHT.json`.
+
+**Measured limitation of the scoping itself.** All three of those entries cited
+`CA-DOM-002`, a geometry-provenance rule of the deployment Constitution that
+this amendment deliberately removed. The Auditor was sent nine rules and
+answered under a tenth it remembered. Under `CA-META-002` such a report is
+invalid, so the Anthropic auditor's rate of *valid* alarms on clean material is
+0 of 40, CI [0%, 8.8%], and its rate of legislating from memory is 3 of 40.
+
+Two things follow, both registered before the arms. First, scoping a rulebook
+constrains what the Auditor is told, not what it recalls: a study that measures
+"performance under rulebook R" is measuring performance under R plus whatever
+the model brings, and the gap between those is now a quantity this study reports
+rather than assumes away. Second, `reply_schema.ungrounded()` counts these
+against the rulebook actually sent, whose hash is in every manifest, and every
+arm publishes `findings_citing_unknown_rules` beside its recall. No arm's
+ungrounded findings are silently dropped: an alarm raised against a clean
+increment is an alarm whatever it cites, and the two numbers are reported
+separately so a reader can take either view.

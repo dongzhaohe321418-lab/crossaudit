@@ -8,9 +8,14 @@
 > 三项实证改进的详细中英对照说明见 `improvements/`（01 梯度消融 / 02 真实账本 / 03 代码审计）。
 
 - 🔒 **A1. 跑 v3 消融（隔离梯度 L0–L5 + 通道分解）** —— 设计已冻结：
-  `experiment/v3-ABLATION-REGISTRATION.md`（含 AMENDMENT 1），操作手册
+  `experiment/v3-ABLATION-REGISTRATION.md`（含 AMENDMENT 1/2/3），操作手册
   `experiment/v3/RUNBOOK.md`。阻塞：双厂新 API keys + 缺陷密钥第三方托管。
   执行：Claude 生成代码并跑，你只做钥匙/密封/盲评。
+  **2026-08-04 进展**：规则手册已由你颁行为 scoped 版（AMENDMENT 3）；
+  跑臂前三道闸门写进 RUNBOOK §7b，前两道由 CI 强制。语料自检 60/60 全绿
+  （`check_corpus.py`）。干净集实测两个独立样本各 20 个增量：
+  **有效报警 0/40**（CI [0%, 8.8%]），**引用未下发规则 3/40**（CI [1.6%, 20.4%]）。
+  OpenAI 半边预检待你在 runner 上跑（`v3-preflight.yml`），沙箱不通该域名。
 - ✅ **A2. 真实部署数据写进 §4.2** —— 已挖掘完毕（`experiment/v3/real-ledger/`）：
   7 周期、裁定 BLOCK×5→PASS_WITH_CAVEATS→PASS、发现数 7-4-3-2-1-1-0、
   12/14 行为确认。§4.2 目前只有定性描述，应加这组数字 + 反事实一句：
@@ -85,15 +90,24 @@
   执行：**你上传**（账号 + 背书路径在你手里）；拿到 id 后 Claude 回填
   CITATION.cff 与双语 README 的引用行。
 
-## E. 阻塞项汇总（都在你手里）
+## E. 阻塞项汇总（都在你手里，2026-08-04 更新）
 
-1. 🔑 双厂新 API keys + 撤销全部旧密钥（A1 前置）
-2. 🔏 缺陷密钥第三方托管方式三选一（RUNBOOK 阶段 0）
-3. 👁 v3 Part B 盲评 1–2 小时（臂跑完后）
-4. 📖 C1 的通读定夺
-5. 🗳 A4 的重心决策（主论文层面）
+只剩需要你的账号、凭据或科学判断的四项；其余全部已执行。
+
+1. 🔑 **密钥**：撤销全部曾出现在对话里的旧密钥；新密钥进 repository secrets
+   （`EXP_ANTHROPIC_KEY` / `EXP_OPENAI_KEY`），模型 ID 进 repository variables
+   （`EXP_MODEL_ANTHROPIC` / `EXP_MODEL_ANTHROPIC_ALT` / `EXP_MODEL_OPENAI`）。
+2. 🔏 **缺陷密钥托管**三选一（`seal_key.py` 的 collaborator / osf / encrypted；
+   hash-only 不支持任何盲评主张），然后 `SEAL-v3.json` 入库。
+3. 🌐 **跑 `v3-preflight.yml`**：OpenAI 半边预检只能在能连该域名的 runner 上跑。
+   Anthropic 半边已跑完并入库（`PREFLIGHT.json`）。
+4. 👁 **盲评** 1–2 小时（臂跑完后）+ 🗳 **A4 重心决策** + 📄 **arXiv 上传**（D6）。
+
+已从本表移除：C1（已完成，见上）；scoped 规则手册的颁行（已由你 2026-08-04
+指令颁行为 AMENDMENT 3）。
 
 ## 推荐执行顺序
 
-B5 → C3 → A2+B7（一次提交）→ B4 → B6 → D2 →（keys 到位）A1 → A3+C2 → D3 → D4。
-其中 B5/C3/A2/B7/B4/B6 全部无阻塞，说"开工"即可连续完成。
+B5 → C3 → A2+B7（一次提交）→ B4 → B6 → C1 → D2 →（keys 到位）
+preflight 双厂 → 密封 → A1 → A3+C2 → D3 → D4 → D6。
+截至 2026-08-04，箭头左侧到 C1 为止全部完成；下一步的第一个动作是 E 区第 1 项。

@@ -1,0 +1,53 @@
+{
+ "registered_under": "AMENDMENT 3 (2026-08-04)",
+ "purpose": "per-vendor rate of entries filed against increments with nothing wrong",
+ "not_a_gate": "This is reported, never passed or failed. See AMENDMENT 3.",
+ "calibration_seed": "20260804",
+ "models": {
+  "anthropic": "claude-sonnet-4-5-20250929",
+  "openai": ""
+ },
+ "corpus_self_check": 0,
+ "corpus_sha256": "1c70419cc68f40c01a688cf4e5c70b5f9f83dabfc141240de6d6cb494bb83bf1",
+ "arms": {
+  "anthropic": {
+   "clean_increments": 20,
+   "increments_with_an_entry": 2,
+   "rate": 0.1,
+   "ci95": [
+    0.012,
+    0.317
+   ],
+   "findings": 2,
+   "withdrawn_by_author": 5,
+   "referred_to_tools": 24
+  },
+  "openai": null
+ },
+ "fisher_exact_p": null,
+ "reading": "One vendor did not produce a usable result. The preflight is incomplete, and AMENDMENT 3's confound stands unmeasured; say so wherever L5 is reported.",
+ "anthropic_half_run_locally": {
+  "note": "Run outside CI on 2026-08-04 because api.openai.com is unreachable from that environment; the corpus is regenerated deterministically from the committed generator at this seed, so CI reproduces it byte for byte.",
+  "all_entries_cited_a_rule_that_was_never_sent": true
+ },
+ "pooled_across_two_independent_clean_samples": {
+  "samples": [
+   "calibration corpus (20 clean, seed 20260804, n-defective 0)",
+   "study corpus clean subset (20 clean, seed 20260804)"
+  ],
+  "increments_with_any_entry": 3,
+  "of": 40,
+  "rate": 0.075,
+  "ci95": [
+   0.016,
+   0.204
+  ],
+  "increments_with_a_VALID_entry": 0,
+  "of_valid": 40,
+  "ci95_valid": [
+   0.0,
+   0.088
+  ],
+  "reading": "Every entry filed against clean material in both samples cited CA-DOM-002, which is not in the scoped rulebook. Under CA-META-002 such a report is invalid. So the Anthropic auditor's rate of valid alarms on clean increments is 0/40, and its rate of legislating from memory is 3/40."
+ }
+}

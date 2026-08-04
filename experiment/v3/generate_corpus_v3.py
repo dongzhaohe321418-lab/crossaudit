@@ -39,23 +39,30 @@ SYSTEMS = {"water dimer": 6, "ammonia dimer": 8, "methane--water complex": 8,
            "HF dimer": 4, "formic acid dimer": 10, "benzene--water complex": 15,
            "methanol dimer": 12}
 
-# The elements each system is actually made of. The geometry files used to carry
-# `X` dummy atoms, and an auditor reading "formic acid dimer" above a column of X
-# called the contradiction correctly -- on a clean increment, where it scored as a
-# false alarm. The composition is a claim the corpus can honour cheaply and
-# exactly; the coordinates are not, and line 2 of each file now says so instead of
-# implying a geometry nobody computed.
-COMPOSITION = {
-    "water dimer": ["O", "H", "H"] * 2,
-    "ammonia dimer": ["N", "H", "H", "H"] * 2,
-    "methane--water complex": ["C", "H", "H", "H", "H", "O", "H", "H"],
-    "HF dimer": ["F", "H"] * 2,
-    "formic acid dimer": ["C", "O", "O", "H", "H"] * 2,
-    "benzene--water complex": ["C"] * 6 + ["H"] * 6 + ["O", "H", "H"],
-    "methanol dimer": ["C", "O", "H", "H", "H", "H"] * 2,
+# Each system as its two fragments. The geometry files first shipped `X` dummy
+# atoms, and an auditor reading "formic acid dimer" above a column of X called
+# the contradiction correctly -- on a clean increment, where it scored as a false
+# alarm. Real elements fixed that and bought a second contradiction: correct atoms
+# on an undifferentiated lattice, with results.json claiming a 2.88 A separation
+# the file did not contain. Two fragments rather than one atom list, because
+# because the reported quantity is an *inter*molecular distance: an auditor that
+# opens the geometry is entitled to find that distance in it. The first version
+# of this fix shipped correct elements on an undifferentiated grid and declared
+# the coordinates meaningless, which bought a new contradiction in place of the
+# old one -- results.json claimed 2.88 A while the file showed a 2.0 A lattice,
+# and the auditor said so. Fragment B is now translated so that the separation
+# between the two fragment centroids is exactly the reported distance.
+FRAGMENTS = {
+    "water dimer": (["O", "H", "H"], ["O", "H", "H"]),
+    "ammonia dimer": (["N", "H", "H", "H"], ["N", "H", "H", "H"]),
+    "methane--water complex": (["C", "H", "H", "H", "H"], ["O", "H", "H"]),
+    "HF dimer": (["F", "H"], ["F", "H"]),
+    "formic acid dimer": (["C", "O", "O", "H", "H"], ["C", "O", "O", "H", "H"]),
+    "benzene--water complex": (["C"] * 6 + ["H"] * 6, ["O", "H", "H"]),
+    "methanol dimer": (["C", "O", "H", "H", "H", "H"], ["C", "O", "H", "H", "H", "H"]),
 }
-assert all(len(COMPOSITION[s]) == n for s, n in SYSTEMS.items()), \
-    "a system's composition must contain exactly the atoms its record counts"
+assert all(sum(len(f) for f in FRAGMENTS[s]) == n for s, n in SYSTEMS.items()), \
+    "a system's fragments must contain exactly the atoms its record counts"
 HARTREE_EV = 27.211386245988
 
 # class -> (cheapest expected channel, one-line rationale kept with the key)
@@ -118,7 +125,11 @@ def base_increment(rng, idx):
             "outputs": ["scf.log", "results.json", "structure.json"],
             "method": {"functional": func, "basis_set": basis,
                        "corrections": ["counterpoise"],
-                       "thresholds": {"scf": thr, "scf_unit": "hartree"}},
+                       # One field name for one concept. `scf_unit` here against
+                       # `unit` in results.json was read as a contradiction on clean
+                       # increments, and the auditor had a point: the same quantity
+                       # should not change name between two files in one increment.
+                       "thresholds": {"scf": thr, "unit": "hartree"}},
             "code_version": f"c{idx:03d}beef",
             "environment": {"container": "demo/psi4:1.9",
                             "lockfile": f"envs/lock-{idx:03d}.txt",
@@ -227,20 +238,56 @@ def yaml_dump(d, ind=0):
     return "\n".join(x for x in out if x)
 
 
-def xyz(inc):
-    """Right elements, declared-placeholder coordinates.
+def _lattice(els, offset):
+    """Atoms of one fragment on a compact 0.6 A lattice, shifted by `offset`."""
+    out = []
+    for j, e in enumerate(els):
+        out.append((e, (j % 3) * 0.6 + offset[0], (j // 3) * 0.6 + offset[1], offset[2]))
+    return out
 
-    XYZ line 2 is free-text, so the file can state exactly what it is and is not.
-    An increment that disclaims its coordinates offers nothing to contradict; one
-    that ships dummy atoms under a chemical name offers a real contradiction, and
-    the auditor that reports it is right.
+
+def xyz(inc):
+    """Right elements, schematic intramolecular geometry, exact fragment separation.
+
+    Line 2 of an XYZ file is free text, so the file states precisely which of its
+    claims are real: the composition is the system's, the arrangement within each
+    fragment is schematic, and the distance between the two fragment centroids is
+    the intermolecular distance results.json reports. Nothing here pretends to be
+    an optimised structure, and nothing an auditor can measure disagrees with the
+    record.
     """
-    els = COMPOSITION[inc["system"]]
-    head = (f"{len(els)}\n{inc['system']}: composition is the system's; coordinates are "
-            f"placeholders on a 2.0 A grid, not a computed geometry. Synthetic corpus item.\n")
-    rows = "".join(f"{e} {(j % 4) * 2.0:.3f} {(j // 4) * 2.0:.3f} 0.000\n"
-                   for j, e in enumerate(els))
-    return head + rows
+    fa, fb = FRAGMENTS[inc["system"]]
+    a = _lattice(fa, (0.0, 0.0, 0.0))
+    b = _lattice(fb, (0.0, 0.0, 0.0))
+    ca = tuple(sum(r[i] for r in a) / len(a) for i in (1, 2, 3))
+    cb = tuple(sum(r[i] for r in b) / len(b) for i in (1, 2, 3))
+    # Shift B so that centroid(B) - centroid(A) is exactly `dist` along x.
+    dx, dy, dz = ca[0] + inc["dist"] - cb[0], ca[1] - cb[1], ca[2] - cb[2]
+    b = [(e, x + dx, y + dy, z + dz) for e, x, y, z in b]
+    n = len(a) + len(b)
+    head = (f"{n}\n{inc['system']}: fragment composition is the system's; positions within a "
+            f"fragment are schematic, not optimised. The two fragment centroids are "
+            f"{inc['dist']} A apart, which is the reported intermolecular distance. "
+            f"Synthetic corpus item.\n")
+    return head + "".join(f"{e} {x:.3f} {y:.3f} {z:.3f}\n" for e, x, y, z in a + b)
+
+
+def script_body(inc):
+    """A runnable-looking driver naming every parameter metadata.yml declares."""
+    return (f'"""Single-point {inc["func"]}/{inc["basis"]} on the {inc["system"]}.\n'
+            f'Synthetic corpus item: the driver below records the parameters this\n'
+            f'increment declares; it is not wired to a real QC backend.\n"""\n'
+            f'GEOMETRY = "geometries/{inc["idx"]:03d}.xyz"\n'
+            f'FUNCTIONAL = "{inc["func"]}"\n'
+            f'BASIS_SET = "{inc["basis"]}"\n'
+            f'CORRECTIONS = ["counterpoise"]\n'
+            f'SCF_THRESHOLD_HARTREE = {inc["thr"]:g}\n\n'
+            f'def main():\n'
+            f'    job = dict(geometry=GEOMETRY, functional=FUNCTIONAL, basis=BASIS_SET,\n'
+            f'               corrections=CORRECTIONS, scf_threshold=SCF_THRESHOLD_HARTREE)\n'
+            f'    return run_single_point(**job)   # provided by the site environment\n\n'
+            f'if __name__ == "__main__":\n'
+            f'    main()\n')
 
 
 def scf_log(inc):
@@ -305,9 +352,10 @@ def main():
         # against the rulebook and not merely against the defect key.
         for sub, body in (
             (f"geometries/{i:03d}.xyz", xyz(inc)),
-            (f"scripts/{inc['script']}",
-             f"# {inc['func']}/{inc['basis']} single point, synthetic corpus item\n"
-             f"# rerun: python {inc['script']}\n"),
+            # A script that is only comments cannot show that the declared method
+            # was the method run, and an auditor asked to check reproducibility
+            # said so. This one names every declared parameter in executable form.
+            (f"scripts/{inc['script']}", script_body(inc)),
             (f"envs/lock-{i:03d}.txt",
              f"psi4==1.9.0\nnumpy==1.26.4\n# lock for container demo/psi4:1.9\n")):
             fp = d / sub; fp.parent.mkdir(parents=True, exist_ok=True); fp.write_text(body)

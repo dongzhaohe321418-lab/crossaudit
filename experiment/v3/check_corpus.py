@@ -45,7 +45,7 @@ EXEMPT = {
     "D2": {"digits"},   # mislabels a unit, so the printed-precision test is moot
     "T1": {"numbers", "digits"},
     "T2": {"numbers"},
-    "T3": {"numbers"},
+    "T3": {"numbers"},          # structure.json only; the geometry still holds
     "D3": {"numbers"},
 }
 
@@ -102,6 +102,43 @@ def check_digits(d: Path, res: dict) -> list[dict]:
     return []
 
 
+def check_geometry(d: Path, res: dict) -> list[dict]:
+    """The separation in the geometry must be the distance the record reports.
+
+    Added after an auditor found the gap the other way round: a geometry whose
+    atoms sat on a 2.0 A lattice under a record claiming 2.88 A. If the increment
+    ships a structure at all, the number in it has to be the number it reports.
+    """
+    q = {x["name"]: x for x in res.get("quantities", []) if isinstance(x, dict)}
+    want = q.get("intermolecular_distance", {}).get("value")
+    xyzs = sorted((d / "geometries").glob("*.xyz")) if (d / "geometries").is_dir() else []
+    if want is None or not xyzs:
+        return []
+    lines = [l.split() for l in xyzs[0].read_text().splitlines()[2:] if l.strip()]
+    try:
+        pts = [(r[0], float(r[1]), float(r[2]), float(r[3])) for r in lines if len(r) >= 4]
+    except ValueError:
+        return [{"check": "geometry", "detail": "the geometry file does not parse as XYZ"}]
+    if len(pts) < 2:
+        return []
+    # Fragment split: the file writes fragment A then fragment B, and B is the
+    # tail beginning at the first atom displaced by roughly the reported distance.
+    k = next((i for i in range(1, len(pts)) if pts[i][1] - pts[0][1] >= want * 0.9), None)
+    if k is None:
+        return [{"check": "geometry",
+                 "detail": f"no fragment in the geometry is separated by the reported "
+                           f"{want} A; an auditor opening the file will not find that distance"}]
+    a, b = pts[:k], pts[k:]
+    ca = [sum(r[i] for r in a) / len(a) for i in (1, 2, 3)]
+    cb = [sum(r[i] for r in b) / len(b) for i in (1, 2, 3)]
+    got = sum((cb[i] - ca[i]) ** 2 for i in range(3)) ** 0.5
+    if abs(got - want) > 0.005:
+        return [{"check": "geometry",
+                 "detail": f"fragment centroids are {got:.3f} A apart; results.json reports "
+                           f"{want} A"}]
+    return []
+
+
 def corpus_digest(root: Path) -> str:
     """One digest over every increment file, so a committed report cannot be
     presented as evidence about a corpus it was not run against."""
@@ -148,6 +185,9 @@ def main():
 
         if "digits" not in exempt:
             found += check_digits(d, res)
+
+        if "geometry" not in exempt:
+            found += check_geometry(d, res)
 
         checked += 1
         if found:

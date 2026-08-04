@@ -1,7 +1,13 @@
-# Audit Constitution
+# Audit Constitution — v3 study, scoped
 
-> Template. Replace bracketed text, keep rule IDs stable, and version every change
-> with a commit message explaining why. Format spec: `docs/audit-rules-spec.md`.
+> **In force.** Enacted 2026-08-04 as AMENDMENT 3 of
+> `experiment/v3-ABLATION-REGISTRATION.md`. This is the Constitution of record
+> for the v3 ablation; the deployment Constitution in `templates/` is unchanged
+> and remains what the live pipeline runs. Rationale for the scoping, including
+> the six rules dropped and the one added, is `AUDIT_RULES_v3-study.md`.
+>
+> Rule IDs are stable. Any change after the first arm runs is a red-line
+> violation under `RUNBOOK.md` §8, not an edit.
 
 **Scope:** all experiment increments under `experiments/` of `[owner/science-repo]`.
 **Severity levels:** `BLOCKER` gates the pipeline; `ADVISORY` is recorded only.

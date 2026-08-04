@@ -102,6 +102,25 @@
   "v3 已测判别力"。Part B 反事实一句话进 §4.2：
   "没有这条环，12 条已确认缺陷将无阻碍下行"。
 
+## 7b. 跑臂前的三道闸门（2026-08-04 起，AMENDMENT 3 registered）
+
+顺序固定，前一道不过不进下一道。前两道已由 CI 强制，不靠记忆。
+
+1. **语料自检** —— `python3 check_corpus.py --corpus <dir> --key <key> --json
+   <dir>/CORPUS-CHECK.json`，必须 0 problems，报告随语料一起入库。
+   `v3-arms.yml` 会重算语料与检查器摘要，不匹配即拒跑：一份不锁定自己
+   检查对象的报告是主张，不是证据。
+2. **双厂预检** —— `v3-preflight.yml`（dispatch）。用 `--n-defective 0` 现场
+   生成全干净语料（无密钥、无盲评风险），两厂各跑一遍，把两个"对干净材料
+   报警率"并列写进 `PREFLIGHT.json`。**这是测量，不是闸门**：数字不合格不阻
+   止实验，只改变实验能说什么。若两厂差异显著，L5 的误阻断率里就含有与审计
+   质量无关的成分，而 L5 正是论文立论所依赖的一级。
+3. **密封** —— `seal_key.py` 选定托管方式，`SEAL-v3.json` 入库，dispatch 时
+   由操作者手打其 digest。
+
+目前状态：闸门 1 已通过（60 增量全绿）；闸门 2 只跑了 Anthropic 半边
+（沙箱不通 `api.openai.com`），OpenAI 半边待你在 runner 上跑；闸门 3 待你选托管。
+
 ## 8. 红线（违反任何一条，结果作废）
 
 1. 输出存在后，评分映射与标签规则**不可再改**（改 = 出 AMENDMENT 且旧分照报）。
@@ -109,6 +128,12 @@
 3. 密钥不入 repo；缺陷密钥先密封后跑臂。
 4. perovskite 两仓只读；科学判断只在你的盲评里发生。
 5. 语料、prompt、模型名、温度全部入库；每臂记 provenance digest。
+6. **规则手册在跑臂前冻结。** v3 用 `AUDIT_RULES_scoped.md`（AMENDMENT 3
+   颁行），`run_rung.py` 每臂记其 SHA-256。跑臂后任何改动都是红线，不是编辑。
+7. **引用了未下发规则的 finding 一律计数上报**，不得静默丢弃
+   （`reply_schema.ungrounded()`，字段 `findings_citing_unknown_rules`）。
+   实测：对干净增量的三条报警全部引用未下发的 `CA-DOM-002` —— 缩小规则手册
+   限制的是"告诉模型什么"，不是"模型记得什么"，这个差值必须报出来。
 
 ## 9. 故障速查
 
