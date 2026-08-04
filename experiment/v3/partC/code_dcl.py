@@ -27,7 +27,19 @@ always be read back against the tools that produced it.
 import json, os, platform, subprocess, sys, tempfile, shutil
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-GOLD = json.load(open(os.path.join(HERE, "fixtures/golden_summary.json")))
+SEEDS = {"conv": dict(path="seed_scripts/convergence_extract.py",
+                      test="seed_scripts/test_convergence_extract.py",
+                      module="convergence_extract.py",
+                      fixtures=["fixtures/scf.log","fixtures/scf_edge_tol.log",
+                                "fixtures/scf_mid_tol.log","fixtures/scf_nonmono.log",
+                                "fixtures/scf_broken.log"],
+                      contract="fixtures/scf.log", gold="fixtures/golden_summary.json"),
+         "tab":  dict(path="seed_scripts/tabulate_results.py",
+                      test="seed_scripts/test_tabulate_results.py",
+                      module="tabulate_results.py",
+                      fixtures=["fixtures/runs.json","fixtures/runs_zero_atoms.json",
+                                "fixtures/runs_none_converged.json","fixtures/runs_empty.json"],
+                      contract="fixtures/runs.json", gold="fixtures/golden_table.json")}
 SEED = os.path.join(HERE, "seed_scripts/convergence_extract.py")
 CHANNEL_TOOLS = {"syntactic": "pyflakes", "type": "mypy", "test": "pytest"}
 
@@ -73,13 +85,12 @@ def behaviour(src_path, log_path, tol=None):
         return ("badout", r.stdout[:80])
 
 
-def equivalence_check(mpath):
-    """Behaviour must differ from seed on >=1 extended fixture."""
-    for fx, tol in [("fixtures/scf.log", None), ("fixtures/scf_edge_tol.log", None),
-                    ("fixtures/scf_mid_tol.log", None), ("fixtures/scf_nonmono.log", None),
-                    ("fixtures/scf_broken.log", None)]:
+def equivalence_check(mpath, cfg):
+    """Behaviour must differ from its own seed on >=1 extended fixture."""
+    seed = os.path.join(HERE, cfg["path"])
+    for fx in cfg["fixtures"]:
         fxp = os.path.join(HERE, fx)
-        if behaviour(mpath, fxp, tol) != behaviour(SEED, fxp, tol):
+        if behaviour(mpath, fxp) != behaviour(seed, fxp):
             return True
     return False
 
@@ -99,20 +110,21 @@ def ch_type(mpath):
     return "error:" in r.stdout
 
 
-def ch_test(mpath):
+def ch_test(mpath, cfg):
     with tempfile.TemporaryDirectory() as td:
-        shutil.copy(mpath, os.path.join(td, "convergence_extract.py"))
-        shutil.copy(os.path.join(HERE, "seed_scripts/test_convergence_extract.py"), td)
+        shutil.copy(mpath, os.path.join(td, cfg["module"]))
+        shutil.copy(os.path.join(HERE, cfg["test"]), td)
         r = run([sys.executable, "-m", "pytest", td, "-q", "-x"])
         if r.returncode not in (0, 1):      # 2 interrupted, 3 internal, 4 usage, 5 no tests
             raise ToolError(f"pytest exit {r.returncode}: {(r.stdout or r.stderr)[-200:]}")
         return r.returncode == 1
 
 
-def ch_toolrun(mpath):
-    st, out = behaviour(mpath, os.path.join(HERE, "fixtures/scf.log"))
+def ch_toolrun(mpath, cfg):
+    st, out = behaviour(mpath, os.path.join(HERE, cfg["contract"]))
     if st != "ok": return True
-    return out != GOLD          # full-schema contract comparison
+    gold = json.load(open(os.path.join(HERE, cfg["gold"])))
+    return out != gold          # full-schema contract comparison
 
 
 CHANNELS = [("syntactic", ch_lint), ("type", ch_type),
@@ -120,13 +132,19 @@ CHANNELS = [("syntactic", ch_lint), ("type", ch_type),
 
 
 def canary():
-    """No channel may kill the unmutated seed. One that does is misconfigured."""
-    fired = [name for name, fn in CHANNELS if fn(SEED)]
-    if fired:
-        print(f"CANARY FAILED — channel(s) {fired} condemn the unmutated seed "
-              f"script; their verdicts on mutants cannot be trusted.", file=sys.stderr)
-        sys.exit(3)
-    return {"seed_script": os.path.relpath(SEED, HERE), "channels_fired": []}
+    """No channel may kill an unmutated seed. One that does is misconfigured."""
+    report = {}
+    for key, cfg in SEEDS.items():
+        path = os.path.join(HERE, cfg["path"])
+        fired = [name for name, fn in CHANNELS
+                 if (fn(path) if name in ("syntactic", "type") else fn(path, cfg))]
+        if fired:
+            print(f"CANARY FAILED — channel(s) {fired} condemn the unmutated seed "
+                  f"{cfg['path']}; their verdicts on mutants cannot be trusted.",
+                  file=sys.stderr)
+            sys.exit(3)
+        report[key] = {"seed_script": cfg["path"], "channels_fired": []}
+    return report
 
 
 def main(mutdir):
@@ -134,12 +152,14 @@ def main(mutdir):
     canary_result = canary()
     results = []
     for m in json.load(open(os.path.join(mutdir, "MUTATION_LOG.json"))):
+        cfg = SEEDS[m.get("seed", "conv")]
         mpath = os.path.join(mutdir, m["id"] + ".py")
-        if not equivalence_check(mpath):
+        if not equivalence_check(mpath, cfg):
             results.append({**m, "valid": False, "killed_by": None}); continue
         killed = None
         for name, fn in CHANNELS:
-            if fn(mpath): killed = name; break
+            hit = fn(mpath) if name in ("syntactic", "type") else fn(mpath, cfg)
+            if hit: killed = name; break
         results.append({**m, "valid": True, "killed_by": killed})
     out = {"toolchain": toolchain,
            "canary": canary_result,

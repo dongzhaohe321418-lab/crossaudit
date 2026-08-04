@@ -1,20 +1,27 @@
 {
  "toolchain": {
-  "python": "3.12.13",
-  "platform": "macOS-26.5.1-arm64-arm-64bit",
-  "pyflakes": "3.4.0 Python 3.12.13 on Darwin",
+  "python": "3.11.15",
+  "platform": "Linux-6.18.5-x86_64-with-glibc2.39",
+  "pyflakes": "3.4.0 Python 3.11.15 on Linux",
   "mypy": "mypy 2.3.0 (compiled: yes)",
   "pytest": "pytest 9.1.1"
  },
  "canary": {
-  "seed_script": "seed_scripts/convergence_extract.py",
-  "channels_fired": []
+  "conv": {
+   "seed_script": "seed_scripts/convergence_extract.py",
+   "channels_fired": []
+  },
+  "tab": {
+   "seed_script": "seed_scripts/tabulate_results.py",
+   "channels_fired": []
+  }
  },
  "results": [
   {
    "id": "M-SYN-01",
    "class": "undefined_name_in_error_branch",
    "predicted_channel": "syntactic",
+   "seed": "conv",
    "valid": true,
    "killed_by": "syntactic"
   },
@@ -22,6 +29,7 @@
    "id": "M-TYP-01",
    "class": "float_return_becomes_str",
    "predicted_channel": "type",
+   "seed": "conv",
    "valid": true,
    "killed_by": "type"
   },
@@ -29,6 +37,7 @@
    "id": "M-TST-01",
    "class": "unit_conversion_dropped",
    "predicted_channel": "test",
+   "seed": "conv",
    "valid": true,
    "killed_by": "test"
   },
@@ -36,6 +45,7 @@
    "id": "M-TST-02",
    "class": "off_by_one_step_count",
    "predicted_channel": "test",
+   "seed": "conv",
    "valid": true,
    "killed_by": "test"
   },
@@ -43,6 +53,7 @@
    "id": "M-TOL-01",
    "class": "output_key_renamed",
    "predicted_channel": "type",
+   "seed": "conv",
    "valid": true,
    "killed_by": "type"
   },
@@ -50,6 +61,7 @@
    "id": "M-TOL-02",
    "class": "converged_flag_inverted",
    "predicted_channel": "toolrun",
+   "seed": "conv",
    "valid": true,
    "killed_by": "toolrun"
   },
@@ -57,6 +69,7 @@
    "id": "M-REV-01",
    "class": "boundary_flip_at_tolerance",
    "predicted_channel": "review-only",
+   "seed": "conv",
    "valid": true,
    "killed_by": null
   },
@@ -64,6 +77,7 @@
    "id": "M-REV-02",
    "class": "tolerance_loosened_1000x",
    "predicted_channel": "review-only",
+   "seed": "conv",
    "valid": true,
    "killed_by": null
   },
@@ -71,19 +85,93 @@
    "id": "M-REV-03",
    "class": "last_step_vs_min_energy",
    "predicted_channel": "review-only",
+   "seed": "conv",
    "valid": true,
+   "killed_by": null
+  },
+  {
+   "id": "T-SYN-01",
+   "class": "undefined_name_in_error_branch",
+   "predicted_channel": "syntactic",
+   "seed": "tab",
+   "valid": true,
+   "killed_by": "syntactic"
+  },
+  {
+   "id": "T-TYP-01",
+   "class": "count_becomes_str",
+   "predicted_channel": "type",
+   "seed": "tab",
+   "valid": true,
+   "killed_by": "type"
+  },
+  {
+   "id": "T-TST-01",
+   "class": "per_atom_division_dropped",
+   "predicted_channel": "test",
+   "seed": "tab",
+   "valid": true,
+   "killed_by": "test"
+  },
+  {
+   "id": "T-TST-02",
+   "class": "mean_becomes_sum",
+   "predicted_channel": "test",
+   "seed": "tab",
+   "valid": true,
+   "killed_by": "test"
+  },
+  {
+   "id": "T-TOL-01",
+   "class": "output_key_renamed",
+   "predicted_channel": "type",
+   "seed": "tab",
+   "valid": true,
+   "killed_by": "type"
+  },
+  {
+   "id": "T-TOL-02",
+   "class": "exclusions_not_recorded",
+   "predicted_channel": "toolrun",
+   "seed": "tab",
+   "valid": true,
+   "killed_by": "toolrun"
+  },
+  {
+   "id": "T-REV-01",
+   "class": "unconverged_runs_included",
+   "predicted_channel": "review-only",
+   "seed": "tab",
+   "valid": true,
+   "killed_by": "toolrun"
+  },
+  {
+   "id": "T-REV-02",
+   "class": "zero_atom_guard_inverted",
+   "predicted_channel": "review-only",
+   "seed": "tab",
+   "valid": true,
+   "killed_by": null
+  },
+  {
+   "id": "T-REV-03",
+   "class": "mean_of_means_not_pooled",
+   "predicted_channel": "review-only",
+   "seed": "tab",
+   "valid": false,
    "killed_by": null
   }
  ],
  "review_only_residue": [
   "M-REV-01",
   "M-REV-02",
-  "M-REV-03"
+  "M-REV-03",
+  "T-REV-02"
  ],
  "kills": {
-  "syntactic": 1,
-  "type": 2,
-  "test": 2,
-  "toolrun": 1
+  "syntactic": 2,
+  "type": 4,
+  "test": 4,
+  "toolrun": 3
  }
 }

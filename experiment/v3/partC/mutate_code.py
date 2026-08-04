@@ -11,7 +11,11 @@ reality: no auditor runs exhaustive inputs.
 """
 import json, os, sys
 
-SEED = open(os.path.join(os.path.dirname(__file__), "seed_scripts/convergence_extract.py")).read()
+HERE = os.path.dirname(os.path.abspath(__file__))
+SEEDS = {"conv": "seed_scripts/convergence_extract.py",
+         "tab": "seed_scripts/tabulate_results.py"}
+SRC = {k: open(os.path.join(HERE, v)).read() for k, v in SEEDS.items()}
+SEED = SRC["conv"]  # legacy alias for the first registry below
 
 MUTANTS = [
   # -- syntactic (lint-catchable: undefined name in the error branch) --
@@ -45,14 +49,40 @@ MUTANTS = [
    "final_e_ha = steps[-1][1]", "final_e_ha = min(s[1] for s in steps)"),
 ]
 
+MUTANTS = [(mid, mclass, ch, old, new, "conv") for (mid, mclass, ch, old, new) in MUTANTS] + [
+  # ---- tabulate_results.py ----
+  ("T-SYN-01", "undefined_name_in_error_branch", "syntactic",
+   'raise ValueError("no runs")', 'raise ValueError("no runs in " + pathh)', "tab"),
+  ("T-TYP-01", "count_becomes_str", "type",
+   '"n_included": len(included),', '"n_included": str(len(included)),', "tab"),
+  ("T-TST-01", "per_atom_division_dropped", "test",
+   'included.append(r["energy_ev"] / r["n_atoms"])', 'included.append(r["energy_ev"])', "tab"),
+  ("T-TST-02", "mean_becomes_sum", "test",
+   '"mean_energy_per_atom_ev": sum(included) / len(included),',
+   '"mean_energy_per_atom_ev": sum(included),', "tab"),
+  ("T-TOL-01", "output_key_renamed", "type",
+   '"excluded": excluded}', '"skipped": excluded}', "tab"),
+  ("T-TOL-02", "exclusions_not_recorded", "toolrun",
+   'excluded.append(r["id"]); continue', 'continue', "tab"),
+  # ---- review-only: type-safe, test-surviving, semantically wrong ----
+  ("T-REV-01", "unconverged_runs_included", "review-only",
+   'if not r.get("converged"):', 'if False:', "tab"),
+  ("T-REV-02", "zero_atom_guard_inverted", "review-only",
+   'if r.get("n_atoms", 0) <= 0:', 'if r.get("n_atoms", 0) < 0:', "tab"),
+  ("T-REV-03", "mean_of_means_not_pooled", "review-only",
+   'included.append(r["energy_ev"] / r["n_atoms"])',
+   'included.append(round(r["energy_ev"] / r["n_atoms"], 1))', "tab"),
+]
+
 def main(outdir):
     os.makedirs(outdir, exist_ok=True)
     log = []
-    for mid, mclass, channel, old, new in MUTANTS:
-        assert SEED.count(old) >= 1, (mid, old)
-        src = SEED.replace(old, new, 1)
+    for mid, mclass, channel, old, new, seed in MUTANTS:
+        base = SRC[seed]
+        assert base.count(old) >= 1, (mid, old)
+        src = base.replace(old, new, 1)
         open(os.path.join(outdir, f"{mid}.py"), "w").write(src)
-        log.append({"id": mid, "class": mclass, "predicted_channel": channel})
+        log.append({"id": mid, "class": mclass, "predicted_channel": channel, "seed": seed})
     json.dump(log, open(os.path.join(outdir, "MUTATION_LOG.json"), "w"), indent=1)
     print(f"{len(log)} mutants written")
 

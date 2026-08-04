@@ -1,0 +1,7 @@
+{
+ "n_included": 2,
+ "mean_energy_per_atom_ev": -2.5,
+ "excluded": [
+  "c"
+ ]
+}

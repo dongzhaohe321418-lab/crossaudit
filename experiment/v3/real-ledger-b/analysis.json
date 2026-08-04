@@ -1,0 +1,157 @@
+{
+ "freeze": {
+  "science": "485106fa144ccd74fff77144634b65e15c38eb71",
+  "audit": "abb10a4781d954a66412201f103246852f1540f3"
+ },
+ "n_cycles": 21,
+ "n_findings": 39,
+ "n_distinct": 23,
+ "n_closed": 20,
+ "n_open": 3,
+ "decisions": {
+  "BLOCK": 15,
+  "PASS_WITH_CAVEATS": 3,
+  "PASS": 3
+ },
+ "findings_per_cycle": [
+  7,
+  4,
+  3,
+  2,
+  1,
+  1,
+  0,
+  0,
+  1,
+  1,
+  1,
+  1,
+  0,
+  1,
+  1,
+  3,
+  3,
+  1,
+  3,
+  2,
+  3
+ ],
+ "severity": {
+  "HIGH": 26,
+  "CRITICAL": 3,
+  "LOW": 6,
+  "MEDIUM": 4
+ },
+ "source": {
+  "DETERMINISTIC": 11,
+  "JUDGMENT": 28
+ },
+ "fclass": {
+  "null": 4,
+  "SOFT": 6,
+  "HARD": 29
+ },
+ "source_x_severity": {
+  "DETERMINISTIC|HIGH": 2,
+  "DETERMINISTIC|CRITICAL": 2,
+  "DETERMINISTIC|LOW": 6,
+  "JUDGMENT|HIGH": 24,
+  "JUDGMENT|MEDIUM": 3,
+  "DETERMINISTIC|MEDIUM": 1,
+  "JUDGMENT|CRITICAL": 1
+ },
+ "scopes": {
+  "submit_production_job": 12,
+  "publish_claim": 33
+ },
+ "rules": {
+  "R-PRO-004": 1,
+  "Gate 2": 8,
+  "R-EVD-001": 2,
+  "R-EVD-002": 7,
+  "Gate 11": 25,
+  "R-STA-002": 13,
+  "R-EVD-006": 3,
+  "R-NAV-003": 2,
+  "R-COR-001": 2,
+  "R-GRD-001": 4,
+  "R-EVD-003": 2,
+  "R-NAV-001": 3
+ },
+ "rule_cycle_spread": {
+  "R-PRO-004": 1,
+  "R-NAV-003": 2,
+  "Gate 11": 16,
+  "R-COR-001": 2,
+  "R-NAV-001": 3,
+  "Gate 2": 6,
+  "R-EVD-006": 3,
+  "R-STA-002": 12,
+  "R-GRD-001": 4,
+  "R-EVD-001": 2,
+  "R-EVD-002": 6,
+  "R-EVD-003": 2
+ },
+ "decision_vs_blocking": {
+  "BLOCK|any_blocking=True": 15,
+  "PASS_WITH_CAVEATS|any_blocking=False": 3,
+  "PASS|any_blocking=False": 3
+ },
+ "decision_is_definitional": true,
+ "closure_lag": {
+  "median": 1.0,
+  "mean": 2.1,
+  "max": 7,
+  "per_finding": {
+   "F-001": 1,
+   "F-002": 1,
+   "F-003": 1,
+   "F-004": 1,
+   "F-005": 7,
+   "F-006": 3,
+   "F-007": 1,
+   "F-008": 2,
+   "F-009": 6,
+   "F-011": 1,
+   "F-012": 1,
+   "F-013": 1,
+   "F-014": 1,
+   "F-015": 1,
+   "F-016": 2,
+   "F-017": 2,
+   "F-018": 1,
+   "F-019": 5,
+   "F-020": 2,
+   "F-021": 2
+  }
+ },
+ "survived_multiple_audits": {
+  "F-005": 2,
+  "F-006": 3,
+  "F-008": 2,
+  "F-016": 2,
+  "F-017": 2,
+  "F-019": 5,
+  "F-020": 2,
+  "F-021": 2,
+  "F-022": 3,
+  "F-023": 3
+ },
+ "audit_minutes": {
+  "median": 6.0,
+  "min": 3.7,
+  "max": 18.2
+ },
+ "gap_minutes": {
+  "median": 34,
+  "q1": 18,
+  "q3": 70,
+  "max": 2910
+ },
+ "models": [
+  "GPT-5",
+  "gpt-5",
+  "gpt-5.6",
+  "gpt-5.6-sol"
+ ]
+}

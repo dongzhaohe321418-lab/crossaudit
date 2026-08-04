@@ -2,46 +2,109 @@
  {
   "id": "M-SYN-01",
   "class": "undefined_name_in_error_branch",
-  "predicted_channel": "syntactic"
+  "predicted_channel": "syntactic",
+  "seed": "conv"
  },
  {
   "id": "M-TYP-01",
   "class": "float_return_becomes_str",
-  "predicted_channel": "type"
+  "predicted_channel": "type",
+  "seed": "conv"
  },
  {
   "id": "M-TST-01",
   "class": "unit_conversion_dropped",
-  "predicted_channel": "test"
+  "predicted_channel": "test",
+  "seed": "conv"
  },
  {
   "id": "M-TST-02",
   "class": "off_by_one_step_count",
-  "predicted_channel": "test"
+  "predicted_channel": "test",
+  "seed": "conv"
  },
  {
   "id": "M-TOL-01",
   "class": "output_key_renamed",
-  "predicted_channel": "type"
+  "predicted_channel": "type",
+  "seed": "conv"
  },
  {
   "id": "M-TOL-02",
   "class": "converged_flag_inverted",
-  "predicted_channel": "toolrun"
+  "predicted_channel": "toolrun",
+  "seed": "conv"
  },
  {
   "id": "M-REV-01",
   "class": "boundary_flip_at_tolerance",
-  "predicted_channel": "review-only"
+  "predicted_channel": "review-only",
+  "seed": "conv"
  },
  {
   "id": "M-REV-02",
   "class": "tolerance_loosened_1000x",
-  "predicted_channel": "review-only"
+  "predicted_channel": "review-only",
+  "seed": "conv"
  },
  {
   "id": "M-REV-03",
   "class": "last_step_vs_min_energy",
-  "predicted_channel": "review-only"
+  "predicted_channel": "review-only",
+  "seed": "conv"
+ },
+ {
+  "id": "T-SYN-01",
+  "class": "undefined_name_in_error_branch",
+  "predicted_channel": "syntactic",
+  "seed": "tab"
+ },
+ {
+  "id": "T-TYP-01",
+  "class": "count_becomes_str",
+  "predicted_channel": "type",
+  "seed": "tab"
+ },
+ {
+  "id": "T-TST-01",
+  "class": "per_atom_division_dropped",
+  "predicted_channel": "test",
+  "seed": "tab"
+ },
+ {
+  "id": "T-TST-02",
+  "class": "mean_becomes_sum",
+  "predicted_channel": "test",
+  "seed": "tab"
+ },
+ {
+  "id": "T-TOL-01",
+  "class": "output_key_renamed",
+  "predicted_channel": "type",
+  "seed": "tab"
+ },
+ {
+  "id": "T-TOL-02",
+  "class": "exclusions_not_recorded",
+  "predicted_channel": "toolrun",
+  "seed": "tab"
+ },
+ {
+  "id": "T-REV-01",
+  "class": "unconverged_runs_included",
+  "predicted_channel": "review-only",
+  "seed": "tab"
+ },
+ {
+  "id": "T-REV-02",
+  "class": "zero_atom_guard_inverted",
+  "predicted_channel": "review-only",
+  "seed": "tab"
+ },
+ {
+  "id": "T-REV-03",
+  "class": "mean_of_means_not_pooled",
+  "predicted_channel": "review-only",
+  "seed": "tab"
  }
 ]

@@ -1,0 +1,741 @@
+[
+ {
+  "cid": "CYCLE-000001",
+  "decision": "BLOCK",
+  "started": "2026-07-30T08:43:34Z",
+  "completed": "2026-07-30T08:49:14Z",
+  "model": null,
+  "findings": [
+   {
+    "fid": "F-001",
+    "sev": "HIGH",
+    "scopes": [
+     "submit_production_job",
+     "publish_claim"
+    ],
+    "source": "DETERMINISTIC",
+    "fclass": null,
+    "rules": [
+     "R-PRO-004"
+    ]
+   },
+   {
+    "fid": "F-002",
+    "sev": "CRITICAL",
+    "scopes": [
+     "submit_production_job",
+     "publish_claim"
+    ],
+    "source": "DETERMINISTIC",
+    "fclass": null,
+    "rules": [
+     "Gate 2",
+     "R-EVD-001"
+    ]
+   },
+   {
+    "fid": "F-003",
+    "sev": "CRITICAL",
+    "scopes": [
+     "submit_production_job",
+     "publish_claim"
+    ],
+    "source": "DETERMINISTIC",
+    "fclass": null,
+    "rules": [
+     "Gate 2",
+     "R-EVD-002"
+    ]
+   },
+   {
+    "fid": "F-004",
+    "sev": "HIGH",
+    "scopes": [
+     "submit_production_job",
+     "publish_claim"
+    ],
+    "source": "DETERMINISTIC",
+    "fclass": null,
+    "rules": [
+     "Gate 11",
+     "R-STA-002"
+    ]
+   },
+   {
+    "fid": "F-005",
+    "sev": "LOW",
+    "scopes": [
+     "publish_claim"
+    ],
+    "source": "DETERMINISTIC",
+    "fclass": "SOFT",
+    "rules": [
+     "Gate 11",
+     "R-EVD-002"
+    ]
+   },
+   {
+    "fid": "F-006",
+    "sev": "HIGH",
+    "scopes": [
+     "submit_production_job",
+     "publish_claim"
+    ],
+    "source": "JUDGMENT",
+    "fclass": "HARD",
+    "rules": [
+     "Gate 2",
+     "R-EVD-006"
+    ]
+   },
+   {
+    "fid": "F-007",
+    "sev": "MEDIUM",
+    "scopes": [
+     "publish_claim"
+    ],
+    "source": "JUDGMENT",
+    "fclass": "HARD",
+    "rules": [
+     "R-NAV-003"
+    ]
+   }
+  ],
+  "closed": []
+ },
+ {
+  "cid": "CYCLE-000002",
+  "decision": "BLOCK",
+  "started": "2026-07-31T02:54:08Z",
+  "completed": "2026-07-31T03:00:09Z",
+  "model": "gpt-5.6",
+  "findings": [
+   {
+    "fid": "F-005",
+    "sev": "LOW",
+    "scopes": [
+     "publish_claim"
+    ],
+    "source": "DETERMINISTIC",
+    "fclass": "SOFT",
+    "rules": [
+     "Gate 11",
+     "R-EVD-002"
+    ]
+   },
+   {
+    "fid": "F-006",
+    "sev": "HIGH",
+    "scopes": [
+     "submit_production_job",
+     "publish_claim"
+    ],
+    "source": "JUDGMENT",
+    "fclass": "HARD",
+    "rules": [
+     "Gate 2",
+     "R-EVD-006"
+    ]
+   },
+   {
+    "fid": "F-008",
+    "sev": "HIGH",
+    "scopes": [
+     "submit_production_job",
+     "publish_claim"
+    ],
+    "source": "JUDGMENT",
+    "fclass": "HARD",
+    "rules": [
+     "Gate 11",
+     "R-COR-001"
+    ]
+   },
+   {
+    "fid": "F-009",
+    "sev": "MEDIUM",
+    "scopes": [
+     "publish_claim"
+    ],
+    "source": "DETERMINISTIC",
+    "fclass": "HARD",
+    "rules": [
+     "R-GRD-001"
+    ]
+   }
+  ],
+  "closed": [
+   "F-001",
+   "F-002",
+   "F-003",
+   "F-004",
+   "F-007"
+  ]
+ },
+ {
+  "cid": "CYCLE-000004",
+  "decision": "BLOCK",
+  "started": "2026-07-31T03:57:26Z",
+  "completed": "2026-07-31T04:03:02Z",
+  "model": "gpt-5.6",
+  "findings": [
+   {
+    "fid": "F-006",
+    "sev": "HIGH",
+    "scopes": [
+     "submit_production_job",
+     "publish_claim"
+    ],
+    "source": "JUDGMENT",
+    "fclass": "HARD",
+    "rules": [
+     "Gate 2",
+     "R-EVD-006"
+    ]
+   },
+   {
+    "fid": "F-008",
+    "sev": "HIGH",
+    "scopes": [
+     "submit_production_job",
+     "publish_claim"
+    ],
+    "source": "JUDGMENT",
+    "fclass": "HARD",
+    "rules": [
+     "Gate 11",
+     "R-COR-001"
+    ]
+   },
+   {
+    "fid": "F-011",
+    "sev": "HIGH",
+    "scopes": [
+     "submit_production_job",
+     "publish_claim"
+    ],
+    "source": "JUDGMENT",
+    "fclass": "HARD",
+    "rules": [
+     "Gate 11",
+     "R-STA-002"
+    ]
+   }
+  ],
+  "closed": []
+ },
+ {
+  "cid": "CYCLE-000005",
+  "decision": "BLOCK",
+  "started": "2026-07-31T05:00:52Z",
+  "completed": "2026-07-31T05:04:49Z",
+  "model": "gpt-5",
+  "findings": [
+   {
+    "fid": "F-012",
+    "sev": "HIGH",
+    "scopes": [
+     "submit_production_job",
+     "publish_claim"
+    ],
+    "source": "JUDGMENT",
+    "fclass": "HARD",
+    "rules": [
+     "Gate 2",
+     "R-EVD-003"
+    ]
+   },
+   {
+    "fid": "F-013",
+    "sev": "HIGH",
+    "scopes": [
+     "submit_production_job",
+     "publish_claim"
+    ],
+    "source": "JUDGMENT",
+    "fclass": "HARD",
+    "rules": [
+     "Gate 11",
+     "R-STA-002"
+    ]
+   }
+  ],
+  "closed": [
+   "F-006",
+   "F-008",
+   "F-011"
+  ]
+ },
+ {
+  "cid": "CYCLE-000006",
+  "decision": "BLOCK",
+  "started": "2026-07-31T05:46:36Z",
+  "completed": "2026-07-31T05:55:17Z",
+  "model": "gpt-5",
+  "findings": [
+   {
+    "fid": "F-014",
+    "sev": "HIGH",
+    "scopes": [
+     "publish_claim"
+    ],
+    "source": "JUDGMENT",
+    "fclass": "HARD",
+    "rules": [
+     "Gate 2",
+     "R-EVD-003"
+    ]
+   }
+  ],
+  "closed": [
+   "F-012",
+   "F-013"
+  ]
+ },
+ {
+  "cid": "CYCLE-000007",
+  "decision": "PASS_WITH_CAVEATS",
+  "started": "2026-07-31T06:46:53Z",
+  "completed": "2026-07-31T06:52:21Z",
+  "model": "gpt-5.6-sol",
+  "findings": [
+   {
+    "fid": "F-015",
+    "sev": "MEDIUM",
+    "scopes": [],
+    "source": "JUDGMENT",
+    "fclass": "HARD",
+    "rules": [
+     "Gate 11",
+     "R-NAV-003"
+    ]
+   }
+  ],
+  "closed": [
+   "F-014"
+  ]
+ },
+ {
+  "cid": "CYCLE-000008",
+  "decision": "PASS",
+  "started": "2026-07-31T07:45:53Z",
+  "completed": "2026-07-31T07:54:40Z",
+  "model": "gpt-5",
+  "findings": [],
+  "closed": [
+   "F-015"
+  ]
+ },
+ {
+  "cid": "CYCLE-000009",
+  "decision": "PASS",
+  "started": "2026-07-31T15:57:10Z",
+  "completed": "2026-07-31T16:01:08Z",
+  "model": "gpt-5",
+  "findings": [],
+  "closed": [
+   "F-005",
+   "F-009"
+  ]
+ },
+ {
+  "cid": "CYCLE-000010",
+  "decision": "PASS_WITH_CAVEATS",
+  "started": "2026-08-02T16:30:38Z",
+  "completed": "2026-08-02T16:34:35Z",
+  "model": "gpt-5",
+  "findings": [
+   {
+    "fid": "F-016",
+    "sev": "LOW",
+    "scopes": [],
+    "source": "DETERMINISTIC",
+    "fclass": "SOFT",
+    "rules": [
+     "Gate 11",
+     "R-EVD-002"
+    ]
+   }
+  ],
+  "closed": []
+ },
+ {
+  "cid": "CYCLE-000011",
+  "decision": "PASS_WITH_CAVEATS",
+  "started": "2026-08-02T16:40:30Z",
+  "completed": "2026-08-02T16:44:11Z",
+  "model": "gpt-5",
+  "findings": [
+   {
+    "fid": "F-016",
+    "sev": "LOW",
+    "scopes": [],
+    "source": "DETERMINISTIC",
+    "fclass": "SOFT",
+    "rules": [
+     "Gate 11",
+     "R-EVD-002"
+    ]
+   }
+  ],
+  "closed": []
+ },
+ {
+  "cid": "CYCLE-000012",
+  "decision": "BLOCK",
+  "started": "2026-08-03T01:44:21Z",
+  "completed": "2026-08-03T01:51:02Z",
+  "model": "gpt-5",
+  "findings": [
+   {
+    "fid": "F-017",
+    "sev": "HIGH",
+    "scopes": [
+     "publish_claim"
+    ],
+    "source": "JUDGMENT",
+    "fclass": "HARD",
+    "rules": [
+     "Gate 11",
+     "R-STA-002"
+    ]
+   }
+  ],
+  "closed": [
+   "F-016"
+  ]
+ },
+ {
+  "cid": "CYCLE-000013",
+  "decision": "BLOCK",
+  "started": "2026-08-03T01:54:52Z",
+  "completed": "2026-08-03T02:06:59Z",
+  "model": "gpt-5",
+  "findings": [
+   {
+    "fid": "F-017",
+    "sev": "HIGH",
+    "scopes": [
+     "publish_claim"
+    ],
+    "source": "JUDGMENT",
+    "fclass": "HARD",
+    "rules": [
+     "Gate 11",
+     "R-STA-002"
+    ]
+   }
+  ],
+  "closed": []
+ },
+ {
+  "cid": "CYCLE-000014",
+  "decision": "PASS",
+  "started": "2026-08-03T02:18:37Z",
+  "completed": "2026-08-03T02:23:04Z",
+  "model": "gpt-5.6",
+  "findings": [],
+  "closed": [
+   "F-017"
+  ]
+ },
+ {
+  "cid": "CYCLE-000015",
+  "decision": "BLOCK",
+  "started": "2026-08-03T02:24:05Z",
+  "completed": "2026-08-03T02:29:14Z",
+  "model": "gpt-5.6",
+  "findings": [
+   {
+    "fid": "F-018",
+    "sev": "CRITICAL",
+    "scopes": [
+     "publish_claim"
+    ],
+    "source": "JUDGMENT",
+    "fclass": "HARD",
+    "rules": [
+     "Gate 2",
+     "R-EVD-001"
+    ]
+   }
+  ],
+  "closed": []
+ },
+ {
+  "cid": "CYCLE-000016",
+  "decision": "BLOCK",
+  "started": "2026-08-03T02:47:05Z",
+  "completed": "2026-08-03T02:53:02Z",
+  "model": "GPT-5",
+  "findings": [
+   {
+    "fid": "F-019",
+    "sev": "HIGH",
+    "scopes": [
+     "publish_claim"
+    ],
+    "source": "JUDGMENT",
+    "fclass": "HARD",
+    "rules": [
+     "Gate 11",
+     "R-STA-002"
+    ]
+   }
+  ],
+  "closed": [
+   "F-018"
+  ]
+ },
+ {
+  "cid": "CYCLE-000017",
+  "decision": "BLOCK",
+  "started": "2026-08-03T03:19:30Z",
+  "completed": "2026-08-03T03:37:45Z",
+  "model": "gpt-5.6",
+  "findings": [
+   {
+    "fid": "F-019",
+    "sev": "HIGH",
+    "scopes": [
+     "publish_claim"
+    ],
+    "source": "JUDGMENT",
+    "fclass": "HARD",
+    "rules": [
+     "Gate 11",
+     "R-STA-002"
+    ]
+   },
+   {
+    "fid": "F-020",
+    "sev": "HIGH",
+    "scopes": [
+     "publish_claim"
+    ],
+    "source": "JUDGMENT",
+    "fclass": "HARD",
+    "rules": [
+     "R-GRD-001"
+    ]
+   },
+   {
+    "fid": "F-021",
+    "sev": "LOW",
+    "scopes": [],
+    "source": "DETERMINISTIC",
+    "fclass": "SOFT",
+    "rules": [
+     "Gate 11",
+     "R-EVD-002"
+    ]
+   }
+  ],
+  "closed": []
+ },
+ {
+  "cid": "CYCLE-000018",
+  "decision": "BLOCK",
+  "started": "2026-08-03T03:55:30Z",
+  "completed": "2026-08-03T04:02:07Z",
+  "model": "gpt-5",
+  "findings": [
+   {
+    "fid": "F-019",
+    "sev": "HIGH",
+    "scopes": [
+     "publish_claim"
+    ],
+    "source": "JUDGMENT",
+    "fclass": "HARD",
+    "rules": [
+     "Gate 11",
+     "R-STA-002"
+    ]
+   },
+   {
+    "fid": "F-020",
+    "sev": "HIGH",
+    "scopes": [
+     "publish_claim"
+    ],
+    "source": "JUDGMENT",
+    "fclass": "HARD",
+    "rules": [
+     "R-GRD-001"
+    ]
+   },
+   {
+    "fid": "F-021",
+    "sev": "LOW",
+    "scopes": [],
+    "source": "DETERMINISTIC",
+    "fclass": "SOFT",
+    "rules": [
+     "Gate 11",
+     "R-EVD-002"
+    ]
+   }
+  ],
+  "closed": []
+ },
+ {
+  "cid": "CYCLE-000019",
+  "decision": "BLOCK",
+  "started": "2026-08-03T05:12:17Z",
+  "completed": "2026-08-03T05:19:16Z",
+  "model": "gpt-5",
+  "findings": [
+   {
+    "fid": "F-019",
+    "sev": "HIGH",
+    "scopes": [
+     "publish_claim"
+    ],
+    "source": "JUDGMENT",
+    "fclass": "HARD",
+    "rules": [
+     "Gate 11",
+     "R-STA-002"
+    ]
+   }
+  ],
+  "closed": [
+   "F-020",
+   "F-021"
+  ]
+ },
+ {
+  "cid": "CYCLE-000020",
+  "decision": "BLOCK",
+  "started": "2026-08-03T05:34:49Z",
+  "completed": "2026-08-03T05:47:15Z",
+  "model": "gpt-5",
+  "findings": [
+   {
+    "fid": "F-019",
+    "sev": "HIGH",
+    "scopes": [
+     "publish_claim"
+    ],
+    "source": "JUDGMENT",
+    "fclass": "HARD",
+    "rules": [
+     "Gate 11",
+     "R-STA-002"
+    ]
+   },
+   {
+    "fid": "F-022",
+    "sev": "HIGH",
+    "scopes": [
+     "publish_claim"
+    ],
+    "source": "JUDGMENT",
+    "fclass": "HARD",
+    "rules": [
+     "Gate 11",
+     "R-STA-002"
+    ]
+   },
+   {
+    "fid": "F-023",
+    "sev": "HIGH",
+    "scopes": [
+     "publish_claim"
+    ],
+    "source": "JUDGMENT",
+    "fclass": "HARD",
+    "rules": [
+     "Gate 11",
+     "R-NAV-001"
+    ]
+   }
+  ],
+  "closed": []
+ },
+ {
+  "cid": "CYCLE-000021",
+  "decision": "BLOCK",
+  "started": "2026-08-03T06:07:54Z",
+  "completed": "2026-08-03T06:12:38Z",
+  "model": "gpt-5.6-sol",
+  "findings": [
+   {
+    "fid": "F-022",
+    "sev": "HIGH",
+    "scopes": [
+     "publish_claim"
+    ],
+    "source": "JUDGMENT",
+    "fclass": "HARD",
+    "rules": [
+     "Gate 11",
+     "R-STA-002"
+    ]
+   },
+   {
+    "fid": "F-023",
+    "sev": "HIGH",
+    "scopes": [
+     "publish_claim"
+    ],
+    "source": "JUDGMENT",
+    "fclass": "HARD",
+    "rules": [
+     "Gate 11",
+     "R-NAV-001"
+    ]
+   }
+  ],
+  "closed": [
+   "F-019"
+  ]
+ },
+ {
+  "cid": "CYCLE-000022",
+  "decision": "BLOCK",
+  "started": "2026-08-03T06:37:30Z",
+  "completed": "2026-08-03T06:49:00Z",
+  "model": "gpt-5",
+  "findings": [
+   {
+    "fid": "F-022",
+    "sev": "HIGH",
+    "scopes": [
+     "publish_claim"
+    ],
+    "source": "JUDGMENT",
+    "fclass": "HARD",
+    "rules": [
+     "Gate 11",
+     "R-STA-002"
+    ]
+   },
+   {
+    "fid": "F-023",
+    "sev": "HIGH",
+    "scopes": [
+     "publish_claim"
+    ],
+    "source": "JUDGMENT",
+    "fclass": "HARD",
+    "rules": [
+     "Gate 11",
+     "R-NAV-001"
+    ]
+   },
+   {
+    "fid": "F-024",
+    "sev": "MEDIUM",
+    "scopes": [],
+    "source": "JUDGMENT",
+    "fclass": "HARD",
+    "rules": [
+     "R-GRD-001"
+    ]
+   }
+  ],
+  "closed": []
+ }
+]
