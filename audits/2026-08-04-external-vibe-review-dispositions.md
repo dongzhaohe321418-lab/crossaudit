@@ -24,20 +24,39 @@ artefact, days apart, which is the more useful result of the exercise.
 | 9 | **§5 bulleted grid.** | Ten bullets converted to run-in paragraphs. The document now contains no `itemize` at all. |
 | 10 | **Semicolons and `therefore`.** | Prose semicolons 73 to 50, `therefore` 9 to 6, and the reviewer-voice self-emphasis ("deserves weight", "worth reporting", "sharpest version") removed. |
 
-## Accepted, not yet done
+## Accepted, done after a challenge
 
-- **Publish the artefacts at a fixed tag, with a DOI.** Operator action. Until
-  it happens, finding 2's disclosure stands in for it, and every claim of
-  third-party inspectability should be read as conditional.
-- **Redo the experiment** with a sealed key, frozen scorer, multiple model pairs,
-  matched arms, independent adjudication, and reported precision, recall,
-  false-block rate, intervals and human cost. This is the registered v3 study;
-  it is blocked on credentials and escrow, not on design.
-- **§4.3 shorten or move to future work.** Partially addressed: the section
-  already declares that the product line is measured nowhere. We have not yet
-  cut it, and the reviewer's structural point stands.
-- **Split Figure 1.** Not done. The caption still carries explanation the body
-  should hold.
+The first version of this file listed four items as outstanding. The operator
+asked why they could not be finished, and the answer was that only two of them
+were actually blocked.
+
+- **§4.3 shortened**, 852 words to 550, and retitled *What a second
+  implementation taught the specification*. All product surface is gone: no
+  interface, no CLI, no console. What remains is the three places where a
+  second implementation exposed something the specification had left
+  underdetermined. The section states in its second sentence that the package
+  is measured nowhere in this paper. This was never blocked; it was deferred
+  because the section had been added at the operator's request and cutting it
+  felt like overreach. Deferring silently was the wrong call: the choice should
+  have been surfaced rather than half-made.
+- **Figure 1 split.** A new Figure 1 draws separation of powers alone, four
+  boxes and the write and read edges between them, and the loop figure keeps
+  the cycle. The loop's caption drops the invariant-by-invariant walk and
+  points at the body instead. Also not blocked, just unfinished.
+- **Artefacts pinned to a commit.** §4.5 now names the commit every statement
+  refers to, rather than a moving default branch, which was the second half of
+  the reviewer's finding 2 and had been missed.
+
+## Still open, and genuinely blocked
+
+- **Repository visibility and a DOI.** Changing visibility needs administrative
+  rights this session does not hold, and the sandbox's GitHub API access is
+  scoped to the configured repositories. Operator action. Until it happens, the
+  disclosure added under finding 2 stands in place of the claim.
+- **The experiment redo.** It needs API credentials from two vendors and a
+  third-party escrow decision, neither of which an assistant can produce. The
+  design is frozen in `experiment/v3-ABLATION-REGISTRATION.md`; execution is
+  what waits.
 
 ## What this exercise demonstrated
 
