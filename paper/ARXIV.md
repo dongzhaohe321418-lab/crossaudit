@@ -33,6 +33,15 @@ Before upload:
 3. Re-check anonymously (`curl -o /dev/null -w '%{http_code}'`), not from a
    logged-in browser, which will show you a page nobody else can see.
 
+## Final artefact binding (2026-08-05)
+
+The PDF this metadata describes has SHA-256 `ac44286f5b01935f537a460e7dcf4c5b3953e7ca10b6f625dee85b68a7b44889`.
+`paper/crossaudit-paper.pdf` in the repository is that same file, byte for byte.
+The paper's §4.5 now cites release tag `paper-v1.0.0` instead of a bare
+commit; **create that tag at the final commit and push it before uploading**,
+because the external review caught the previous draft having moved past its own
+pinned commit, and the fix only holds if the tag actually exists.
+
 ## What gets uploaded
 
 `crossaudit.tex` alone. The paper is fully self-contained: bibliography is an
@@ -55,14 +64,14 @@ enumitem, hyperref, caption) are standard TeX Live.
   Science
 - **Authors:** Zhaohe Dong (University of Cambridge), Yuhao Chen (University
   of Wisconsin–Madison)
-- **Comments:** 19 pages, 4 figures, 3 tables, 20 references. Reference
+- **Comments:** 19 pages, 4 figures, 3 tables, 22 references. Reference
   implementation, audit ledger, and experiment artefacts:
   https://github.com/dongzhaohe321418-lab/crossaudit
 - **Primary category:** cs.AI. Suggested cross-lists: cs.SE (the mechanism is
   CI/git machinery), cs.CY (research integrity and accountability).
 - **License:** arXiv non-exclusive license v1.0 is sufficient and keeps later
   venue options open; choose CC BY 4.0 only if you want to commit to it now.
-- **Abstract field:** the paper's abstract is 1,620 plain characters and the
+- **Abstract field:** the paper's abstract is 1,770 plain characters and the
   form caps at 1,920, so the paper's own abstract goes in verbatim. No
   condensation is needed and none should be invented: an abstract that differs
   between the listing and the PDF is a small dishonesty of exactly the kind
@@ -70,7 +79,7 @@ enumitem, hyperref, caption) are standard TeX Live.
 
 ```text
 An AI scientist should not grade its own homework. Yet in the systems we
-surveyed, the agent that reviews the work usually comes from the same model
+examined, the agent that reviews the work usually comes from the same model
 family as the agent that produced it, or at least from the same vendor. Model
 evaluators are known to favour their own generations. Whether models trained
 alike also share blind spots is a conjecture, not a settled finding, but if
@@ -79,9 +88,11 @@ and what was waved through often sits in platform logs that nobody outside can
 replay. We present CrossAudit, a protocol for supervising autonomous research
 pipelines. It rests on three commitments. Each increment of work is audited by
 an agent from a different vendor, against a rulebook a human wrote and
-versioned. Every artefact of that supervision is a git commit, so the history
-can be re-read and cited by anyone. Scripted checks run before any model does.
-Judgement calls never gate the pipeline. Blockers that survive a bounded
+versioned. Reports, verdicts, disputes and rulings are git commits, so the
+supervision history can be re-read and cited; raw model exchanges are not yet
+part of that record. Scripted checks run before any model does. Advisory
+judgement never gates the pipeline: a model blocks only by citing a rule, and
+no model may waive a deterministic failure. Blockers that survive a bounded
 number of revision rounds go to a person. We state the protocol as eight
 invariants. We describe a reference implementation built from GitHub Actions
 and a few hundred lines of Python, and report a live deployment in a

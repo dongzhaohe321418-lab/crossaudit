@@ -1,0 +1,57 @@
+{
+ "pairing_unit": "seeded defect (n=43)",
+ "map": "FROZEN",
+ "provenance": "post hoc, 2026-08-05, in response to external review; not pre-registered",
+ "arms": {
+  "anthropic-subagent": {
+   "lenient": 38,
+   "strict": 38
+  },
+  "openai": {
+   "lenient": 41,
+   "strict": 37
+  }
+ },
+ "tiers": {
+  "lenient": {
+   "difference_openai_minus_claude": 3,
+   "both_caught": 36,
+   "both_missed": 0,
+   "gpt_only_b": 5,
+   "claude_only_c": 2,
+   "mcnemar_exact_p": 0.4531,
+   "bootstrap": {
+    "draws": 10000,
+    "seed": 20260805,
+    "ci95_defects": [
+     -2,
+     8
+    ],
+    "ci95_recall_points": [
+     -4.7,
+     18.6
+    ]
+   }
+  },
+  "strict": {
+   "difference_openai_minus_claude": -1,
+   "both_caught": 33,
+   "both_missed": 1,
+   "gpt_only_b": 4,
+   "claude_only_c": 5,
+   "mcnemar_exact_p": 1.0,
+   "bootstrap": {
+    "draws": 10000,
+    "seed": 20260805,
+    "ci95_defects": [
+     -7,
+     5
+    ],
+    "ci95_recall_points": [
+     -16.3,
+     11.6
+    ]
+   }
+  }
+ }
+}

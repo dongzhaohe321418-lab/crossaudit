@@ -129,7 +129,7 @@ def run(shuffles: int, seed: int) -> dict:
                     "floor": round(floor, 1),
                     "sd": round(statistics.pstdev(d), 1),
                     "p95": d[int(0.95 * (len(d) - 1))],
-                    "p_value": round(sum(1 for x in d if x >= obs) / len(d), 4),
+                    "p_value": round((sum(1 for x in d if x >= obs) + 1) / (len(d) + 1), 4),  # add-one: a finite permutation cannot certify p=0
                     "chance_corrected": round((obs - floor) / (N_DEFECTS - floor), 2),
                 }
             out["arms"].setdefault(map_name, {})[arm] = entry
