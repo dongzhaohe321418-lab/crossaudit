@@ -6,7 +6,7 @@ You are continuing an established project. Orient from this file first, then
 ## What this repo is
 
 CrossAudit: a git-native, cross-vendor audit protocol for agentic science.
-Position paper (`paper/crossaudit.tex`, 19 pp at tag paper-v1.0.0), reference implementation
+Protocol-and-systems paper (`paper/crossaudit.tex`, 19 pp at tag paper-v1.0.0), reference implementation
 (`checks/`, `controller/`, `examples/minimal/`), a registered ablation
 programme (`experiment/`), bilingual design docs (`improvements/`), and
 workshop submission scaffolds (`paper/submissions/`).

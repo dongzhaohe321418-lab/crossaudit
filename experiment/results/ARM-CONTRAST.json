@@ -1,7 +1,7 @@
 {
  "pairing_unit": "seeded defect (n=43)",
  "map": "FROZEN",
- "provenance": "post hoc, 2026-08-05, in response to external review; not pre-registered",
+ "provenance": "post hoc, 2026-08-05, in response to external reviews; not pre-registered. Cluster-level inference is primary; defect-level retained as secondary",
  "arms": {
   "anthropic-subagent": {
    "lenient": 38,
@@ -14,6 +14,12 @@
  },
  "tiers": {
   "lenient": {
+   "clusters_defective_increments": 20,
+   "cluster_bootstrap_ci95_defects": [
+    -2,
+    8
+   ],
+   "cluster_signflip_permutation_p": 0.4552,
    "difference_openai_minus_claude": 3,
    "both_caught": 36,
    "both_missed": 0,
@@ -34,6 +40,12 @@
    }
   },
   "strict": {
+   "clusters_defective_increments": 20,
+   "cluster_bootstrap_ci95_defects": [
+    -6,
+    4
+   ],
+   "cluster_signflip_permutation_p": 1.0,
    "difference_openai_minus_claude": -1,
    "both_caught": 33,
    "both_missed": 1,

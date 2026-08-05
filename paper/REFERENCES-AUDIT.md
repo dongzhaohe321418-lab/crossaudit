@@ -63,3 +63,32 @@ say they *may*, and call the generalisation a hypothesis. The abstract now
 separates the two. Self-preference is reported as the demonstrated finding it
 is; shared blind spots are named as a conjecture, with the consequence stated
 conditionally.
+
+---
+
+## Addendum, 2026-08-05: the bibliography grew from twenty to twenty-two
+
+The audit above covers the twenty entries the bibliography held on 2026-08-03.
+Two were added and one was upgraded during the external-review revisions, and
+the contributions statement's claim ("checked all twenty-two references") is
+only honest if the committed record covers all twenty-two. It now does.
+
+- **chen2025selfpref** (arXiv:2504.03846). Abstract fetched 2026-08-05; title,
+  author list and the quality-confound finding match the entry and the use in
+  §2. Verified before the citation was added, not after.
+- **roytburg2026sanity** (arXiv:2601.22548). Abstract fetched 2026-08-05;
+  title, six-author list, and the ~51%-survive-sanity-checks finding match the
+  entry and the use in §2. Verified before the citation was added.
+- **gottweis2025coscientist → journal version.** Nature 655:487–496 (2026),
+  DOI 10.1038/s41586-026-10644-y, fetched 2026-08-05: same team, the retitle
+  the entry had anticipated. Updated on the third external review's citation,
+  which checked out where the second review's suggested link (a Nature
+  Medicine commentary) had not — both were verified rather than trusted.
+
+Lesson carried forward from the same reviews: entry-level verification is not
+characterisation-level verification. The Norman entry was bibliographically
+correct while §2 misstated its finding (two judges of twenty-one, not all
+twenty-one), and an external reviewer caught it against the source. The
+in-text claims of the three entries above were checked against their abstracts
+at the same time as their fields, and that double check is now the standard
+this file records.

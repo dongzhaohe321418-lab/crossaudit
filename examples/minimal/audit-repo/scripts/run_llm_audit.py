@@ -130,6 +130,32 @@ def validate_reply(reply: dict, known_rules: set[str]) -> str | None:
     return None
 
 
+def synthesise_verdict(escalation_lock, llm_invalid, dcl_hard_failures,
+                       bounds_exceeded, llm_reply):
+    """Verdict synthesis, in I-numbered precedence.
+
+    I3 outranks I4 here on purpose: an invalid audit escalates even where the
+    DCL has independently blocked, because an integrity failure must never be
+    absorbed into an ordinary scientific verdict. Two external reviews found
+    the previous order (DCL first) doing exactly that absorption. I4 is
+    untouched by the swap: a *valid* model PASS still cannot outrank a DCL
+    hard failure, and ESCALATE is not an admission, so nothing is waived.
+    Truncated or unreadable inputs can never yield PASS (I8: fail closed).
+    """
+    if escalation_lock:
+        return "ESCALATE"     # an escalated cycle cannot be routed around (I8)
+    if llm_invalid:
+        return "ESCALATE"     # I3: integrity failure dominates, DCL state or not
+    if dcl_hard_failures > 0:
+        return "BLOCKED"      # I4: no model may waive a scripted hard failure
+    if bounds_exceeded:
+        return "ESCALATE"     # model did not see everything; cannot mint PASS
+    if llm_reply:
+        return llm_reply["verdict"]
+    # I8: an offline stub must NOT mint a conforming PASS - no model audit ran.
+    return "DCL_ONLY"
+
+
 def render_report(args, constitution_hash: str, dcl: dict,
                   llm: dict | None, llm_invalid: str | None, verdict: str) -> str:
     lines = [
@@ -241,22 +267,10 @@ def main() -> int:
         except Exception as exc:
             llm_invalid = f"auditor call failed: {exc!r}"
 
-    # Verdict synthesis. I4: DCL blockers dominate. I3: invalid reply escalates.
-    # Truncated or unreadable inputs can never yield PASS (I8: fail closed).
     bounds_exceeded = locals().get("bounds_exceeded", 0)
-    if escalation_lock:
-        verdict = "ESCALATE"   # an escalated cycle cannot be routed around (I8)
-    elif dcl["total_hard_failures"] > 0:
-        verdict = "BLOCKED"
-    elif llm_invalid:
-        verdict = "ESCALATE"
-    elif bounds_exceeded:
-        verdict = "ESCALATE"  # model did not see everything; cannot mint PASS
-    elif llm_reply:
-        verdict = llm_reply["verdict"]
-    else:
-        # I8: an offline stub must NOT mint a conforming PASS — no model audit ran.
-        verdict = "DCL_ONLY"
+    verdict = synthesise_verdict(escalation_lock, llm_invalid,
+                                 dcl["total_hard_failures"], bounds_exceeded,
+                                 llm_reply)
 
     # R2 §4: append-only cycle directory; a rerun never overwrites.
     cycles_root = Path("cycles")
