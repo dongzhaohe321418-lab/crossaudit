@@ -62,7 +62,7 @@ enumitem, hyperref, caption) are standard TeX Live.
   CI/git machinery), cs.CY (research integrity and accountability).
 - **License:** arXiv non-exclusive license v1.0 is sufficient and keeps later
   venue options open; choose CC BY 4.0 only if you want to commit to it now.
-- **Abstract field:** the paper's abstract is 1,627 plain characters and the
+- **Abstract field:** the paper's abstract is 1,620 plain characters and the
   form caps at 1,920, so the paper's own abstract goes in verbatim. No
   condensation is needed and none should be invented: an abstract that differs
   between the listing and the PDF is a small dishonesty of exactly the kind
@@ -73,21 +73,21 @@ An AI scientist should not grade its own homework. Yet in the systems we
 surveyed, the agent that reviews the work usually comes from the same model
 family as the agent that produced it, or at least from the same vendor. Model
 evaluators are known to favour their own generations. Whether models trained
-alike also share blind spots is a conjecture rather than a settled finding,
-but if they do, the reviewer inherits the author's. The record of what was
-flagged and what was waved through often sits in platform logs that nobody
-outside can replay. We present CrossAudit, a protocol for supervising
-autonomous research pipelines. It rests on three commitments. Each increment
-of work is audited by an agent from a different vendor, against a rulebook a
-human wrote and versioned. Every artefact of that supervision is a git commit,
-so the history can be re-read and cited by anyone. Scripted checks run before
-any model does. Judgement calls never gate the pipeline. Blockers that survive
-a bounded number of revision rounds go to a person. We state the protocol as
-eight invariants. We describe a reference implementation built from GitHub
-Actions and a few hundred lines of Python, and report a live deployment in a
+alike also share blind spots is a conjecture, not a settled finding, but if
+they do, the reviewer inherits the author’s. The record of what was flagged
+and what was waved through often sits in platform logs that nobody outside can
+replay. We present CrossAudit, a protocol for supervising autonomous research
+pipelines. It rests on three commitments. Each increment of work is audited by
+an agent from a different vendor, against a rulebook a human wrote and
+versioned. Every artefact of that supervision is a git commit, so the history
+can be re-read and cited by anyone. Scripted checks run before any model does.
+Judgement calls never gate the pipeline. Blockers that survive a bounded
+number of revision rounds go to a person. We state the protocol as eight
+invariants. We describe a reference implementation built from GitHub Actions
+and a few hundred lines of Python, and report a live deployment in a
 computational-chemistry pipeline. We also ran a seeded-defect trial. A cross-
 vendor audit of our own repository then voided its blinding. We adopt that
-audit's findings and report the corrected results. The trial shows that two
+audit’s findings and report the corrected results. The trial shows that two
 vendors read the same rulebook differently. It does not show that either is
 better. The strongest evidence here is the committed record of cross-vendor
 audits of this paper itself.
