@@ -109,7 +109,7 @@ audits of this paper itself.
 1. arXiv account with an endorsed cs.AI submission path (institutional email
    usually suffices).
 2. Upload `paper/crossaudit.tex` as the source; let AutoTeX build; check the
-   generated PDF is 15 pages and Figures 1–3 and Tables 1–2 render.
+   generated PDF is 19 pages and Figures 1–4 and Tables 1–3 render. (Count from the AutoTeX build itself, not from this line: this file has now twice carried a stale page count, which for this paper is not a forgivable class of error.)
 3. Paste the metadata above; submit before the 14:00 ET weekday cutoff to get
    the next announcement cycle.
 4. After the identifier is assigned: update `CITATION.cff` (the `url` gains a
