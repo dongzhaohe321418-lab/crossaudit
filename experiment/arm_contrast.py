@@ -78,12 +78,23 @@ def main() -> None:
     assert idx == sorted(vecs[ARMS[1]]) and len(idx) == 43, "defect universes differ"
 
     report = {"pairing_unit": "seeded defect (n=43)", "map": "FROZEN",
-              "provenance": "post hoc, 2026-08-05, in response to external review; "
-                            "not pre-registered", "arms": {}, "tiers": {}}
+              "provenance": "post hoc, 2026-08-05, in response to external reviews; "
+                            "not pre-registered. Cluster-level inference is primary; "
+                            "defect-level retained as secondary", "arms": {}, "tiers": {}}
     for arm in ARMS:
         got = {t: sum(vecs[arm][i][t] for i in idx) for t in ("lenient", "strict")}
         assert got == PUBLISHED[arm], f"{arm}: {got} != published {PUBLISHED[arm]}"
         report["arms"][arm] = got
+
+    # Cluster structure. The 43 defects nest inside ~20 defective increments and
+    # each model reply is increment-level, so defects within one increment share
+    # one generation and are not independent. An external review (2026-08-05,
+    # third) called the defect-level bootstrap on this; the cluster-level
+    # analyses below resample and permute INCREMENTS, and they are the primary
+    # inference. The defect-level numbers are retained for continuity and
+    # labelled secondary.
+    clusters = sorted({i[0] for i in idx})
+    by_cluster = {c: [i for i in idx if i[0] == c] for c in clusters}
 
     rng = random.Random(20260805)
     for tier in ("lenient", "strict"):
@@ -96,7 +107,25 @@ def main() -> None:
             picks = [rng.randrange(43) for _ in range(43)]
             diffs.append(sum(o[k] for k in picks) - sum(a[k] for k in picks))
         diffs.sort()
+        # --- cluster-aware primary inference ---
+        pos = {k: j for j, k in enumerate(idx)}
+        ca = {c: sum(a[pos[k]] for k in by_cluster[c]) for c in clusters}
+        co = {c: sum(o[pos[k]] for k in by_cluster[c]) for c in clusters}
+        obs = sum(co.values()) - sum(ca.values())
+        cdiffs = []
+        for _ in range(10_000):
+            picks = [clusters[rng.randrange(len(clusters))] for _ in clusters]
+            cdiffs.append(sum(co[c] for c in picks) - sum(ca[c] for c in picks))
+        cdiffs.sort()
+        ge = 0
+        for _ in range(10_000):
+            d = sum((co[c] - ca[c]) * (1 if rng.random() < 0.5 else -1)
+                    for c in clusters)
+            ge += abs(d) >= abs(obs)
         report["tiers"][tier] = {
+            "clusters_defective_increments": len(clusters),
+            "cluster_bootstrap_ci95_defects": [cdiffs[249], cdiffs[9749]],
+            "cluster_signflip_permutation_p": round((ge + 1) / 10_001, 4),
             "difference_openai_minus_claude": sum(o) - sum(a),
             "both_caught": sum(1 for x, y in zip(a, o) if x and y),
             "both_missed": sum(1 for x, y in zip(a, o) if not x and not y),

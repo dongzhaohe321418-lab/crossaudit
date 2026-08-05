@@ -35,7 +35,7 @@ Before upload:
 
 ## Final artefact binding (2026-08-05)
 
-The PDF this metadata describes has SHA-256 `d0a0faaa8423ad6db2f8da58fe73f8fb718d8e735e188950ca649c219ac0bfd4`.
+The PDF this metadata describes has SHA-256 `2283e0d3b00d7095852b641266d602d38afcc0e74ad0cc2ea3c84346837841cc`.
 `paper/crossaudit-paper.pdf` in the repository is that same file, byte for byte.
 The paper's §4.5 now cites release tag `paper-v1.0.0` instead of a bare
 commit; **create that tag at the final commit and push it before uploading**,
@@ -71,7 +71,7 @@ enumitem, hyperref, caption) are standard TeX Live.
   CI/git machinery), cs.CY (research integrity and accountability).
 - **License:** arXiv non-exclusive license v1.0 is sufficient and keeps later
   venue options open; choose CC BY 4.0 only if you want to commit to it now.
-- **Abstract field:** the paper's abstract is 1,813 plain characters and the
+- **Abstract field:** the paper's abstract is 1,875 plain characters and the
   form caps at 1,920, so the paper's own abstract goes in verbatim. No
   condensation is needed and none should be invented: an abstract that differs
   between the listing and the PDF is a small dishonesty of exactly the kind
@@ -97,11 +97,12 @@ number of revision rounds go to a person. We state the protocol as eight
 invariants. We describe a reference implementation built from GitHub Actions
 and a few hundred lines of Python, and report a live deployment of a closely
 related variant in a computational-chemistry pipeline. We also ran a seeded-
-defect trial. A cross-vendor audit of our own repository then voided its
-blinding. We adopt that audit’s findings and report the corrected results. The
-trial shows that two vendors read the same rulebook differently. It does not
-show that either is better. The strongest evidence here is the committed,
-uncontrolled record of cross-vendor audits of this paper itself.
+defect trial (30 increments, 43 seeded defects, one run per configuration). A
+cross-vendor audit of our own repository then voided its blinding. We adopt
+that audit’s findings and report the corrected results. The trial shows that
+two vendors read the same rulebook differently. It does not show that either
+is better. The strongest evidence here is the committed, uncontrolled record
+of cross-vendor audits of this paper itself.
 ```
 
 ## Operator checklist (the upload is yours)
