@@ -5,13 +5,44 @@ formatting (D2/D3/D4) is deferred and the scaffolds under `submissions/` stay
 untouched until that lane reopens. The submitted artefact is the main paper,
 authors visible (arXiv is not blind).
 
+## Gate: the repositories must be public before this goes up
+
+The paper says, in §4.5: *"We will publish them at a fixed release tag before
+this paper is cited, and a reader who cannot reach them should discount every
+statement below accordingly."* Posting to arXiv is the act that makes a paper
+citable, so uploading while the repositories answer 403 breaks a promise the
+paper makes in its own text.
+
+Checked 2026-08-04: `crossaudit`, `crossaudit_v2` and `crossaudit_v3` all return
+403 to an anonymous request. Eleven `\texttt{}` artefact citations and one pinned
+commit (`5e5f2eade4`) point into them, and §4.4 now points at
+`experiment/v3/SMOKE-FINDINGS.md` as well.
+
+This is not a nicety. The paper's whole offer is that a third party can re-read
+the ledger. A reader whose first action is a 403 has been handed a paper about
+unverifiable supervision claims that is itself an unverifiable supervision
+claim, and no amount of disclosure prose repairs that impression.
+
+Before upload:
+
+1. Make `crossaudit` public. `crossaudit_v2` and `crossaudit_v3` are cited only
+   as the product line's evolution (§4.3); either make them public too or soften
+   the citations to name them without implying they can be opened.
+2. Cut a release tag and change §4.5's pinned `5e5f2eade4` to that tag if the
+   default branch has moved past it.
+3. Re-check anonymously (`curl -o /dev/null -w '%{http_code}'`), not from a
+   logged-in browser, which will show you a page nobody else can see.
+
 ## What gets uploaded
 
 `crossaudit.tex` alone. The paper is fully self-contained: bibliography is an
 embedded `thebibliography`, every figure is TikZ drawn in-document, there are
 no `\input`/`\includegraphics` and no external assets. Re-verified 2026-08-03 by
 compiling the single file in an empty directory: two pdflatex passes, zero
-errors, 17 pages (TeX Live 2025; arXiv runs TeX Live, pdflatex path).
+errors (TeX Live 2025; arXiv runs TeX Live, pdflatex path). **19 pages as of
+2026-08-04** -- 15 at the first check, 17 at the second, 19 now. Re-count before
+submitting rather than trusting this line; a paper about self-description that
+misdescribes itself in its own metadata is an avoidable embarrassment.
 
 No `.bbl`, no figures directory, no ancillary files needed. If arXiv's
 AutoTeX complains about anything, it will be package-environment drift; all
@@ -24,8 +55,8 @@ enumitem, hyperref, caption) are standard TeX Live.
   Science
 - **Authors:** Zhaohe Dong (University of Cambridge), Yuhao Chen (University
   of Wisconsin–Madison)
-- **Comments:** 17 pages, 3 figures, 2 tables. Reference implementation,
-  audit ledger, and experiment artefacts:
+- **Comments:** 19 pages, 4 figures, 3 tables, 20 references. Reference
+  implementation, audit ledger, and experiment artefacts:
   https://github.com/dongzhaohe321418-lab/crossaudit
 - **Primary category:** cs.AI. Suggested cross-lists: cs.SE (the mechanism is
   CI/git machinery), cs.CY (research integrity and accountability).
