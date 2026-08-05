@@ -95,7 +95,7 @@ CrossAudit 是一套已在作者本人计算化学管线中每日运转的工作
 
 ## 引用
 
-Position paper 撰写中（arXiv 链接将更新于此）。在此之前请按 [`CITATION.cff`](CITATION.cff) 引用。
+协议论文见 `paper/`（发布 tag `paper-v1.0.0`，哈希清单 `paper/HASHES.txt`）；arXiv 编号公布后将更新于此。在此之前请按 [`CITATION.cff`](CITATION.cff) 引用。
 
 ## 许可证
 
