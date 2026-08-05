@@ -99,7 +99,7 @@ CrossAudit is a working protocol whose first live cycles are running in the auth
 
 ## Citing CrossAudit
 
-A position paper is in preparation (arXiv link will appear here). Until then, please cite via [`CITATION.cff`](CITATION.cff).
+The protocol paper is in `paper/` (release tag `paper-v1.0.0`; hash manifest `paper/HASHES.txt`); the arXiv identifier will appear here once assigned. Until then, please cite via [`CITATION.cff`](CITATION.cff).
 
 ## License
 
