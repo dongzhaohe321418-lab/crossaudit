@@ -35,7 +35,7 @@ Before upload:
 
 ## Final artefact binding (2026-08-05)
 
-The PDF this metadata describes has SHA-256 `ac44286f5b01935f537a460e7dcf4c5b3953e7ca10b6f625dee85b68a7b44889`.
+The PDF this metadata describes has SHA-256 `349c4eb90e14e82e6726ef06a2403ba6451d5a88759a7529751c762f6aff5fcc`.
 `paper/crossaudit-paper.pdf` in the repository is that same file, byte for byte.
 The paper's §4.5 now cites release tag `paper-v1.0.0` instead of a bare
 commit; **create that tag at the final commit and push it before uploading**,
@@ -109,7 +109,7 @@ audits of this paper itself.
 1. arXiv account with an endorsed cs.AI submission path (institutional email
    usually suffices).
 2. Upload `paper/crossaudit.tex` as the source; let AutoTeX build; check the
-   generated PDF is 19 pages and Figures 1–4 and Tables 1–3 render.
+   generated PDF is 19 pages and Figures 1–4 and Tables 1–3 render. (Count from the AutoTeX build itself, not from this line: this file has now twice carried a stale page count, which for this paper is not a forgivable class of error.)
 3. Paste the metadata above; submit before the 14:00 ET weekday cutoff to get
    the next announcement cycle.
 4. After the identifier is assigned: update `CITATION.cff` (the `url` gains a
