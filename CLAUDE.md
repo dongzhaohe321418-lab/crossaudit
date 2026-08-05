@@ -6,7 +6,7 @@ You are continuing an established project. Orient from this file first, then
 ## What this repo is
 
 CrossAudit: a git-native, cross-vendor audit protocol for agentic science.
-Position paper (`paper/crossaudit.tex`, 15 pp), reference implementation
+Position paper (`paper/crossaudit.tex`, 19 pp at tag paper-v1.0.0), reference implementation
 (`checks/`, `controller/`, `examples/minimal/`), a registered ablation
 programme (`experiment/`), bilingual design docs (`improvements/`), and
 workshop submission scaffolds (`paper/submissions/`).
@@ -63,7 +63,7 @@ deferred**, scaffolds under paper/submissions/ untouched. arXiv materials are
 ready in paper/ARXIV.md (single-file source verified, form metadata, condensed
 abstract); the upload itself is operator-only (D6), after which Claude back-fills
 CITATION.cff and both READMEs with the id. B5/C3/A2+B7/B4/B6 all done
-2026-07-31; the paper is 15 pp with Table 2 invariants card and Figure 2
+2026-07-31; 19 pp (was 15 when this lane note was written) with Table 2 invariants card and Figure 2
 termination walk, ` --- ` count 9. Key-gated: A1/A5 ablation arms (RUNBOOK
 stages 0–2), then A3 reframe + C2. Operator-only: arXiv upload (D6), key escrow
 choice, blinded adjudication, comma-splice read-through (C1), A4 decision.
