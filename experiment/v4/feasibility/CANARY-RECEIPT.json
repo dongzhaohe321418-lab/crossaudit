@@ -1,55 +1,62 @@
 {
-  "adapter_source": "experiment/v4/feasibility/providers.py",
-  "adapter_source_sha256": "6f721929413c90e555574235abb2cae16b79caaf13f1c5911bc05f88f0aaffd3",
+  "call_contract": {
+    "calls_per_returned_provider": 1,
+    "provider_count": 2,
+    "provider_factory": "providers.providers",
+    "role_metadata": "content-free canary",
+    "timeout_seconds": 300
+  },
   "claim_boundary": "not cohort data and not evidence about audit efficacy",
-  "executed_utc": "2026-09-01T04:08:52+00:00",
-  "format_version": "v4-feasibility-canary-2",
-  "invocation": "Provider.call(prompt=<prompt_sha256>, schema=<schema_sha256>, role=isolation canary, timeout=300)",
-  "prompt_sha256": "f968dae03c42036abeca457224b097197797e232e30c7fde7791f370513011f4",
+  "executed_utc": "2026-09-01T06:36:29+00:00",
+  "format_version": "v4-feasibility-canary-4",
+  "prompt_sha256": "327d1965b6f71a34d8ff2931e84239802336b758b3c5914b5d2e6e1c8fb1c40f",
   "providers": [
     {
+      "allowed_startup_notice_count": 0,
+      "allowed_startup_notice_message_hashes": [],
+      "allowed_startup_notices": [],
       "cli": "claude",
       "cli_version": {
         "exit_code": 0,
-        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-        "stdout": "2.1.252 (Claude Code)"
-      },
-      "command_controls": [
-        "resolved-cli",
-        "safe-mode",
-        "restricted",
-        "tools-empty",
-        "strict-empty-mcp",
-        "stdin-prompt",
-        "no-session-persistence",
-        "json-schema",
-        "per-call-usd-cap-1"
-      ],
-      "elapsed_seconds": 4.859,
-      "exit_code": 0,
-      "list_cost_usd": 0.004351,
-      "model_identity_evidence": "provider_usage_metadata",
-      "model_usage_summary": {
-        "claude-haiku-4-5-20251001": {
-          "cost_usd": 0.0009729999999999999,
-          "input_tokens": 908,
-          "output_tokens": 13
+        "stderr_meta": {
+          "present": true,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "utf8_bytes": 0
         },
-        "claude-sonnet-4-6": {
-          "cost_usd": 0.003378,
-          "input_tokens": 856,
-          "output_tokens": 54
+        "stdout": "2.1.252 (Claude Code)",
+        "stdout_meta": {
+          "present": true,
+          "sha256": "075f89d9e8ba9627a8b065859efe408d9e6ad287d5b48efd0610f6cab692f870",
+          "utf8_bytes": 22
         }
       },
+      "elapsed_seconds": 5.556,
+      "event_policy_violation_count": 0,
+      "event_policy_violations": [],
+      "exit_code": 0,
+      "list_cost_usd": 0.004299,
+      "local_schema_validation": {
+        "errors": [],
+        "valid": true
+      },
+      "model_identity_evidence": "provider_usage_metadata",
       "models_observed": [
         "claude-haiku-4-5-20251001",
         "claude-sonnet-4-6"
       ],
-      "prompt_sha256": "f968dae03c42036abeca457224b097197797e232e30c7fde7791f370513011f4",
-      "provider_request_id_sha256": "318b2ce6c57f70056113595e24c800d6718171669e4825477ee982e8ba9f4dcc",
-      "raw_envelope_bytes": 2024,
-      "raw_envelope_sha256": "40bf08e7f445829543011cff33b22f937cfa61cce302316adaa4c7ac1b31c017",
+      "prompt_sha256": "327d1965b6f71a34d8ff2931e84239802336b758b3c5914b5d2e6e1c8fb1c40f",
+      "provider_request_id_meta": {
+        "present": true,
+        "sha256": "d22754c3385024f0f2cdd70a64c1472086a2f351c0081e6becf0fdd7f9625525",
+        "utf8_bytes": 36
+      },
+      "raw_envelope_meta": {
+        "canonical_json_bytes": 2012,
+        "present": true,
+        "sha256": "9c5e8bf07d88c7e0e82da9a9854f584ae7d861e5b173935b9d9f7c4450a8ff5f"
+      },
       "requested_model": "claude-sonnet-4-6",
+      "response_secret_scan_hits": [],
       "runtime_binding": {
         "executables": {
           "cli": {
@@ -59,33 +66,124 @@
             "size_bytes": 197220928
           }
         },
-        "security_route_environment_binding_sha256": "a7006c94756eda8b230e5fc7febd20c445dfa5a4b97fd0eb41463e80b6ca2fbe"
+        "model": "claude-sonnet-4-6",
+        "security_route_environment": {
+          "binding_sha256": "a7006c94756eda8b230e5fc7febd20c445dfa5a4b97fd0eb41463e80b6ca2fbe",
+          "variables": {
+            "ALL_PROXY": {
+              "present": true,
+              "value_sha256": "34a711ac67f0e009611cd2e922ffb4d1fd4df06b9311f9a9b1578876320a1541"
+            },
+            "ANTHROPIC_PROFILE": {
+              "present": false,
+              "value_sha256": null
+            },
+            "CLAUDE_CONFIG_DIR": {
+              "present": false,
+              "value_sha256": null
+            },
+            "CODEX_HOME": {
+              "present": false,
+              "value_sha256": null
+            },
+            "CURL_CA_BUNDLE": {
+              "present": false,
+              "value_sha256": null
+            },
+            "HOME": {
+              "present": true,
+              "value_sha256": "5d8552d4745873ad838deb5e0013e220db082cb5d6c4101b4e26f5761ac3ec3b"
+            },
+            "HTTPS_PROXY": {
+              "present": true,
+              "value_sha256": "813477bf51a0efb3b5926c3759f01d02cdf25cd70e6cfc7fa186d9d5e1e1d118"
+            },
+            "HTTP_PROXY": {
+              "present": true,
+              "value_sha256": "813477bf51a0efb3b5926c3759f01d02cdf25cd70e6cfc7fa186d9d5e1e1d118"
+            },
+            "NODE_EXTRA_CA_CERTS": {
+              "present": false,
+              "value_sha256": null
+            },
+            "NO_PROXY": {
+              "present": false,
+              "value_sha256": null
+            },
+            "OPENAI_CONFIG_HOME": {
+              "present": false,
+              "value_sha256": null
+            },
+            "OPENAI_PROFILE": {
+              "present": false,
+              "value_sha256": null
+            },
+            "REQUESTS_CA_BUNDLE": {
+              "present": false,
+              "value_sha256": null
+            },
+            "SSL_CERT_DIR": {
+              "present": false,
+              "value_sha256": null
+            },
+            "SSL_CERT_FILE": {
+              "present": false,
+              "value_sha256": null
+            },
+            "XDG_CONFIG_HOME": {
+              "present": false,
+              "value_sha256": null
+            },
+            "all_proxy": {
+              "present": true,
+              "value_sha256": "34a711ac67f0e009611cd2e922ffb4d1fd4df06b9311f9a9b1578876320a1541"
+            },
+            "http_proxy": {
+              "present": true,
+              "value_sha256": "813477bf51a0efb3b5926c3759f01d02cdf25cd70e6cfc7fa186d9d5e1e1d118"
+            },
+            "https_proxy": {
+              "present": true,
+              "value_sha256": "813477bf51a0efb3b5926c3759f01d02cdf25cd70e6cfc7fa186d9d5e1e1d118"
+            },
+            "no_proxy": {
+              "present": false,
+              "value_sha256": null
+            }
+          }
+        },
+        "system_instruction": {
+          "sha256": "8212f294e8082690ce0464d911465718f4339b4566720285a4d18709c74c02e4",
+          "value": "Follow the user task. Do not use tools. Return only the object required by the supplied output schema."
+        },
+        "vendor": "anthropic"
       },
+      "runtime_binding_after_sha256": "19d01532117de9e7002c221ea98a22332587fddff2bb1d1ab59404336a145da0",
+      "runtime_binding_before_sha256": "19d01532117de9e7002c221ea98a22332587fddff2bb1d1ab59404336a145da0",
       "runtime_binding_stable_during_call": true,
-      "schema_sha256": "4528a3c79c4aaee242a31e586366657f8e9a3f11cc8d2cb040d9bf61ab1bbb63",
-      "secret_scan": {
-        "hits": {},
-        "patterns": [
-          "anthropic_key",
-          "openai_key",
-          "github_token",
-          "aws_access_key",
-          "private_key",
-          "named_api_key"
-        ]
-      },
-      "server_tool_use": {
-        "web_fetch_requests": 0,
-        "web_search_requests": 0
-      },
+      "schema_sha256": "9aa8bbdaa5ca26eb000466e1162a0dd86e918fefde609887e57b674415ae31bc",
+      "server_tool_use": {},
+      "server_tool_use_count": 0,
       "status": "valid",
+      "stderr_meta": {
+        "present": true,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "utf8_bytes": 0
+      },
       "unexpected_tool_event_count": 0,
       "usage": {
+        "available": true,
+        "billable_fields_complete": true,
         "cache_creation_input_tokens": 0,
-        "cache_read_input_tokens": 0,
-        "input_tokens": 856,
-        "output_tokens": 54,
-        "thinking_tokens": 0
+        "cache_write_input_tokens": 0,
+        "cached_input_tokens": 0,
+        "input_tokens": 1744,
+        "invalid_nonfinite": false,
+        "invalid_token_fields": false,
+        "output_tokens": 65,
+        "provenance": "sum_of_model_usage_entries",
+        "reasoning_tokens": 0,
+        "source_entry_count": 2
       },
       "value": {
         "ok": true
@@ -93,32 +191,52 @@
       "vendor": "anthropic"
     },
     {
+      "allowed_startup_notice_count": 1,
+      "allowed_startup_notice_message_hashes": [
+        "098e801ebc95c9c7312a945849442846324dcf639365a297313248993822711b"
+      ],
+      "allowed_startup_notices": [
+        "code_mode_host_disabled_fail_closed"
+      ],
       "cli": "codex",
       "cli_version": {
         "exit_code": 0,
-        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-        "stdout": "codex-cli 0.151.0"
+        "stderr_meta": {
+          "present": true,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "utf8_bytes": 0
+        },
+        "stdout": "codex-cli 0.151.0",
+        "stdout_meta": {
+          "present": true,
+          "sha256": "9449baa2ef1407a3b0ba27556ece4fb3c8e2f56801646d80f6a32bbf08870187",
+          "utf8_bytes": 18
+        }
       },
-      "command_controls": [
-        "resolved-native-binary",
-        "macos-deny-subsequent-process-exec",
-        "ephemeral",
-        "ignore-user-config",
-        "ignore-rules",
-        "read-only",
-        "stdin-prompt",
-        "json-schema"
-      ],
-      "elapsed_seconds": 9.846,
+      "elapsed_seconds": 10.523,
+      "event_policy_violation_count": 0,
+      "event_policy_violations": [],
       "exit_code": 0,
       "list_cost_usd": null,
+      "local_schema_validation": {
+        "errors": [],
+        "valid": true
+      },
       "model_identity_evidence": "requested_alias_only_unverified",
       "models_observed": [],
-      "prompt_sha256": "f968dae03c42036abeca457224b097197797e232e30c7fde7791f370513011f4",
-      "provider_request_id_sha256": "12012ace0bc57a137a0def2abafb8fe9ccb41527fa13eec61c3c003946095eca",
-      "raw_envelope_bytes": 632,
-      "raw_envelope_sha256": "7eecca50e796632846f5f5a925069b13faf34bf29e30bbe09a5e6f95e7730edc",
+      "prompt_sha256": "327d1965b6f71a34d8ff2931e84239802336b758b3c5914b5d2e6e1c8fb1c40f",
+      "provider_request_id_meta": {
+        "present": true,
+        "sha256": "c0f1c430fe9010f59f2a0d5ac5178d56bb1f7b220b4a0696f5690b9d817672bc",
+        "utf8_bytes": 36
+      },
+      "raw_envelope_meta": {
+        "canonical_json_bytes": 588,
+        "present": true,
+        "sha256": "78b436cf11287659cbf45efb240553040584f372086e80d8fe795583b17981a3"
+      },
       "requested_model": "gpt-5.6-sol",
+      "response_secret_scan_hits": [],
       "runtime_binding": {
         "executables": {
           "cli": {
@@ -131,32 +249,351 @@
             "resolved_path": "/opt/homebrew/lib/node_modules/@openai/codex/node_modules/@openai/codex-darwin-arm64/vendor/aarch64-apple-darwin/bin/codex",
             "sha256": "98491713ffb196061003ee148636e743997cc31d76144ba7c53462269896891d",
             "size_bytes": 231563824
+          },
+          "sandbox_exec": {
+            "resolved_path": "/usr/bin/sandbox-exec",
+            "sha256": "8857d087219f0f39d3e3c163e5d0a0aed690cc22f34b50c7eee3d74f93e69688",
+            "size_bytes": 102560
           }
         },
-        "security_route_environment_binding_sha256": "a7006c94756eda8b230e5fc7febd20c445dfa5a4b97fd0eb41463e80b6ca2fbe"
+        "invocation_policy": {
+          "config_sources": {
+            "host_skill_discovery": "skipped by enabled opt-out feature",
+            "project_rules": "ignored; fresh temporary cwd",
+            "user_config": "ignored"
+          },
+          "dynamic_exec_args": [
+            "--model",
+            "gpt-5.6-sol",
+            "-c",
+            "model_reasoning_effort=low",
+            "--output-schema",
+            "<ephemeral-output-schema-path>",
+            "--json",
+            "-"
+          ],
+          "effective_selected_features": {
+            "apps": false,
+            "browser_use": false,
+            "browser_use_external": false,
+            "browser_use_full_cdp_access": false,
+            "code_mode": false,
+            "code_mode_host": false,
+            "computer_use": false,
+            "enable_mcp_apps": false,
+            "hooks": false,
+            "image_generation": false,
+            "in_app_browser": false,
+            "multi_agent": false,
+            "multi_agent_v2": false,
+            "plugin_sharing": false,
+            "plugins": false,
+            "remote_plugin": false,
+            "shell_snapshot": false,
+            "shell_snapshot_v2": false,
+            "shell_tool": false,
+            "skill_mcp_dependency_install": false,
+            "skill_search": false,
+            "skip_host_skill_discovery": true,
+            "standalone_web_search": false,
+            "tool_call_mcp_elicitation": false,
+            "tool_suggest": false,
+            "unified_exec": true,
+            "view_image": false,
+            "workspace_dependencies": false
+          },
+          "event_allowlist": {
+            "allowed_local_startup_notices": [
+              {
+                "event_type": "item.completed",
+                "id": "code_mode_host_disabled_fail_closed",
+                "item_fields": [
+                  "id",
+                  "message",
+                  "type"
+                ],
+                "item_id": "item_0",
+                "item_type": "error",
+                "meaning": "disabled code-mode host is confirmed fail-closed",
+                "message_sha256": "098e801ebc95c9c7312a945849442846324dcf639365a297313248993822711b",
+                "required_count": 1,
+                "required_position": "second_nonempty_event_after_thread.started_before_turn.started"
+              }
+            ],
+            "event_fields": {
+              "item.completed": [
+                "item",
+                "type"
+              ],
+              "item.started": [
+                "item",
+                "type"
+              ],
+              "item.updated": [
+                "item",
+                "type"
+              ],
+              "thread.started": [
+                "thread_id",
+                "type"
+              ],
+              "turn.completed": [
+                "type",
+                "usage"
+              ],
+              "turn.started": [
+                "type"
+              ]
+            },
+            "event_types": [
+              "item.completed",
+              "item.started",
+              "item.updated",
+              "thread.started",
+              "turn.completed",
+              "turn.started"
+            ],
+            "item_fields": [
+              "id",
+              "text",
+              "type"
+            ],
+            "item_types": [
+              "agent_message",
+              "reasoning"
+            ],
+            "unknown_or_other_error_event": "provider_event_policy_violation"
+          },
+          "feature_overrides": {
+            "disabled": [
+              "apps",
+              "browser_use",
+              "browser_use_external",
+              "browser_use_full_cdp_access",
+              "code_mode",
+              "code_mode_host",
+              "computer_use",
+              "enable_mcp_apps",
+              "hooks",
+              "image_generation",
+              "in_app_browser",
+              "multi_agent",
+              "multi_agent_v2",
+              "plugins",
+              "plugin_sharing",
+              "remote_plugin",
+              "shell_snapshot",
+              "shell_snapshot_v2",
+              "shell_tool",
+              "skill_mcp_dependency_install",
+              "skill_search",
+              "standalone_web_search",
+              "tool_call_mcp_elicitation",
+              "tool_suggest",
+              "unified_exec",
+              "view_image",
+              "workspace_dependencies"
+            ],
+            "enabled": [
+              "skip_host_skill_discovery"
+            ]
+          },
+          "fixed_exec_args": [
+            "exec",
+            "--ephemeral",
+            "--ignore-user-config",
+            "--ignore-rules",
+            "--strict-config",
+            "-c",
+            "suppress_unstable_features_warning=true",
+            "--enable",
+            "skip_host_skill_discovery",
+            "--disable",
+            "apps",
+            "--disable",
+            "browser_use",
+            "--disable",
+            "browser_use_external",
+            "--disable",
+            "browser_use_full_cdp_access",
+            "--disable",
+            "code_mode",
+            "--disable",
+            "code_mode_host",
+            "--disable",
+            "computer_use",
+            "--disable",
+            "enable_mcp_apps",
+            "--disable",
+            "hooks",
+            "--disable",
+            "image_generation",
+            "--disable",
+            "in_app_browser",
+            "--disable",
+            "multi_agent",
+            "--disable",
+            "multi_agent_v2",
+            "--disable",
+            "plugins",
+            "--disable",
+            "plugin_sharing",
+            "--disable",
+            "remote_plugin",
+            "--disable",
+            "shell_snapshot",
+            "--disable",
+            "shell_snapshot_v2",
+            "--disable",
+            "shell_tool",
+            "--disable",
+            "skill_mcp_dependency_install",
+            "--disable",
+            "skill_search",
+            "--disable",
+            "standalone_web_search",
+            "--disable",
+            "tool_call_mcp_elicitation",
+            "--disable",
+            "tool_suggest",
+            "--disable",
+            "unified_exec",
+            "--disable",
+            "view_image",
+            "--disable",
+            "workspace_dependencies",
+            "--skip-git-repo-check",
+            "--sandbox",
+            "read-only"
+          ],
+          "outer_sandbox": {
+            "executable": "/usr/bin/sandbox-exec",
+            "profile": "(version 1)(allow default)(deny process-exec)(allow process-exec (literal \"/opt/homebrew/lib/node_modules/@openai/codex/node_modules/@openai/codex-darwin-arm64/vendor/aarch64-apple-darwin/bin/codex\"))",
+            "profile_sha256": "22e27496952e8636b1f9b0f4fdddb6cf19c2954e3b1d45e3e5f78767de8190a0"
+          },
+          "residual_enabled_requested_disabled": [
+            "unified_exec"
+          ],
+          "web_search_cli_flag_present": false
+        },
+        "model": "gpt-5.6-sol",
+        "security_route_environment": {
+          "binding_sha256": "a7006c94756eda8b230e5fc7febd20c445dfa5a4b97fd0eb41463e80b6ca2fbe",
+          "variables": {
+            "ALL_PROXY": {
+              "present": true,
+              "value_sha256": "34a711ac67f0e009611cd2e922ffb4d1fd4df06b9311f9a9b1578876320a1541"
+            },
+            "ANTHROPIC_PROFILE": {
+              "present": false,
+              "value_sha256": null
+            },
+            "CLAUDE_CONFIG_DIR": {
+              "present": false,
+              "value_sha256": null
+            },
+            "CODEX_HOME": {
+              "present": false,
+              "value_sha256": null
+            },
+            "CURL_CA_BUNDLE": {
+              "present": false,
+              "value_sha256": null
+            },
+            "HOME": {
+              "present": true,
+              "value_sha256": "5d8552d4745873ad838deb5e0013e220db082cb5d6c4101b4e26f5761ac3ec3b"
+            },
+            "HTTPS_PROXY": {
+              "present": true,
+              "value_sha256": "813477bf51a0efb3b5926c3759f01d02cdf25cd70e6cfc7fa186d9d5e1e1d118"
+            },
+            "HTTP_PROXY": {
+              "present": true,
+              "value_sha256": "813477bf51a0efb3b5926c3759f01d02cdf25cd70e6cfc7fa186d9d5e1e1d118"
+            },
+            "NODE_EXTRA_CA_CERTS": {
+              "present": false,
+              "value_sha256": null
+            },
+            "NO_PROXY": {
+              "present": false,
+              "value_sha256": null
+            },
+            "OPENAI_CONFIG_HOME": {
+              "present": false,
+              "value_sha256": null
+            },
+            "OPENAI_PROFILE": {
+              "present": false,
+              "value_sha256": null
+            },
+            "REQUESTS_CA_BUNDLE": {
+              "present": false,
+              "value_sha256": null
+            },
+            "SSL_CERT_DIR": {
+              "present": false,
+              "value_sha256": null
+            },
+            "SSL_CERT_FILE": {
+              "present": false,
+              "value_sha256": null
+            },
+            "XDG_CONFIG_HOME": {
+              "present": false,
+              "value_sha256": null
+            },
+            "all_proxy": {
+              "present": true,
+              "value_sha256": "34a711ac67f0e009611cd2e922ffb4d1fd4df06b9311f9a9b1578876320a1541"
+            },
+            "http_proxy": {
+              "present": true,
+              "value_sha256": "813477bf51a0efb3b5926c3759f01d02cdf25cd70e6cfc7fa186d9d5e1e1d118"
+            },
+            "https_proxy": {
+              "present": true,
+              "value_sha256": "813477bf51a0efb3b5926c3759f01d02cdf25cd70e6cfc7fa186d9d5e1e1d118"
+            },
+            "no_proxy": {
+              "present": false,
+              "value_sha256": null
+            }
+          }
+        },
+        "system_instruction": {
+          "sha256": "8212f294e8082690ce0464d911465718f4339b4566720285a4d18709c74c02e4",
+          "value": "Follow the user task. Do not use tools. Return only the object required by the supplied output schema."
+        },
+        "vendor": "openai"
       },
+      "runtime_binding_after_sha256": "47751c63926f3a44bb3d1cdbc485dcde29b7b06ece3fb4014e5ac5955be70cd6",
+      "runtime_binding_before_sha256": "47751c63926f3a44bb3d1cdbc485dcde29b7b06ece3fb4014e5ac5955be70cd6",
       "runtime_binding_stable_during_call": true,
-      "schema_sha256": "4528a3c79c4aaee242a31e586366657f8e9a3f11cc8d2cb040d9bf61ab1bbb63",
-      "secret_scan": {
-        "hits": {},
-        "patterns": [
-          "anthropic_key",
-          "openai_key",
-          "github_token",
-          "aws_access_key",
-          "private_key",
-          "named_api_key"
-        ]
-      },
-      "server_tool_use": null,
+      "schema_sha256": "9aa8bbdaa5ca26eb000466e1162a0dd86e918fefde609887e57b674415ae31bc",
+      "server_tool_use": {},
+      "server_tool_use_count": 0,
       "status": "valid",
+      "stderr_meta": {
+        "present": true,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "utf8_bytes": 0
+      },
       "unexpected_tool_event_count": 0,
       "usage": {
+        "available": true,
+        "billable_fields_complete": true,
+        "cache_creation_input_tokens": 0,
         "cache_write_input_tokens": 0,
         "cached_input_tokens": 0,
-        "input_tokens": 18988,
+        "input_tokens": 10291,
+        "invalid_nonfinite": false,
+        "invalid_token_fields": false,
         "output_tokens": 15,
-        "reasoning_output_tokens": 0
+        "provenance": "top_level_usage",
+        "reasoning_tokens": 0,
+        "source_entry_count": 1
       },
       "value": {
         "ok": true
@@ -164,11 +601,15 @@
       "vendor": "openai"
     }
   ],
-  "purpose": "content-free final pre-freeze connectivity, schema, identity-evidence, runtime-binding and no-tool isolation recheck",
+  "purpose": "content-free post-hardening connectivity, schema, runtime-binding, event-allowlist and no-tool isolation canary",
+  "receipt_sha256": "aa495430cfe55f06992029301ab7267f70b2b753f5b6e1cb8240050b108016f1",
   "schema": {
     "additionalProperties": false,
     "properties": {
       "ok": {
+        "enum": [
+          true
+        ],
         "type": "boolean"
       }
     },
@@ -177,5 +618,22 @@
     ],
     "type": "object"
   },
-  "schema_sha256": "4528a3c79c4aaee242a31e586366657f8e9a3f11cc8d2cb040d9bf61ab1bbb63"
+  "schema_sha256": "9aa8bbdaa5ca26eb000466e1162a0dd86e918fefde609887e57b674415ae31bc",
+  "secret_scan": {
+    "hits": [],
+    "patterns": [
+      "anthropic_key",
+      "openai_key",
+      "github_token",
+      "aws_access_key",
+      "private_key",
+      "named_api_key"
+    ]
+  },
+  "source_hashes": {
+    "experiment/v4/feasibility/canary.py": "dd1f85d5f7b8bc33142cc2fc09fc191b9f90862b410cae84debe35b93910bbf7",
+    "experiment/v4/feasibility/providers.py": "7e90e39f9e9d401bd6974c13923b2e909833b27431597cb7e07ff9a8c0b70998",
+    "experiment/v4/feasibility/run.py": "24ae6f4353fb42994e89770fafdcd671e683ea6802fdf91733bd2f28d2edf5a5",
+    "experiment/v4/feasibility/schema.py": "1438ec5eeb6269479d24934fd4ed0123f5063de5d11c8ac4e2c1614404df3d59"
+  }
 }
