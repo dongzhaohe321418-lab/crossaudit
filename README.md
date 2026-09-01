@@ -4,7 +4,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
-[![arXiv](https://img.shields.io/badge/arXiv-coming--soon-b31b1b.svg)](#citing-crossaudit)
+[![arXiv:2608.28631](https://img.shields.io/badge/arXiv-2608.28631-b31b1b.svg)](https://arxiv.org/abs/2608.28631)
 
 [中文文档 →](README.zh-CN.md)
 
@@ -97,9 +97,68 @@ The reference example is flavoured as computational chemistry, but nothing in th
 
 CrossAudit is a working protocol whose first live cycles are running in the author's own computational-chemistry pipeline (Claude-based generator, Codex-based auditor, compute on Alibaba Cloud HPC). The reference implementation here is deliberately minimal; issues and PRs are welcome — see [CONTRIBUTING.md](CONTRIBUTING.md).
 
+A separately registered v4 execution-feasibility cohort has now run all seven
+successor-study modules on six deterministic convenience tasks with model
+proxies. Its successful Amendment 2 cohort completed 542/542 valid provider
+calls at a known cost of USD 12.1504115 and was sealed on the network before
+scoring. These are non-confirmatory, configuration-specific measurements, not a
+general cross-vendor or product claim. Read the
+[quantitative results](experiment/v4/FEASIBILITY-RESULTS.md) and the
+[seven-point status contract](experiment/v4/SEVEN-POINT-COMPLETION.md). The
+registered 120-task, human-adjudicated confirmatory study remains unrun.
+
+A new prospective [v5 top-conference confirmatory package](experiment/v5/)
+preserves that history rather than editing the v4 registration after feasibility
+outcomes existed. It specifies 150--180 independent tasks, three vendors, six
+pinned snapshots, a complete 3x3 principal matrix, same-vendor/different-model
+controls, human-blinded gold, equal three-repeat C0/C1/C2 ablations, a general
+VxV task estimator, and a fail-closed freeze preflight. A 10,000-dataset central
+planning simulation returned 99.65% conjunctive power and 94.87% interval
+coverage at the nominal eight-point scenario. Stress scenarios and exact
+bootstrap-t calibration remain blocking; the package is not a completed study
+or spending authorisation.
+
+### Sealed feasibility figures
+
+[![Configuration- and component-specific feasibility effects](paper/figures/figure5-v4-configuration-effects.png)](paper/figures/figure5-v4-configuration-effects.pdf)
+
+**Configuration and component effects.** The crossed C2/D0 cells retain both
+Generator–Auditor directions, while the DCL panels show that the observed D2
+gain is confined to natural outputs rather than the three controlled strata.
+Intervals are descriptive whole-task bootstrap intervals over six convenience
+tasks. [SVG](paper/figures/figure5-v4-configuration-effects.svg) ·
+[Source data](experiment/v4/figures/source-data.csv)
+
+[![Operational feasibility trade-offs](paper/figures/figure6-v4-operational-tradeoffs.png)](paper/figures/figure6-v4-operational-tradeoffs.pdf)
+
+**Operational trade-offs.** The hard gate repaired 2 of 9 initially wrong
+research-text sessions but consumed more calls, cost, and provider time;
+same- and cross-auditor whole-loop endpoints matched in this micro-cohort; and
+the structured ledger matched, rather than exceeded, the ordinary log on the
+primary proxy decisions. [SVG](paper/figures/figure6-v4-operational-tradeoffs.svg)
+· [Source data](experiment/v4/figures/source-data.csv)
+
+**Constitution exclusion.** Constitution contrasts are not plotted. The current
+feasibility scorer filters the C0/C1/C2 comparison to `repeat == 0`, whereas the
+registration states that C2 uses all three core repeats. Until that mismatch is
+resolved prospectively, the existing values are repeat-0 implementation
+diagnostics and cannot support a registered three-repeat Constitution-effect
+claim.
+
 ## Citing CrossAudit
 
-The protocol paper is in `paper/` (release tag `paper-v1.0.0`; hash manifest `paper/HASHES.txt`); the arXiv identifier will appear here once assigned. Until then, please cite via [`CITATION.cff`](CITATION.cff).
+The protocol paper is [arXiv:2608.28631](https://arxiv.org/abs/2608.28631).
+The published v1 source is preserved at release tag `paper-v1.0.0`. The current
+full-paper candidate reframes vendor heterogeneity as a causal hypothesis and
+adds the v5 design; a compact anonymous pre-results manuscript is under
+[`paper/submissions/topconf2027/`](paper/submissions/topconf2027/). Neither is a
+new published version of the arXiv record. Use [`CITATION.cff`](CITATION.cff)
+for the currently published citation metadata.
+
+The minimal PDFLaTeX source prepared for the next arXiv replacement is under
+[`paper/submissions/arxiv2026/`](paper/submissions/arxiv2026/). It is a
+self-contained US-Letter preprint bundle and is not a claim that a replacement
+has already been uploaded.
 
 ## License
 

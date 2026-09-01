@@ -1,0 +1,21 @@
+{
+  "schema_version": "4.0",
+  "study_id": "v4-minimal-fixture",
+  "hashes": {
+    "corpus_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+    "analysis_plan_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+    "code_sha256": "2222222222222222222222222222222222222222222222222222222222222222"
+  },
+  "primary": {
+    "generator_vendors": ["A", "B"],
+    "auditor_vendors": ["A", "B"],
+    "generation_repeats": 1,
+    "audit_repeats": 2,
+    "dcl_level": "D2",
+    "constitution_level": "C2",
+    "audit_policy": "P0",
+    "alpha": 0.05,
+    "false_block_noninferiority_margin": 0.05
+  },
+  "bootstrap": {"seed": 7, "draws": 200}
+}

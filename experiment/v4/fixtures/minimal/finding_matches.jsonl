@@ -1,0 +1,5 @@
+{"schema_version":"4.0","match_id":"M-FP","finding_id":"F-FP","defect_id":null,"label":"false","adjudicator_a":"J1","adjudicator_b":"J2","adjudicator_a_label":"false","adjudicator_b_label":"false","agreement":true}
+{"schema_version":"4.0","match_id":"M-DAB0","finding_id":"F-DAB0","defect_id":"D-A","label":"true","adjudicator_a":"J1","adjudicator_b":"J2","adjudicator_a_label":"true","adjudicator_b_label":"true","agreement":true}
+{"schema_version":"4.0","match_id":"M-DAB1","finding_id":"F-DAB1","defect_id":"D-A","label":"true","adjudicator_a":"J1","adjudicator_b":"J2","adjudicator_a_label":"true","adjudicator_b_label":"true","agreement":true}
+{"schema_version":"4.0","match_id":"M-DBA0","finding_id":"F-DBA0","defect_id":"D-B","label":"true","adjudicator_a":"J1","adjudicator_b":"J2","adjudicator_a_label":"true","adjudicator_b_label":"true","agreement":true}
+{"schema_version":"4.0","match_id":"M-DBB0","finding_id":"F-DBB0","defect_id":"D-B","label":"true","adjudicator_a":"J1","adjudicator_b":"J2","adjudicator_a_label":"true","adjudicator_b_label":"true","agreement":true}

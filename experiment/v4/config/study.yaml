@@ -1,0 +1,207 @@
+schema_version: crossaudit-v4-study-1
+study_id: crossaudit-v4-causal-successor
+registered_date: 2026-09-01
+status: REGISTERED_NOT_RUN_BLOCKED
+authority: experiment/v4/REGISTRATION.md
+
+honesty:
+  v4_outputs_existed_at_registration: false
+  v4_outcomes_inspected_at_registration: false
+  prior_studies_amended: false
+  results_claimed: false
+
+claim_scope:
+  configured_vendor_count: 2
+  two_vendor_label: pair_specific
+  three_or_more_complete_matrix_label: included_vendors_only
+  population_vendor_generalisation_allowed: false
+  population_claim_minimum_vendor_target: 5
+  population_claim_alternative: prospective_meta_analysis
+
+design:
+  initial_task_briefs: 120
+  maximum_task_briefs_after_blinded_reestimation: 180
+  audit_repeats_per_required_cell: 3
+  minimum_domains: 3
+  required_domains:
+    - computational_science
+    - quantitative_data_analysis
+    - scientific_python_or_analysis_code
+  minimum_natural_real_task_briefs: 60
+  generator_vendors: [A, B]
+  auditor_vendors: [A, B]
+  complete_two_by_two_required: true
+  both_cross_directions_required: true
+  core_same_vendor_uses_same_model_snapshot: true
+  fresh_context_per_audit: true
+
+primary:
+  outcome: correct_gate
+  estimand: standardised_risk_difference_cross_minus_same
+  superiority_alpha_two_sided: 0.05
+  smallest_effect_of_interest_risk_difference: 0.08
+  clean_false_block_noninferiority_margin: 0.05
+  clean_false_block_interval: one_sided_95_percent
+  headline_requires_both_gates: true
+
+factors:
+  constitution:
+    levels: [C0, C1, C2]
+    confirmatory_primary_level: C2
+    concept_and_rule_id_matching_C1_C2_required: true
+    approximate_token_length_matching_C1_C2_required: true
+  dcl:
+    levels: [D0, D1, D2]
+    confirmatory_primary_level: D2
+    definitions:
+      D0: llm_only
+      D1: dcl_only
+      D2: combined_auditor_blind_to_dcl
+    exploratory_optional_level: D3_routed
+  defensive_policy:
+    levels: [P0_UNAWARE, P1_SHADOW_AWARE, P2_HARD_GATE]
+  ledger_surface:
+    levels: [E0_FINAL_ONLY, E1_TRANSCRIPT, E2_STRUCTURED_LEDGER]
+
+data_strata:
+  controlled_seeded:
+    required: true
+    clean_mutant_siblings: true
+    exactly_one_target_mutation_per_mutant: true
+  natural_defect:
+    required: true
+    pre_audit_exhaustive_gold: true
+  real_task_replay:
+    required: true
+    shadow_only: true
+    live_repository_writes_forbidden: true
+  verified_clean:
+    required: true
+    unusual_but_correct_hard_negatives_required: true
+
+blinding:
+  auditor_origin_blind: true
+  generator_transcript_withheld: true
+  defect_count_withheld: true
+  opaque_artifact_ids: true
+  opaque_vendor_codes_until_primary_lock: true
+  gold_panel_blind_to_findings: true
+  matching_panel_blind_to_arms: true
+  analyst_blind_until_primary_lock: true
+
+adjudication:
+  gold_reviewers_per_item: 2
+  third_reviewer_for_disagreement: true
+  matching_one_finding_to_at_most_one_defect: true
+  inter_rater_metric: krippendorff_alpha
+  pause_below_alpha: 0.67
+  pause_below_raw_agreement: 0.80
+
+power:
+  simulations_per_scenario_minimum: 10000
+  target_conjunctive_power: 0.80
+  blinded_reestimation_once_at_completion_fraction: 0.50
+  effect_data_visible_at_reestimation: false
+  sample_size_may_decrease: false
+
+analysis:
+  independent_resampling_unit: task_id
+  primary_estimator: task_standardised_cross_minus_same
+  primary_interval: task_cluster_bootstrap_5000_minimum
+  sensitivity_model: logistic_mixed_effects_with_marginal_standardisation
+  constitution_multiplicity: holm
+  dcl_multiplicity: holm
+  exploratory_taxonomy_multiplicity: benjamini_hochberg
+  intention_to_audit_primary: true
+
+revision_loop:
+  maximum_revision_rounds: 2
+  subset_size: null
+  subset_size_required_before_dispatch: true
+  sampling_seed_commitment: null
+  sampling_seed_commitment_required_before_dispatch: true
+
+defensive_study:
+  session_count: null
+  session_count_required_before_dispatch: true
+  tasks_per_session: null
+  tasks_per_session_required_before_dispatch: true
+  allocation_seed_commitment: null
+  allocation_seed_commitment_required_before_dispatch: true
+
+ledger_study:
+  episode_count: null
+  episode_count_required_before_dispatch: true
+  reviewer_count: null
+  reviewer_count_required_before_dispatch: true
+  allocation_seed_commitment: null
+  allocation_seed_commitment_required_before_dispatch: true
+  attack_key_commitment: null
+  attack_key_commitment_required_before_dispatch: true
+
+constitution_ablation:
+  artifact_count: null
+  artifact_count_required_before_dispatch: true
+  subset_seed_commitment: null
+  subset_seed_commitment_required_before_dispatch: true
+
+freeze:
+  randomisation_seed_commitment: null
+  randomisation_seed_commitment_required_before_dispatch: true
+  opaque_arm_mapping_custodian: null
+  opaque_arm_mapping_custodian_required_before_dispatch: true
+  defect_key_external_commitment: null
+  defect_key_external_commitment_required_before_dispatch: true
+  gold_labels_external_commitment: null
+  gold_labels_external_commitment_required_before_dispatch: true
+  frozen_manifest_sha256: null
+  frozen_manifest_sha256_required_before_dispatch: true
+  external_timestamp_uri: null
+  external_timestamp_uri_required_before_dispatch: true
+  primary_lock_path: experiment/v4/results/PRIMARY-LOCK.json
+
+cost_caps:
+  currency: null
+  currency_required_before_dispatch: true
+  maximum_money: null
+  maximum_money_required_before_dispatch: true
+  maximum_total_model_calls: null
+  maximum_total_model_calls_required_before_dispatch: true
+  maximum_calls_by_module: null
+  maximum_calls_by_module_required_before_dispatch: true
+  maximum_input_tokens: null
+  maximum_input_tokens_required_before_dispatch: true
+  maximum_output_tokens: null
+  maximum_output_tokens_required_before_dispatch: true
+  maximum_wall_clock_hours: null
+  maximum_wall_clock_hours_required_before_dispatch: true
+  maximum_human_review_hours: null
+  maximum_human_review_hours_required_before_dispatch: true
+  study_deadline_utc: null
+  study_deadline_utc_required_before_dispatch: true
+
+privacy:
+  approved_provider_egress_policy_sha256: null
+  approved_provider_egress_policy_sha256_required_before_dispatch: true
+  real_task_privacy_approval_sha256: null
+  real_task_privacy_approval_sha256_required_before_dispatch: true
+  secrets_in_repository_forbidden: true
+  plaintext_keys_in_repository_forbidden: true
+
+human_panels:
+  gold_panel_manifest_sha256: null
+  gold_panel_manifest_sha256_required_before_dispatch: true
+  matching_panel_manifest_sha256: null
+  matching_panel_manifest_sha256_required_before_dispatch: true
+  ledger_reviewer_manifest_sha256: null
+  ledger_reviewer_manifest_sha256_required_before_dispatch: true
+  calibration_report_sha256: null
+  calibration_report_sha256_required_before_dispatch: true
+
+dispatch:
+  refuse_null_required_fields: true
+  refuse_placeholder_models: true
+  refuse_unhashed_interventions: true
+  refuse_incomplete_factor_cells: true
+  refuse_missing_cost_caps: true
+  refuse_outputs_predating_freeze: true

@@ -1,0 +1,2 @@
+{"schema_version":"4.0","task_id":"T-CLEAN","domain":"fixture","stratum":"clean"}
+{"schema_version":"4.0","task_id":"T-DEF","domain":"fixture","stratum":"defective"}

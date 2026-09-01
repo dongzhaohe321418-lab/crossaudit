@@ -1,0 +1,105 @@
+{
+  "schema_version": "crossaudit-v4-factor-matrix-1",
+  "study_id": "crossaudit-v4-causal-successor",
+  "registered_date": "2026-09-01",
+  "status": "REGISTERED_NOT_RUN",
+  "audit_repeats_per_model_call_cell": 3,
+  "core_same_vendor_generator_auditor_same_snapshot_required": true,
+  "primary_condition": {
+    "constitution": "C2",
+    "dcl": "D2",
+    "dcl_visible_to_auditor": false
+  },
+  "core_two_by_two": [
+    {
+      "cell_id": "G-A__A-A",
+      "generator_vendor": "A",
+      "auditor_vendor": "A",
+      "cross_vendor": false,
+      "required": true
+    },
+    {
+      "cell_id": "G-A__A-B",
+      "generator_vendor": "A",
+      "auditor_vendor": "B",
+      "cross_vendor": true,
+      "required": true
+    },
+    {
+      "cell_id": "G-B__A-A",
+      "generator_vendor": "B",
+      "auditor_vendor": "A",
+      "cross_vendor": true,
+      "required": true
+    },
+    {
+      "cell_id": "G-B__A-B",
+      "generator_vendor": "B",
+      "auditor_vendor": "B",
+      "cross_vendor": false,
+      "required": true
+    }
+  ],
+  "constitution_ablation": {
+    "levels": [
+      {"id": "C0", "label": "no_substantive_constitution"},
+      {"id": "C1", "label": "broad_generic"},
+      {"id": "C2", "label": "scoped_decidable"}
+    ],
+    "all_auditor_vendors_required": true,
+    "all_generator_vendors_required": true,
+    "three_repeats_required": true,
+    "prospective_balanced_subset_required": true
+  },
+  "dcl_ablation": {
+    "levels": [
+      {"id": "D0", "label": "llm_only"},
+      {"id": "D1", "label": "dcl_only"},
+      {"id": "D2", "label": "combined_blind"}
+    ],
+    "same_underlying_llm_and_dcl_outputs_required": true,
+    "optional_exploratory": {"id": "D3", "label": "routed_dcl_visible_to_auditor"}
+  },
+  "data_blocks": [
+    "controlled_clean",
+    "controlled_seeded_dcl_visible",
+    "controlled_seeded_tool_visible",
+    "controlled_seeded_constitution_decidable",
+    "controlled_seeded_review_only",
+    "out_of_scope_or_unusual_correct",
+    "natural_defect",
+    "real_task_replay"
+  ],
+  "defensive_policy_cells": [
+    "P0_UNAWARE",
+    "P1_SHADOW_AWARE",
+    "P2_HARD_GATE"
+  ],
+  "ledger_surface_cells": [
+    "E0_FINAL_ONLY",
+    "E1_TRANSCRIPT",
+    "E2_STRUCTURED_LEDGER"
+  ],
+  "extension_rule": {
+    "minimum_vendor_count_for_extension": 3,
+    "complete_v_by_v_required": true,
+    "all_vendor_directions_required": true,
+    "separate_freeze_required": true,
+    "claim_scope": "included_vendors_only",
+    "leave_one_vendor_out_required": true,
+    "population_vendor_generalisation_allowed": false
+  },
+  "balance_validation": {
+    "block_by": [
+      "task_id",
+      "domain",
+      "data_stratum",
+      "generator_vendor",
+      "controlled_clean_or_defective"
+    ],
+    "refuse_missing_core_cell": true,
+    "refuse_missing_cross_direction": true,
+    "refuse_wrong_repeat_count": true,
+    "refuse_post_outcome_subset_selection": true
+  }
+}

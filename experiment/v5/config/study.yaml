@@ -1,0 +1,90 @@
+schema_version: crossaudit-v5-study-draft-1
+study_id: crossaudit-v5-topconf-confirmatory
+status: DESIGN_DRAFT_NOT_FROZEN
+claim_scope: included_configurations_only
+
+design:
+  initial_task_briefs: 150
+  maximum_task_briefs_after_blinded_reestimation: 180
+  domains: [computational_science, quantitative_analysis, scientific_code]
+  minimum_real_task_replays: 60
+  generator_vendor_codes: [A, B, C]
+  auditor_vendor_codes: [A, B, C]
+  complete_v_by_v_required: true
+  principal_models_per_vendor: 1
+  alternate_auditor_models_per_vendor: 1
+  total_pinned_snapshots: 6
+  audit_repeats_per_required_cell: 3
+  constitution_repeats: {C0: 3, C1: 3, C2: 3}
+  constitution_subset_tasks: 60
+  whole_loop_subset_tasks: 60
+  controlled_siblings: [verified_clean, exactly_one_mutant]
+  natural_output_required: true
+
+planned_call_ceiling:
+  principal_generation: 450
+  primary_c2_d2_matrix: 12150
+  same_vendor_different_model: 4050
+  constitution_c0_c1_additions: 6480
+  whole_loop: 1800
+  total_before_authorised_technical_retries: 24930
+
+primary:
+  superiority_outcome: correct_gate
+  superiority_effect_of_interest: 0.08
+  clean_noninferiority_outcome: unnecessary_escalation
+  clean_noninferiority_margin: 0.05
+  headline_requires_both: true
+  independent_unit: task_id
+  primary_condition: {constitution: C2, dcl: D2}
+
+human_panels:
+  reviewers_per_item: 2
+  third_adjudicator: true
+  calibration_items: 30
+  minimum_krippendorff_alpha: 0.80
+  minimum_raw_agreement: 0.85
+  gold_panel_manifest_sha256: null
+  matching_panel_manifest_sha256: null
+  calibration_report_sha256: null
+
+model_identity:
+  resolved_models_lock_sha256: null
+  provider_returned_identity_required: true
+  requested_alias_only_forbidden: true
+
+power:
+  simulations_per_scenario: 10000
+  target_conjunctive_power: 0.80
+  superiority_directional_type1_acceptance_interval: [0.015, 0.035]
+  noninferiority_boundary_type1_acceptance_interval: [0.04, 0.06]
+  coverage_acceptance_interval: [0.93, 0.97]
+  power_report_sha256: null
+
+freeze:
+  prompt_bundle_sha256: null
+  task_manifest_sha256: null
+  mutation_key_external_commitment: null
+  randomisation_seed_commitment: null
+  opaque_arm_mapping_custodian: null
+  analysis_code_sha256: null
+  table_shells_sha256: null
+  external_timestamp_uri: null
+
+cost_caps:
+  currency: null
+  maximum_money: null
+  maximum_input_tokens: null
+  maximum_output_tokens: null
+  maximum_human_review_hours: null
+  maximum_wall_clock_hours: null
+
+privacy:
+  provider_egress_approval_sha256: null
+  real_task_replay_approval_sha256: null
+
+dry_run:
+  independent_task_count: 12
+  minimum_valid_call_rate: 0.98
+  maximum_vendor_differential_missingness: 0.01
+  receipt_sha256: null

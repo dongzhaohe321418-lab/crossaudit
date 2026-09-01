@@ -1,0 +1,4 @@
+{"schema_version":"4.0","defect_id":"D-A","defect_key":"K1","artifact_id":"A-D-A","class":"semantic","channel":"model","severity":"BLOCKER","location":"report:1","gold_status":"confirmed"}
+{"schema_version":"4.0","defect_id":"D-B","defect_key":"K1","artifact_id":"A-D-B","class":"semantic","channel":"model","severity":"BLOCKER","location":"report:1","gold_status":"confirmed"}
+{"schema_version":"4.0","defect_id":"D-NO","defect_key":"K1","artifact_id":"F-D-NO","class":"semantic","channel":"model","severity":"BLOCKER","location":"report:1","gold_status":"confirmed"}
+{"schema_version":"4.0","defect_id":"D-P0","defect_key":"K1","artifact_id":"F-D-P0","class":"semantic","channel":"model","severity":"BLOCKER","location":"report:1","gold_status":"confirmed"}

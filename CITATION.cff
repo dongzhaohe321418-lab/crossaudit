@@ -13,6 +13,10 @@ authors:
 type: software
 year: 2026
 url: "https://github.com/dongzhaohe321418-lab/crossaudit"
+identifiers:
+  - type: other
+    value: "arXiv:2608.28631"
+    description: "arXiv identifier for the protocol paper"
 abstract: >-
   CrossAudit is a lightweight protocol for supervising autonomous AI research
   agents: every experiment increment produced by a generator agent is audited
@@ -26,3 +30,18 @@ keywords:
   - self-preference bias
   - reproducibility
 license: MIT
+preferred-citation:
+  type: article
+  title: "CrossAudit: A Git-Native, Cross-Vendor Audit Loop for Agentic Science"
+  authors:
+    - family-names: "Dong"
+      given-names: "Zhaohe"
+      affiliation: "University of Cambridge"
+    - family-names: "Chen"
+      given-names: "Yuhao"
+      affiliation: "University of Wisconsin-Madison"
+  year: 2026
+  url: "https://arxiv.org/abs/2608.28631"
+  identifiers:
+    - type: other
+      value: "arXiv:2608.28631"

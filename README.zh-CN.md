@@ -2,6 +2,8 @@
 
 **面向智能体科研（agentic science）的、以 Git 为账本的跨厂商审计环。**
 
+[![arXiv:2608.28631](https://img.shields.io/badge/arXiv-2608.28631-b31b1b.svg)](https://arxiv.org/abs/2608.28631)
+
 [English →](README.md)
 
 ---
@@ -93,9 +95,51 @@ you/demo-audit       ← 宪法 + 审计工作流 + 报告存放于此
 
 CrossAudit 是一套已在作者本人计算化学管线中每日运转的工作协议（Claude 系生成者、Codex 系审计者、算力在阿里云超算）。本仓库的参考实现刻意保持最小化；欢迎 Issue 与 PR——见 [CONTRIBUTING.md](CONTRIBUTING.md)。
 
+另行注册的 v4 执行可行性队列已经用真实供应商调用跑完全部七个后续研究模块：
+成功的 Amendment 2 在六个确定性便利任务上完成 542/542 次有效调用，已知成本
+为 12.1504115 美元，并在评分前完成网络可见的封存。这些只是非确认性、特定配置
+的探索性测量，不能支持“跨厂商普遍更优”或产品总体结论。详见
+[定量结果](experiment/v4/FEASIBILITY-RESULTS.md)与
+[七点状态契约](experiment/v4/SEVEN-POINT-COMPLETION.md)。注册的 120 任务、
+人类裁决确认性研究仍未运行。
+
+新的前瞻性 [v5 顶会确认性研究包](experiment/v5/) 没有在可行性结果产生后改写
+v4 注册，而是保留历史并另起设计：150--180 个独立任务、三家供应商、六个固定
+模型快照、完整 3x3 主矩阵、同厂不同模型对照、人类盲审 gold、C0/C1/C2 等量
+三重复、通用 VxV 整任务估计器，以及默认拒绝派发的冻结预检。中心场景 10,000
+次规划仿真在名义 8 个百分点情形下得到 99.65% 联合功效和 94.87% 区间覆盖率。
+压力场景与正式 bootstrap-t 校准仍是阻塞项；这不是已完成实验，也不是花费授权。
+
+### 已封存的可行性结果图
+
+[![配置与组件层面的可行性效应](paper/figures/figure5-v4-configuration-effects.png)](paper/figures/figure5-v4-configuration-effects.pdf)
+
+**配置与组件效应。** C2/D0 的交叉设计保留生成者–审计者的两个方向；DCL
+分面进一步表明，观察到的 D2 增益仅来自自然输出，而非三个受控层。区间为基于
+六个便利任务整任务重采样得到的描述性 bootstrap 区间。
+[SVG](paper/figures/figure5-v4-configuration-effects.svg) ·
+[源数据](experiment/v4/figures/source-data.csv)
+
+[![运行可行性的收益与代价](paper/figures/figure6-v4-operational-tradeoffs.png)](paper/figures/figure6-v4-operational-tradeoffs.pdf)
+
+**运行权衡。** 硬门控修复了 9 个初始错误文本会话中的 2 个，但使用了更多调用、
+成本与供应商时间；同厂商与跨厂商审计在这个微型队列中的 whole-loop 终点相同；
+结构化账本在主要代理决策上与普通日志持平，并未超过普通日志。
+[SVG](paper/figures/figure6-v4-operational-tradeoffs.svg) ·
+[源数据](experiment/v4/figures/source-data.csv)
+
+**Constitution 排除说明。** 图中不展示 Constitution 对比。当前可行性评分器把
+C0/C1/C2 对比筛选为 `repeat == 0`，而注册文本规定 C2 使用全部三个核心重复。
+在这一口径冲突得到前瞻性解决之前，现有数值只能视为 repeat-0 实现诊断，不能
+据此宣称已得到注册口径下的三重复 Constitution 效应。
+
 ## 引用
 
-协议论文见 `paper/`（发布 tag `paper-v1.0.0`，哈希清单 `paper/HASHES.txt`）；arXiv 编号公布后将更新于此。在此之前请按 [`CITATION.cff`](CITATION.cff) 引用。
+协议论文为 [arXiv:2608.28631](https://arxiv.org/abs/2608.28631)。已发布的 v1
+源码保存在 tag `paper-v1.0.0`。当前完整候选稿把供应商异质性重述为待检验的因果
+假设并加入 v5 设计；紧凑匿名的顶会 pre-results 稿位于
+[`paper/submissions/topconf2027/`](paper/submissions/topconf2027/)。二者都不是
+arXiv 记录的新发布版本；当前已发布版本的引用元数据见 [`CITATION.cff`](CITATION.cff)。
 
 ## 许可证
 

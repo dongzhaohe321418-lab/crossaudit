@@ -62,6 +62,20 @@ is worse than no finding at all."""
 
 def sha(b: bytes) -> str: return hashlib.sha256(b).hexdigest()
 
+def load_registered_rules(constitution: str) -> tuple[str, str | None]:
+    """Load the Constitution frozen by v3 AMENDMENT 3.
+
+    Keeping this lookup in one testable function prevents the deployment
+    template from being substituted silently for the study rulebook again.
+    """
+    if constitution == "none":
+        return "", None
+    rp = Path(__file__).resolve().parent / "AUDIT_RULES_scoped.md"
+    if not rp.is_file():
+        sys.exit(f"registered v3 Constitution is missing: {rp}")
+    rules = rp.read_text()
+    return rules, sha(rules.encode())
+
 def call_anthropic(model, system, user, key):
     req = urllib.request.Request(
         "https://api.anthropic.com/v1/messages",
@@ -100,8 +114,10 @@ def parse(reply: str):
 
 def main():
     ap = argparse.ArgumentParser()
-    for f in ("rung", "vendor", "model", "constitution", "corpus", "out"):
+    for f in ("rung", "model", "corpus", "out"):
         ap.add_argument("--" + f, required=True)
+    ap.add_argument("--vendor", required=True, choices=("anthropic", "openai"))
+    ap.add_argument("--constitution", required=True, choices=("none", "full"))
     a = ap.parse_args()
 
     key = os.environ.get("ANTHROPIC_API_KEY" if a.vendor == "anthropic" else "OPENAI_API_KEY", "")
@@ -112,10 +128,10 @@ def main():
     incs = sorted(corpus.glob("INC-*"))
     if not incs: sys.exit(f"no increments under {corpus}")
 
-    rules, rules_sha = "", None
-    if a.constitution != "none":
-        rp = Path(__file__).resolve().parents[2] / "templates" / "AUDIT_RULES.md"
-        rules = rp.read_text(); rules_sha = sha(rules.encode())
+    # AMENDMENT 3 freezes the scoped study Constitution as the rulebook of
+    # record. The deployment template contains rules the v3 corpus cannot
+    # adjudicate and must never be substituted here.
+    rules, rules_sha = load_registered_rules(a.constitution)
     system = SYSTEM_BARE if a.constitution == "none" else SYSTEM_RULES + "\n\n=== RULEBOOK ===\n" + rules
 
     out = Path(a.out); out.mkdir(parents=True, exist_ok=True)

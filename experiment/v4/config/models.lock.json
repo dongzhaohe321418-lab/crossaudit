@@ -1,0 +1,99 @@
+{
+  "schema_version": "crossaudit-v4-model-lock-1",
+  "study_id": "crossaudit-v4-causal-successor",
+  "registered_date": "2026-09-01",
+  "status": "UNFROZEN_BLOCKING",
+  "note": "No v4 model arm may run until every required field is concrete and this file is hash-bound in the external freeze manifest.",
+  "claim_scope_if_only_these_two_vendors_run": "pair_specific",
+  "core_same_vendor_generator_auditor_same_snapshot_required": true,
+  "vendor_code_mapping": {
+    "status": "NOT_ASSIGNED",
+    "custodian": null,
+    "commitment_sha256": null,
+    "required_before_dispatch": true
+  },
+  "vendors": {
+    "A": {
+      "provider_legal_name": null,
+      "provider_endpoint_origin": null,
+      "api_version": null,
+      "region": null,
+      "generator": {
+        "model_id": null,
+        "snapshot_or_revision": null,
+        "system_prompt_sha256": null,
+        "parameters_sha256": null,
+        "tool_policy_sha256": null,
+        "context_policy": "fresh_per_task",
+        "required_before_dispatch": true
+      },
+      "auditor": {
+        "model_id": null,
+        "snapshot_or_revision": null,
+        "system_prompt_sha256": null,
+        "parameters_sha256": null,
+        "tool_policy_sha256": null,
+        "context_policy": "fresh_per_audit_repeat",
+        "required_before_dispatch": true
+      },
+      "provider_retention_statement_uri": null,
+      "provider_retention_statement_sha256": null,
+      "identity_attestation_type": "configured_endpoint_self_report_unless_replaced_before_freeze"
+    },
+    "B": {
+      "provider_legal_name": null,
+      "provider_endpoint_origin": null,
+      "api_version": null,
+      "region": null,
+      "generator": {
+        "model_id": null,
+        "snapshot_or_revision": null,
+        "system_prompt_sha256": null,
+        "parameters_sha256": null,
+        "tool_policy_sha256": null,
+        "context_policy": "fresh_per_task",
+        "required_before_dispatch": true
+      },
+      "auditor": {
+        "model_id": null,
+        "snapshot_or_revision": null,
+        "system_prompt_sha256": null,
+        "parameters_sha256": null,
+        "tool_policy_sha256": null,
+        "context_policy": "fresh_per_audit_repeat",
+        "required_before_dispatch": true
+      },
+      "provider_retention_statement_uri": null,
+      "provider_retention_statement_sha256": null,
+      "identity_attestation_type": "configured_endpoint_self_report_unless_replaced_before_freeze"
+    }
+  },
+  "generation_parameters_common": {
+    "temperature": null,
+    "top_p": null,
+    "max_output_tokens": null,
+    "seed_policy": null,
+    "required_before_dispatch": true
+  },
+  "audit_parameters_common": {
+    "temperature": null,
+    "top_p": null,
+    "max_output_tokens": null,
+    "seed_policy": null,
+    "reply_schema_sha256": null,
+    "required_before_dispatch": true
+  },
+  "three_or_more_vendor_extension": {
+    "allowed_only_as_separately_frozen_cohort": true,
+    "complete_v_by_v_matrix_required": true,
+    "included_vendor_claim_only": true,
+    "population_vendor_claim_allowed": false,
+    "vendor_entries": []
+  },
+  "freeze": {
+    "file_sha256": null,
+    "external_timestamp_uri": null,
+    "completed_by": null,
+    "completed_at_utc": null
+  }
+}

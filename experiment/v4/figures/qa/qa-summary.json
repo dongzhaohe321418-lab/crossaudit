@@ -1,0 +1,27 @@
+{
+  "source_preflight": "PASS",
+  "minimum_font_pt_required": 5.0,
+  "alignment_tolerance_pt": 1.5,
+  "figures": {
+    "figure5-v4-configuration-effects": {
+      "alignment": "PASS",
+      "alignment_fail": 0,
+      "alignment_warn": 0,
+      "minimum_font_pt": 6.0,
+      "fonts_below_5_pt": 0,
+      "collision_verdict": "PASS",
+      "collision_fail": 0,
+      "collision_warn": 0
+    },
+    "figure6-v4-operational-tradeoffs": {
+      "alignment": "PASS",
+      "alignment_fail": 0,
+      "alignment_warn": 0,
+      "minimum_font_pt": 6.0,
+      "fonts_below_5_pt": 0,
+      "collision_verdict": "PASS",
+      "collision_fail": 0,
+      "collision_warn": 0
+    }
+  }
+}

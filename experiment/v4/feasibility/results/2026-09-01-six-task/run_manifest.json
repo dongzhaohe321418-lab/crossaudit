@@ -1,0 +1,6 @@
+{
+  "claim_status": "execution-feasibility; non-confirmatory; no vendor-population claim",
+  "format_version": "v4-feasibility-1",
+  "freeze_sha256": "78540d293c282ad1a8b4f9c10a3a4f12c4780cb92f2363d879b81bc218c6da66",
+  "journal": "events.jsonl"
+}

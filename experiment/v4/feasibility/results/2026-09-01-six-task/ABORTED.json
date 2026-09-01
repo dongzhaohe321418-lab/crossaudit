@@ -1,0 +1,18 @@
+{
+  "claim_status": "aborted engineering run; excluded from every scientific analysis",
+  "completed_provider_calls": 33,
+  "discovery_stage": "core before any ledger proxy call",
+  "freeze_commit": "89fc43238f0704512824effca77d78cf629da1a4",
+  "freeze_sha256": "78540d293c282ad1a8b4f9c10a3a4f12c4780cb92f2363d879b81bc218c6da66",
+  "integrity_stop_event_sha256": "4d0d3a0855a93a5a2c6b1262cf39c8b3da6b0058b8c11e94d4823d842b94e968",
+  "known_list_price_equivalent_cost_usd": 1.2813356,
+  "reason_code": "ledger_review_payload_not_persisted",
+  "reason": "The frozen runner omitted the model review payload from ledger_outcome while the frozen scorer read review.insufficient_evidence from that event. The endpoint would therefore have been deterministically mis-scored.",
+  "resume_forbidden": true,
+  "status_counts": {
+    "valid": 33
+  },
+  "uncompleted_call_ids": [
+    "core-audit-2eadffd11464f6a4c547"
+  ]
+}
