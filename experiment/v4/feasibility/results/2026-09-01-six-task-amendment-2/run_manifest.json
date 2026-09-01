@@ -1,0 +1,1180 @@
+{
+  "claim_status": "execution-feasibility; non-confirmatory; no vendor-population claim",
+  "format_version": "v4-feasibility-2",
+  "freeze_sha256": "d4102a553395dad82b5e4147cb8a5e1e3f22d1fa2eea37b584a522bd8668830c",
+  "frozen_core": {
+    "budget": {
+      "cap_semantics": "pre-dispatch stop using accrued observed cost plus reserve; not an absolute billing guarantee unless each provider independently enforces the frozen single-call reserve",
+      "currency": "USD",
+      "hard_cost_cap_usd": 40.0,
+      "maximum_model_calls": 610,
+      "per_call_reserve_usd": 1.0,
+      "policy": "Before dispatch, total and provider-specific accrued observed cost plus the frozen reserve must not exceed their caps. A call may exceed its reserve; all subsequent affected cells remain explicit budget-blocked ITT failures.",
+      "provider_caps_usd": {
+        "anthropic": 25.0,
+        "openai": 40.0
+      }
+    },
+    "claim_status": "execution-feasibility; non-confirmatory; no vendor-population claim",
+    "cli_versions": {
+      "anthropic/claude-sonnet-4-6": {
+        "exit_code": 0,
+        "stderr": "",
+        "stdout": "2.1.252 (Claude Code)"
+      },
+      "openai/gpt-5.6-sol": {
+        "exit_code": 0,
+        "stderr": "",
+        "stdout": "codex-cli 0.151.0"
+      }
+    },
+    "code_hashes": {
+      "experiment/v4/feasibility/canary.py": "dd1f85d5f7b8bc33142cc2fc09fc191b9f90862b410cae84debe35b93910bbf7",
+      "experiment/v4/feasibility/estimands.py": "4c0d1a926e4e4e57e735ec2daacaa5614fbfde3018a329d6092d57ef31234eb9",
+      "experiment/v4/feasibility/providers.py": "aec8b6015816b93bf864f029fd04ca011dbf49e5ff40fa88832e9917b32d6337",
+      "experiment/v4/feasibility/run.py": "65df9b55e88065e1e8c3183851b75071615b0b2ec9fb12658d9b8f355f136040",
+      "experiment/v4/feasibility/runtime.py": "86e0166ea37238605e0e8b6460974ef7b0ee0fa31306299303485c3f876797de",
+      "experiment/v4/feasibility/schema.py": "1438ec5eeb6269479d24934fd4ed0123f5063de5d11c8ac4e2c1614404df3d59",
+      "experiment/v4/feasibility/score.py": "6765ec8806be79c3859d03cc5a36a992c071b06ba5587b1002bc251b05f8ed98",
+      "experiment/v4/feasibility/semantics.py": "4099b401a2a31aa5300ebcb810049c7206bb0d57eccddf8b88a9b37b0e5196dc",
+      "experiment/v4/feasibility/structure.py": "06b921637cf8f91b71092cda707df3bbf4320f2c1d3b24e6eaf78455dfbf9bfb",
+      "experiment/v4/feasibility/tasks.py": "cfd1b6815fb4a704d49c6475bc8ac6e05838edb874d5c27d2047cc2ea33da38d"
+    },
+    "code_tasks": [
+      {
+        "brief": "Implement final_change(values), returning the absolute difference between the final two numeric values. Inputs always contain at least two values.",
+        "function": "final_change",
+        "held_out": [
+          [
+            [
+              -10.0,
+              -10.3,
+              -10.31
+            ],
+            0.01
+          ],
+          [
+            [
+              0.0,
+              0.0
+            ],
+            0.0
+          ]
+        ],
+        "task_id": "F-CODE-01",
+        "visible": [
+          [
+            [
+              1.0,
+              2.0,
+              1.5
+            ],
+            0.5
+          ]
+        ]
+      },
+      {
+        "brief": "Implement exact_slope(points), returning the slope from the first and last of at least two (x, y) points. The frozen fixtures never have equal x values.",
+        "function": "exact_slope",
+        "held_out": [
+          [
+            [
+              [
+                1.0,
+                3.0
+              ],
+              [
+                3.0,
+                11.0
+              ]
+            ],
+            4.0
+          ],
+          [
+            [
+              [
+                -1.0,
+                -1.0
+              ],
+              [
+                1.0,
+                5.0
+              ]
+            ],
+            3.0
+          ]
+        ],
+        "task_id": "F-CODE-02",
+        "visible": [
+          [
+            [
+              [
+                0.0,
+                1.0
+              ],
+              [
+                2.0,
+                5.0
+              ],
+              [
+                4.0,
+                9.0
+              ]
+            ],
+            2.0
+          ]
+        ]
+      }
+    ],
+    "design": {
+      "ablation_artifact_types": [
+        "clean",
+        "seeded"
+      ],
+      "ablation_constitutions": [
+        "C0",
+        "C1"
+      ],
+      "artifact_types": [
+        "natural",
+        "clean",
+        "seeded",
+        "ambiguous"
+      ],
+      "auditor_vendors": [
+        "anthropic",
+        "openai"
+      ],
+      "code_task_ids": [
+        "F-CODE-01",
+        "F-CODE-02"
+      ],
+      "constitution_rule_size": {
+        "C0": {
+          "bytes": 487,
+          "words": 64
+        },
+        "C1": {
+          "bytes": 547,
+          "words": 72
+        },
+        "C2": {
+          "bytes": 520,
+          "words": 74
+        }
+      },
+      "constitution_subset_n_tasks": 2,
+      "constitution_subset_task_ids": [
+        "F-DATA-01",
+        "F-SCI-01"
+      ],
+      "cumulative_provider_elapsed_cap_seconds": 14400,
+      "dcl_decisions": [
+        "D0_OFF",
+        "D1_ONLY",
+        "D2_COMBINED_BLIND"
+      ],
+      "defensive_policies": [
+        "P0",
+        "P1",
+        "P2"
+      ],
+      "generator_vendors": [
+        "anthropic",
+        "openai"
+      ],
+      "ledger_attack_sequence": [
+        "none",
+        "stale_receipt",
+        "wrong_commit",
+        "changed_constitution",
+        "missing_round",
+        "altered_report",
+        "unsupported_identity"
+      ],
+      "ledger_decision_time_cap_seconds": 300,
+      "ledger_episode_count": 7,
+      "ledger_interfaces": [
+        "E0",
+        "E1",
+        "E2"
+      ],
+      "ledger_proxy_reviewers": [
+        "anthropic",
+        "openai"
+      ],
+      "max_revision_rounds": 2,
+      "maximum_technical_retries": 0,
+      "n_tasks": 6,
+      "primary_audit_repeats": 3,
+      "primary_constitution": "C2",
+      "randomisation_seed": 260828631,
+      "task_ids": [
+        "F-DATA-01",
+        "F-DATA-02",
+        "F-SCI-01",
+        "F-METH-01",
+        "F-METH-02",
+        "F-SCI-02"
+      ],
+      "timeout_seconds": 300
+    },
+    "execution_runtime_binding": {
+      "dependencies": {
+        "macos_sandbox_exec": {
+          "resolved_path": "/usr/bin/sandbox-exec",
+          "sha256": "8857d087219f0f39d3e3c163e5d0a0aed690cc22f34b50c7eee3d74f93e69688",
+          "size_bytes": 102560
+        },
+        "python_executable": {
+          "resolved_path": "/Users/ericdong/.local/share/uv/python/cpython-3.12.12-macos-aarch64-none/bin/python3.12",
+          "sha256": "3874a935f7242b660e652d35c25a1b87415fcfea3ee191ff262fcca5c50102c5",
+          "size_bytes": 49968
+        },
+        "stdlib_ast": {
+          "resolved_path": "/Users/ericdong/.local/share/uv/python/cpython-3.12.12-macos-aarch64-none/lib/python3.12/ast.py",
+          "sha256": "b515c23dbbc459329d3b802a3aac742cc456d7472e66f7ed6e9dc97e40596d7d",
+          "size_bytes": 64452
+        },
+        "stdlib_random": {
+          "resolved_path": "/Users/ericdong/.local/share/uv/python/cpython-3.12.12-macos-aarch64-none/lib/python3.12/random.py",
+          "sha256": "de48263a837339c7e01cf9f3c4d756696e0e0775f7778eb9cf81ad5b00134569",
+          "size_bytes": 34689
+        }
+      },
+      "platform": {
+        "mac_ver": [
+          "26.5.1",
+          [
+            "",
+            "",
+            ""
+          ],
+          "arm64"
+        ],
+        "machine": "arm64",
+        "release": "25.5.0",
+        "system": "Darwin",
+        "version": "Darwin Kernel Version 25.5.0: Mon Apr 27 20:41:15 PDT 2026; root:xnu-12377.121.6~2/RELEASE_ARM64_T6041"
+      },
+      "python": {
+        "implementation": "CPython",
+        "implementation_cache_tag": "cpython-312",
+        "version": "3.12.12 (main, Feb 12 2026, 00:42:34) [Clang 21.1.4 ]",
+        "version_info": [
+          3,
+          12,
+          12,
+          "final",
+          0
+        ]
+      }
+    },
+    "failure_policy": "Every scheduled provider call is retained. Provider, parse, timeout, interrupted, upstream and budget failures score incorrect under intention-to-treat. A strictly classified content-free websocket/TLS failure is a non-retried cell-level provider error; unknown, malformed or action-bearing events stop all later dispatches.",
+    "format_version": "v4-feasibility-2",
+    "planned_calls": {
+      "core_C0_C1_audit": 32,
+      "core_C2_audit": 288,
+      "core_generation": 12,
+      "defensive_code_initial_generation": 12,
+      "defensive_code_max_revision_generation": 8,
+      "defensive_text_initial_audit": 36,
+      "defensive_text_initial_generation": 36,
+      "defensive_text_max_revision_audit": 24,
+      "defensive_text_max_revision_generation": 24,
+      "ledger_proxy_review": 42,
+      "maximum_total": 610,
+      "whole_loop_max_revision_audit": 48,
+      "whole_loop_max_revision_generation": 48
+    },
+    "price_table": {
+      "currency": "USD",
+      "effective_date": "2026-09-01",
+      "prices": {
+        "anthropic/claude-sonnet-4-6": {
+          "cache_write_1h_per_million": 6.0,
+          "cache_write_5m_per_million": 3.75,
+          "cached_input_per_million": 0.3,
+          "input_per_million": 3.0,
+          "note": "Runner uses Claude CLI total_cost_usd when present because the CLI may use helper models and cache-write classes that a single-model token formula cannot price faithfully.",
+          "output_per_million": 15.0,
+          "source": "https://www.anthropic.com/news/claude-sonnet-4-6"
+        },
+        "openai/gpt-5.6-sol": {
+          "cached_input_per_million": 0.4,
+          "input_per_million": 4.0,
+          "note": "List-price equivalent; Codex access is included in the signed-in ChatGPT plan and incremental billing may be zero.",
+          "output_per_million": 20.0,
+          "source": "https://developers.openai.com/api/docs/models/gpt-5.6-sol"
+        }
+      },
+      "purpose": "Public API list-price equivalents for the execution-feasibility cohort; actual subscription billing may differ."
+    },
+    "price_table_sha256": "464a1f51c1bc428481c57422205384b662f100830399e7177bd42ae06d756edd",
+    "prompt_hashes": {
+      "audit_prompt_source": "fa4945cf1090302a0ce8e4a80885a34ff1cc7e6f97df6ada1c37504606c1e581",
+      "code_prompt_source": "d1af3da8d66b6c08bc3623c0460997f7049dc480f77442be95b49937a23336bd",
+      "code_revision_prompt_source": "fe3ab9d0f2cb62f086c853795a3cecee9e7c311b346c655bd6c62b63d323aff4",
+      "constitution_rule_size": {
+        "C0": {
+          "bytes": 487,
+          "words": 64
+        },
+        "C1": {
+          "bytes": 547,
+          "words": 72
+        },
+        "C2": {
+          "bytes": 520,
+          "words": 74
+        }
+      },
+      "generator_prompt_source": "e0b99888c365db1fcc1a5b3a56e80546c969c709cb85a61439243d3d2020dd72",
+      "ledger_review_prompt_source": "1dbad221016272c874e29cfc06aa0dd8b2376f83e60f85dfe631137f1567c5d8",
+      "rendered_code": {
+        "F-CODE-01/P0": "c75a9e3396372f806cdcedc26528b9c43bf997044fc257348cb0b79318f86564",
+        "F-CODE-01/P1": "f6dc22920d8b12bd6c5dbbe06125519edf5ee9a10e5aa065a1733fa909f954df",
+        "F-CODE-01/P2": "629d860bf387395447b3331bfa1c15434674b5140638ee0fe4792317a1f49496",
+        "F-CODE-02/P0": "37b0c14c44f0a4c136af1c6ecb671c7d5ebbbbf1a1b83e919bcc454d40d3f693",
+        "F-CODE-02/P1": "f23313e5f98597ad311a8ebd55fecf415b53cc62c0f1919e17c19bf680febfa5",
+        "F-CODE-02/P2": "834a3a91d25ff9d9403cdef3627a0431a27b882946a41ecf30083f3b9341a1e2"
+      },
+      "rendered_constitutions": {
+        "F-DATA-01/C0": "54c0993128f502f5f0ae474b99ad957937dc549a6f27df0b51473e492bc1b50c",
+        "F-DATA-01/C1": "5de289b1614042aca9b876d391b645c341e2964a21da19c3f9cba2ecabf367f2",
+        "F-DATA-01/C2": "caa6e84095a25bc71e695f755279f016972c6e253db8fbbaa2d64ffa68df612f",
+        "F-DATA-02/C0": "bf6fa1d57cd9ea53a601df02025fa678faaee1ddc4c0c2bebcc458c882ff2bb6",
+        "F-DATA-02/C1": "225931ce287d52ca581d1e2ab2986643e367f1479ef98ed7c23fc90590b394b3",
+        "F-DATA-02/C2": "e1a216e43bd99e1ff29afa061dc68c9a80e91bbd98b5225dc44e36dfbad0506c",
+        "F-METH-01/C0": "a3ddc2405600d404443ebdc3a4678b7ead7d842eed0d5110dbc8ac4aef9cae99",
+        "F-METH-01/C1": "3a5fcdacaf40ccfb2601fdd769683f36b7a68349a8fec346c868941b1e9efd5d",
+        "F-METH-01/C2": "9d8ae4518b9f09c3e4b81633d51ad29836008e927aa0fb5e76bf5d0fabfb5297",
+        "F-METH-02/C0": "a6a099b97e0e18cf0478017ebf33d43e3f1cf1a1b475aefe5de0f545b4201131",
+        "F-METH-02/C1": "001d292c27c685dd82e07d4932419833a6ce0a86c97c39e841e8bec78f83a8a0",
+        "F-METH-02/C2": "492feb1cc042accdb26c1fdf785541c3bcc3af981b585b768477b1c115a7544a",
+        "F-SCI-01/C0": "49836472245323519449299528dcbbf6dcc914e71fa8ae68fb2a4950dd1e3523",
+        "F-SCI-01/C1": "1faf3fc4b6d22438c1dd8b3616b65f292b1bd7c500bc2d85c926e0cbf522cf8d",
+        "F-SCI-01/C2": "c5ae200b4b99cd24aa582f0acd9aaff6eb81341eeeb7d61796b3b43158ee5788",
+        "F-SCI-02/C0": "9fbe1de14ae2fe30458e51c76347b72b49d2e7242adfc4faf235801f4afba01c",
+        "F-SCI-02/C1": "cf79bd02fc01eb9eee8f1b42d6c6241da98a90ee25acc482b7de61ea5e9314f3",
+        "F-SCI-02/C2": "957344c578f00602ee89c347f8fd07d4132eb6d777825d7516294aafc95d47f7"
+      },
+      "rendered_generators": {
+        "F-DATA-01/P0": "e6e6d0363812a637fab215c4ee1e1fa0d2baf17e8fb6e53ffc2e2a3a5e6727f4",
+        "F-DATA-01/P1": "a334123e20fc511786f7c29c5a605696cd98ce1a63e0052110da77ca4381a7b8",
+        "F-DATA-01/P2": "004cf8d2488876761b4c216ac0269d1302222e73adbdc1810b87dfe026c13ab5",
+        "F-DATA-02/P0": "a23e98ee81f61b7d17c50a39f2aacf57e146d9a1d01a0420b3f85d2409784e60",
+        "F-DATA-02/P1": "938783f99786c2ad83c429026dc6a624fd6640cb3b887d1485be1b089cfc6746",
+        "F-DATA-02/P2": "b750e2b778a673bd62983267a1aea1c44798e560b489658aefcf0f33be945089",
+        "F-METH-01/P0": "1f21290882e94a1748984a0d19b5943b49da2dbb6250c1250d9d4425cfd61471",
+        "F-METH-01/P1": "ea48ed895b149fdb1d9d0de99d45c45cda10466b29e44ec906a7cc33b7ecd0dd",
+        "F-METH-01/P2": "733e53770b0da2d8a430bae60f2a588a6c3ae6c012ee14c64b254cf908d1b60d",
+        "F-METH-02/P0": "e1919ffe4b9b51153b6df14588e7a951eb86356ea966e2b3d0ca0bba3e79e30e",
+        "F-METH-02/P1": "c1fb6b1eba06911701988b27f5a06a5ca89da26db366aebcd3aad5248e381748",
+        "F-METH-02/P2": "a965ed87d022835a80f2a3ce14b9d803138c9835d02c07767fbd0d013841b079",
+        "F-SCI-01/P0": "dfc29e3f158467a47eb15acc9ad9235f02c13faee14c6ead8b9e00279928bef5",
+        "F-SCI-01/P1": "6320006c302a477802b784eae401bc77a91b7d80a6330aee77d370055f3c4493",
+        "F-SCI-01/P2": "e45d01bc74168b02843ac52ac784bb3074ed528ebe332c9ec9a6c5a235d3ba9a",
+        "F-SCI-02/P0": "0eca72d90a002729da287bf4bc7f0f326881b24892b2afce66e564e9131f614b",
+        "F-SCI-02/P1": "c24c62dca0c68d3638a6fc52575eb9052e08292e432b79609a58a1bf63d954e0",
+        "F-SCI-02/P2": "1170f559216af8eeba69b41bee1080a9ec005286a896a7ea39fd174cf8967bfc"
+      },
+      "rendered_prompt_hash_definition": "sha256(raw UTF-8 prompt string); no JSON encoding or newline normalisation",
+      "revision_prompt_source": "cd09fe56aba0afc617fe13008b0c1f547112ae3bcfd7dddd119bdcf768e851f5"
+    },
+    "protocol_document_hashes": {
+      "experiment/v4/FEASIBILITY-AMENDMENT-1.md": "a24a07d118e598212a0b201cea7e784faab7ce94bfe5511d6f1f188aefba6a3d",
+      "experiment/v4/FEASIBILITY-AMENDMENT-2.md": "1139bb9c57078b6340e0d06e029bbededaa0d0d66329dad9e1eda6c096b3a16a",
+      "experiment/v4/FEASIBILITY-REGISTRATION.md": "9a8004ee36cd1faeaaaf6be73771c1df4525fa44aa8ea8ca873014e533fec89c",
+      "experiment/v4/feasibility/CANARY-RECEIPT.json": "92cffadf6aebee0958746c05da924719e0017713a6d17114164b257da207ec8e"
+    },
+    "provider_runtime_bindings": {
+      "anthropic/claude-sonnet-4-6": {
+        "executables": {
+          "cli": {
+            "requested": "claude",
+            "resolved_path": "/Users/ericdong/.local/share/claude/versions/2.1.252",
+            "sha256": "b661c6a094fcc32656bf7c0071c5b45bf900b34d4f0a1ab3d78fd59aeba2c2c7",
+            "size_bytes": 197220928
+          }
+        },
+        "model": "claude-sonnet-4-6",
+        "security_route_environment": {
+          "binding_sha256": "a7006c94756eda8b230e5fc7febd20c445dfa5a4b97fd0eb41463e80b6ca2fbe",
+          "variables": {
+            "ALL_PROXY": {
+              "present": true,
+              "value_sha256": "34a711ac67f0e009611cd2e922ffb4d1fd4df06b9311f9a9b1578876320a1541"
+            },
+            "ANTHROPIC_PROFILE": {
+              "present": false,
+              "value_sha256": null
+            },
+            "CLAUDE_CONFIG_DIR": {
+              "present": false,
+              "value_sha256": null
+            },
+            "CODEX_HOME": {
+              "present": false,
+              "value_sha256": null
+            },
+            "CURL_CA_BUNDLE": {
+              "present": false,
+              "value_sha256": null
+            },
+            "HOME": {
+              "present": true,
+              "value_sha256": "5d8552d4745873ad838deb5e0013e220db082cb5d6c4101b4e26f5761ac3ec3b"
+            },
+            "HTTPS_PROXY": {
+              "present": true,
+              "value_sha256": "813477bf51a0efb3b5926c3759f01d02cdf25cd70e6cfc7fa186d9d5e1e1d118"
+            },
+            "HTTP_PROXY": {
+              "present": true,
+              "value_sha256": "813477bf51a0efb3b5926c3759f01d02cdf25cd70e6cfc7fa186d9d5e1e1d118"
+            },
+            "NODE_EXTRA_CA_CERTS": {
+              "present": false,
+              "value_sha256": null
+            },
+            "NO_PROXY": {
+              "present": false,
+              "value_sha256": null
+            },
+            "OPENAI_CONFIG_HOME": {
+              "present": false,
+              "value_sha256": null
+            },
+            "OPENAI_PROFILE": {
+              "present": false,
+              "value_sha256": null
+            },
+            "REQUESTS_CA_BUNDLE": {
+              "present": false,
+              "value_sha256": null
+            },
+            "SSL_CERT_DIR": {
+              "present": false,
+              "value_sha256": null
+            },
+            "SSL_CERT_FILE": {
+              "present": false,
+              "value_sha256": null
+            },
+            "XDG_CONFIG_HOME": {
+              "present": false,
+              "value_sha256": null
+            },
+            "all_proxy": {
+              "present": true,
+              "value_sha256": "34a711ac67f0e009611cd2e922ffb4d1fd4df06b9311f9a9b1578876320a1541"
+            },
+            "http_proxy": {
+              "present": true,
+              "value_sha256": "813477bf51a0efb3b5926c3759f01d02cdf25cd70e6cfc7fa186d9d5e1e1d118"
+            },
+            "https_proxy": {
+              "present": true,
+              "value_sha256": "813477bf51a0efb3b5926c3759f01d02cdf25cd70e6cfc7fa186d9d5e1e1d118"
+            },
+            "no_proxy": {
+              "present": false,
+              "value_sha256": null
+            }
+          }
+        },
+        "system_instruction": {
+          "sha256": "8212f294e8082690ce0464d911465718f4339b4566720285a4d18709c74c02e4",
+          "value": "Follow the user task. Do not use tools. Return only the object required by the supplied output schema."
+        },
+        "vendor": "anthropic"
+      },
+      "openai/gpt-5.6-sol": {
+        "executables": {
+          "cli": {
+            "requested": "codex",
+            "resolved_path": "/opt/homebrew/lib/node_modules/@openai/codex/bin/codex.js",
+            "sha256": "134063e133f0b4244fa3b251acf973d4fe4b4aeeacbdc135211bf480f59f1477",
+            "size_bytes": 7236
+          },
+          "native": {
+            "resolved_path": "/opt/homebrew/lib/node_modules/@openai/codex/node_modules/@openai/codex-darwin-arm64/vendor/aarch64-apple-darwin/bin/codex",
+            "sha256": "98491713ffb196061003ee148636e743997cc31d76144ba7c53462269896891d",
+            "size_bytes": 231563824
+          },
+          "sandbox_exec": {
+            "resolved_path": "/usr/bin/sandbox-exec",
+            "sha256": "8857d087219f0f39d3e3c163e5d0a0aed690cc22f34b50c7eee3d74f93e69688",
+            "size_bytes": 102560
+          }
+        },
+        "invocation_policy": {
+          "config_sources": {
+            "host_skill_discovery": "skipped by enabled opt-out feature",
+            "project_rules": "ignored; fresh temporary cwd",
+            "user_config": "ignored"
+          },
+          "dynamic_exec_args": [
+            "--model",
+            "gpt-5.6-sol",
+            "-c",
+            "model_reasoning_effort=low",
+            "--output-schema",
+            "<ephemeral-output-schema-path>",
+            "--json",
+            "-"
+          ],
+          "effective_selected_features": {
+            "apps": false,
+            "browser_use": false,
+            "browser_use_external": false,
+            "browser_use_full_cdp_access": false,
+            "code_mode": false,
+            "code_mode_host": false,
+            "computer_use": false,
+            "enable_mcp_apps": false,
+            "hooks": false,
+            "image_generation": false,
+            "in_app_browser": false,
+            "multi_agent": false,
+            "multi_agent_v2": false,
+            "plugin_sharing": false,
+            "plugins": false,
+            "remote_plugin": false,
+            "shell_snapshot": false,
+            "shell_snapshot_v2": false,
+            "shell_tool": false,
+            "skill_mcp_dependency_install": false,
+            "skill_search": false,
+            "skip_host_skill_discovery": true,
+            "standalone_web_search": false,
+            "tool_call_mcp_elicitation": false,
+            "tool_suggest": false,
+            "unified_exec": true,
+            "view_image": false,
+            "workspace_dependencies": false
+          },
+          "event_allowlist": {
+            "allowed_local_startup_notices": [
+              {
+                "event_type": "item.completed",
+                "id": "code_mode_host_disabled_fail_closed",
+                "item_fields": [
+                  "id",
+                  "message",
+                  "type"
+                ],
+                "item_id": "item_0",
+                "item_type": "error",
+                "meaning": "disabled code-mode host is confirmed fail-closed",
+                "message_sha256": "098e801ebc95c9c7312a945849442846324dcf639365a297313248993822711b",
+                "required_count": 1,
+                "required_position": "second_nonempty_event_after_thread.started_before_turn.started"
+              }
+            ],
+            "event_fields": {
+              "item.completed": [
+                "item",
+                "type"
+              ],
+              "item.started": [
+                "item",
+                "type"
+              ],
+              "item.updated": [
+                "item",
+                "type"
+              ],
+              "thread.started": [
+                "thread_id",
+                "type"
+              ],
+              "turn.completed": [
+                "type",
+                "usage"
+              ],
+              "turn.started": [
+                "type"
+              ]
+            },
+            "event_types": [
+              "item.completed",
+              "item.started",
+              "item.updated",
+              "thread.started",
+              "turn.completed",
+              "turn.started"
+            ],
+            "item_fields": [
+              "id",
+              "text",
+              "type"
+            ],
+            "item_types": [
+              "agent_message",
+              "reasoning"
+            ],
+            "transport_failure_downgrade": {
+              "automatic_retry": false,
+              "forbidden_content": [
+                "agent_message",
+                "reasoning",
+                "tool/action item",
+                "malformed or unknown event"
+              ],
+              "raw_envelope": "discarded",
+              "required_event_shapes": [
+                "top-level error",
+                "item.completed/error"
+              ],
+              "required_stderr_markers": [
+                "failed to connect to websocket: IO error: tls handshake eof"
+              ],
+              "status": "provider_error"
+            },
+            "unknown_or_other_error_event": "provider_event_policy_violation"
+          },
+          "feature_overrides": {
+            "disabled": [
+              "apps",
+              "browser_use",
+              "browser_use_external",
+              "browser_use_full_cdp_access",
+              "code_mode",
+              "code_mode_host",
+              "computer_use",
+              "enable_mcp_apps",
+              "hooks",
+              "image_generation",
+              "in_app_browser",
+              "multi_agent",
+              "multi_agent_v2",
+              "plugins",
+              "plugin_sharing",
+              "remote_plugin",
+              "shell_snapshot",
+              "shell_snapshot_v2",
+              "shell_tool",
+              "skill_mcp_dependency_install",
+              "skill_search",
+              "standalone_web_search",
+              "tool_call_mcp_elicitation",
+              "tool_suggest",
+              "unified_exec",
+              "view_image",
+              "workspace_dependencies"
+            ],
+            "enabled": [
+              "skip_host_skill_discovery"
+            ]
+          },
+          "fixed_exec_args": [
+            "exec",
+            "--ephemeral",
+            "--ignore-user-config",
+            "--ignore-rules",
+            "--strict-config",
+            "-c",
+            "suppress_unstable_features_warning=true",
+            "--enable",
+            "skip_host_skill_discovery",
+            "--disable",
+            "apps",
+            "--disable",
+            "browser_use",
+            "--disable",
+            "browser_use_external",
+            "--disable",
+            "browser_use_full_cdp_access",
+            "--disable",
+            "code_mode",
+            "--disable",
+            "code_mode_host",
+            "--disable",
+            "computer_use",
+            "--disable",
+            "enable_mcp_apps",
+            "--disable",
+            "hooks",
+            "--disable",
+            "image_generation",
+            "--disable",
+            "in_app_browser",
+            "--disable",
+            "multi_agent",
+            "--disable",
+            "multi_agent_v2",
+            "--disable",
+            "plugins",
+            "--disable",
+            "plugin_sharing",
+            "--disable",
+            "remote_plugin",
+            "--disable",
+            "shell_snapshot",
+            "--disable",
+            "shell_snapshot_v2",
+            "--disable",
+            "shell_tool",
+            "--disable",
+            "skill_mcp_dependency_install",
+            "--disable",
+            "skill_search",
+            "--disable",
+            "standalone_web_search",
+            "--disable",
+            "tool_call_mcp_elicitation",
+            "--disable",
+            "tool_suggest",
+            "--disable",
+            "unified_exec",
+            "--disable",
+            "view_image",
+            "--disable",
+            "workspace_dependencies",
+            "--skip-git-repo-check",
+            "--sandbox",
+            "read-only"
+          ],
+          "outer_sandbox": {
+            "executable": "/usr/bin/sandbox-exec",
+            "profile": "(version 1)(allow default)(deny process-exec)(allow process-exec (literal \"/opt/homebrew/lib/node_modules/@openai/codex/node_modules/@openai/codex-darwin-arm64/vendor/aarch64-apple-darwin/bin/codex\"))",
+            "profile_sha256": "22e27496952e8636b1f9b0f4fdddb6cf19c2954e3b1d45e3e5f78767de8190a0"
+          },
+          "residual_enabled_requested_disabled": [
+            "unified_exec"
+          ],
+          "web_search_cli_flag_present": false
+        },
+        "model": "gpt-5.6-sol",
+        "security_route_environment": {
+          "binding_sha256": "a7006c94756eda8b230e5fc7febd20c445dfa5a4b97fd0eb41463e80b6ca2fbe",
+          "variables": {
+            "ALL_PROXY": {
+              "present": true,
+              "value_sha256": "34a711ac67f0e009611cd2e922ffb4d1fd4df06b9311f9a9b1578876320a1541"
+            },
+            "ANTHROPIC_PROFILE": {
+              "present": false,
+              "value_sha256": null
+            },
+            "CLAUDE_CONFIG_DIR": {
+              "present": false,
+              "value_sha256": null
+            },
+            "CODEX_HOME": {
+              "present": false,
+              "value_sha256": null
+            },
+            "CURL_CA_BUNDLE": {
+              "present": false,
+              "value_sha256": null
+            },
+            "HOME": {
+              "present": true,
+              "value_sha256": "5d8552d4745873ad838deb5e0013e220db082cb5d6c4101b4e26f5761ac3ec3b"
+            },
+            "HTTPS_PROXY": {
+              "present": true,
+              "value_sha256": "813477bf51a0efb3b5926c3759f01d02cdf25cd70e6cfc7fa186d9d5e1e1d118"
+            },
+            "HTTP_PROXY": {
+              "present": true,
+              "value_sha256": "813477bf51a0efb3b5926c3759f01d02cdf25cd70e6cfc7fa186d9d5e1e1d118"
+            },
+            "NODE_EXTRA_CA_CERTS": {
+              "present": false,
+              "value_sha256": null
+            },
+            "NO_PROXY": {
+              "present": false,
+              "value_sha256": null
+            },
+            "OPENAI_CONFIG_HOME": {
+              "present": false,
+              "value_sha256": null
+            },
+            "OPENAI_PROFILE": {
+              "present": false,
+              "value_sha256": null
+            },
+            "REQUESTS_CA_BUNDLE": {
+              "present": false,
+              "value_sha256": null
+            },
+            "SSL_CERT_DIR": {
+              "present": false,
+              "value_sha256": null
+            },
+            "SSL_CERT_FILE": {
+              "present": false,
+              "value_sha256": null
+            },
+            "XDG_CONFIG_HOME": {
+              "present": false,
+              "value_sha256": null
+            },
+            "all_proxy": {
+              "present": true,
+              "value_sha256": "34a711ac67f0e009611cd2e922ffb4d1fd4df06b9311f9a9b1578876320a1541"
+            },
+            "http_proxy": {
+              "present": true,
+              "value_sha256": "813477bf51a0efb3b5926c3759f01d02cdf25cd70e6cfc7fa186d9d5e1e1d118"
+            },
+            "https_proxy": {
+              "present": true,
+              "value_sha256": "813477bf51a0efb3b5926c3759f01d02cdf25cd70e6cfc7fa186d9d5e1e1d118"
+            },
+            "no_proxy": {
+              "present": false,
+              "value_sha256": null
+            }
+          }
+        },
+        "system_instruction": {
+          "sha256": "8212f294e8082690ce0464d911465718f4339b4566720285a4d18709c74c02e4",
+          "value": "Follow the user task. Do not use tools. Return only the object required by the supplied output schema."
+        },
+        "vendor": "openai"
+      }
+    },
+    "providers": [
+      {
+        "cli": "claude",
+        "identity_requirement": "required_observed_alias",
+        "model": "claude-sonnet-4-6",
+        "vendor": "anthropic"
+      },
+      {
+        "cli": "codex",
+        "identity_requirement": "unavailable_allowed",
+        "model": "gpt-5.6-sol",
+        "vendor": "openai"
+      }
+    ],
+    "safety_policy": {
+      "model_identity": "Anthropic must report the requested model alias exactly or with a delimited version suffix; OpenAI may remain explicitly unverified when its CLI reports no identity. Malformed or conflicting identity evidence stops all later dispatches.",
+      "python_minimum": "3.10",
+      "secret_output": "discard raw response before journal persistence and stop dispatch",
+      "secret_scan_labels": [
+        "anthropic_key",
+        "openai_key",
+        "github_token",
+        "aws_access_key",
+        "private_key",
+        "named_api_key"
+      ]
+    },
+    "schemas": {
+      "artifact": {
+        "sha256": "ef043a27a8ce84d80bb543573e30b3045da956c99b5d57e2d27179f044650c64",
+        "value": {
+          "additionalProperties": false,
+          "properties": {
+            "checks": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "evidence": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "limitations": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "method": {
+              "type": "string"
+            },
+            "result": {
+              "type": "number"
+            },
+            "unit": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "result",
+            "unit",
+            "method",
+            "evidence",
+            "checks",
+            "limitations"
+          ],
+          "type": "object"
+        }
+      },
+      "audit": {
+        "sha256": "c350c2167d705f633c3d1423a0d978b8bc127b7b03dffd33ad01a3087cf25e03",
+        "value": {
+          "additionalProperties": false,
+          "properties": {
+            "checks_performed": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "confidence": {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            "findings": {
+              "items": {
+                "additionalProperties": false,
+                "properties": {
+                  "confidence": {
+                    "maximum": 1,
+                    "minimum": 0,
+                    "type": "number"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "location": {
+                    "enum": [
+                      "result",
+                      "unit",
+                      "evidence",
+                      "method",
+                      "checks",
+                      "limitations",
+                      "whole-artifact"
+                    ],
+                    "type": "string"
+                  },
+                  "rule_id": {
+                    "type": "string"
+                  },
+                  "severity": {
+                    "enum": [
+                      "BLOCKER",
+                      "ADVISORY"
+                    ],
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "severity",
+                  "rule_id",
+                  "location",
+                  "description",
+                  "confidence"
+                ],
+                "type": "object"
+              },
+              "type": "array"
+            },
+            "verdict": {
+              "enum": [
+                "PASS",
+                "BLOCK"
+              ],
+              "type": "string"
+            }
+          },
+          "required": [
+            "verdict",
+            "confidence",
+            "checks_performed",
+            "findings"
+          ],
+          "type": "object"
+        }
+      },
+      "code": {
+        "sha256": "c884aef6361644e2fda6b3f6646c78269bdd7573a14cae2f265079ed2fc77e58",
+        "value": {
+          "additionalProperties": false,
+          "properties": {
+            "checks": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "code": {
+              "type": "string"
+            },
+            "explanation": {
+              "type": "string"
+            },
+            "limitations": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          "required": [
+            "code",
+            "explanation",
+            "checks",
+            "limitations"
+          ],
+          "type": "object"
+        }
+      },
+      "ledger_review": {
+        "sha256": "c069fb91ba664d87aa0e6cbf6c2c441a8ff070b0b8c0031b4746e223dfd82324",
+        "value": {
+          "additionalProperties": false,
+          "properties": {
+            "accept": {
+              "type": "boolean"
+            },
+            "accept_probability": {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            "first_defective_round": {
+              "minimum": 0,
+              "type": [
+                "integer",
+                "null"
+              ]
+            },
+            "insufficient_evidence": {
+              "type": "boolean"
+            },
+            "origin_round": {
+              "minimum": 0,
+              "type": [
+                "integer",
+                "null"
+              ]
+            },
+            "rule_version": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "tamper_detected": {
+              "type": "boolean"
+            },
+            "tamper_probability": {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            }
+          },
+          "required": [
+            "accept",
+            "accept_probability",
+            "tamper_detected",
+            "tamper_probability",
+            "origin_round",
+            "first_defective_round",
+            "rule_version",
+            "insufficient_evidence"
+          ],
+          "type": "object"
+        }
+      }
+    },
+    "tasks": [
+      {
+        "alternate_result": 0.012,
+        "alternate_unit": "g",
+        "brief": "Measurements M-A=12.0 mg, M-B=15.0 mg and M-C=9.0 mg. Report the arithmetic mean, its unit, the source IDs used, and a concise method.",
+        "domain": "data-analysis",
+        "evidence": [
+          "M-A",
+          "M-B",
+          "M-C"
+        ],
+        "result": 12.0,
+        "task_id": "F-DATA-01",
+        "tolerance": 1e-09,
+        "unit": "mg"
+      },
+      {
+        "alternate_result": 0.15,
+        "alternate_unit": "fraction",
+        "brief": "A baseline value is S-0=250.0 counts and the final value is S-1=287.5 counts. Report the percentage increase, its unit, the source IDs used, and a concise method.",
+        "domain": "data-analysis",
+        "evidence": [
+          "S-0",
+          "S-1"
+        ],
+        "result": 15.0,
+        "task_id": "F-DATA-02",
+        "tolerance": 1e-09,
+        "unit": "%"
+      },
+      {
+        "alternate_result": 96485.0,
+        "alternate_unit": "J/mol",
+        "brief": "The energy in record E-1 is 1.000 eV per particle. Using 1 eV per particle = 96.485 kJ/mol, report the molar energy, its unit, the source ID and conversion constant used, and a concise method.",
+        "domain": "computational-science",
+        "evidence": [
+          "E-1",
+          "CONST-96.485"
+        ],
+        "result": 96.485,
+        "task_id": "F-SCI-01",
+        "tolerance": 1e-06,
+        "unit": "kJ/mol"
+      },
+      {
+        "alternate_result": 10.0,
+        "alternate_unit": "meV",
+        "brief": "A run records energies R-1=-10.000 eV, R-2=-10.300 eV and R-3=-10.310 eV. Convergence is defined as an absolute change below 0.020 eV between the final two records. Report the final absolute change, its unit, the two source IDs used, and a concise method.",
+        "domain": "scientific-method",
+        "evidence": [
+          "R-2",
+          "R-3"
+        ],
+        "result": 0.01,
+        "task_id": "F-METH-01",
+        "tolerance": 1e-09,
+        "unit": "eV"
+      },
+      {
+        "alternate_result": 200.0,
+        "alternate_unit": "y-unit per 100 x-unit",
+        "brief": "Observations are (x,y): P-0=(0,1), P-1=(2,5), P-2=(4,9). Report the slope of the exact straight line, its unit y-unit/x-unit, all source IDs used, and a concise method.",
+        "domain": "scientific-method",
+        "evidence": [
+          "P-0",
+          "P-1",
+          "P-2"
+        ],
+        "result": 2.0,
+        "task_id": "F-METH-02",
+        "tolerance": 1e-09,
+        "unit": "y-unit/x-unit"
+      },
+      {
+        "alternate_result": 0.025,
+        "alternate_unit": "nm^3/f.u.",
+        "brief": "Cell volume V-1 is 125.0 cubic angstrom and contains N-1=5 formula units. Report volume per formula unit, its unit, both source IDs used, and a concise method.",
+        "domain": "computational-science",
+        "evidence": [
+          "V-1",
+          "N-1"
+        ],
+        "result": 25.0,
+        "task_id": "F-SCI-02",
+        "tolerance": 1e-09,
+        "unit": "angstrom^3/f.u."
+      }
+    ]
+  },
+  "journal": "events.jsonl",
+  "pre_dispatch_freeze_anchor": {
+    "freeze_commit": "59bf55bbed71b21eb0fe18407c8dee346b4f062c",
+    "network_remote_tip_at_start": "59bf55bbed71b21eb0fe18407c8dee346b4f062c"
+  }
+}
