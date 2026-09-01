@@ -1002,10 +1002,13 @@ def test_runtime_binding_hashes_paths_bytes_and_route_without_plaintext(
 ) -> None:
     cli = tmp_path / "codex.js"
     native = tmp_path / "codex-native"
+    sandbox_exec = tmp_path / "sandbox-exec"
     cli.write_bytes(b"launcher-v1")
     native.write_bytes(b"native-v1")
+    sandbox_exec.write_bytes(b"sandbox-v1")
     monkeypatch.setattr(provider_module, "resolved_cli_path", lambda _: cli)
     monkeypatch.setattr(provider_module, "codex_native_binary", lambda _: native)
+    monkeypatch.setattr(provider_module, "CODEX_SANDBOX_EXEC", sandbox_exec)
     effective_features = {
         **{name: True for name in provider_module.CODEX_ENABLED_FEATURES},
         **{name: False for name in provider_module.CODEX_DISABLED_FEATURES},
@@ -1023,7 +1026,7 @@ def test_runtime_binding_hashes_paths_bytes_and_route_without_plaintext(
     assert binding["executables"]["cli"]["resolved_path"] == str(cli)
     assert binding["executables"]["cli"]["sha256"] == hashlib.sha256(b"launcher-v1").hexdigest()
     assert binding["executables"]["native"]["sha256"] == hashlib.sha256(b"native-v1").hexdigest()
-    assert binding["executables"]["sandbox_exec"]["resolved_path"] == "/usr/bin/sandbox-exec"
+    assert binding["executables"]["sandbox_exec"]["resolved_path"] == str(sandbox_exec)
     policy = binding["invocation_policy"]
     assert policy["effective_selected_features"] == dict(sorted(effective_features.items()))
     assert policy["residual_enabled_requested_disabled"] == ["unified_exec"]
