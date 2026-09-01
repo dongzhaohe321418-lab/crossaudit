@@ -539,6 +539,7 @@ def build_freeze_core(
     protocol_paths = [
         REPO_ROOT / "experiment/v4/FEASIBILITY-REGISTRATION.md",
         REPO_ROOT / "experiment/v4/FEASIBILITY-AMENDMENT-1.md",
+        REPO_ROOT / "experiment/v4/FEASIBILITY-AMENDMENT-2.md",
         Path(__file__).with_name("CANARY-RECEIPT.json"),
     ]
     missing_protocol = [str(path) for path in protocol_paths if not path.is_file()]
@@ -626,7 +627,9 @@ def build_freeze_core(
         "protocol_document_hashes": protocol_hashes,
         "failure_policy": (
             "Every scheduled provider call is retained. Provider, parse, timeout, interrupted, "
-            "upstream and budget failures score incorrect under intention-to-treat."
+            "upstream and budget failures score incorrect under intention-to-treat. A strictly "
+            "classified content-free websocket/TLS failure is a non-retried cell-level provider "
+            "error; unknown, malformed or action-bearing events stop all later dispatches."
         ),
         "safety_policy": {
             "python_minimum": "3.10",

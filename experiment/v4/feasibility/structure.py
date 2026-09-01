@@ -585,7 +585,10 @@ def validate_structure(events: list[dict[str, Any]], frozen_core: dict[str, Any]
         # the import lazy because the replay module imports runner helpers to
         # reconstruct prompts, costs, and deterministic outcomes.
         try:
-            from .semantics import validate_semantics
+            try:
+                from .semantics import validate_semantics
+            except ImportError:  # pragma: no cover - documented direct-script mode
+                from semantics import validate_semantics
 
             errors.extend(
                 f"semantic: {message}"

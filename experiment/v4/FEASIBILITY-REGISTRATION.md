@@ -9,9 +9,11 @@ endpoints, and cannot support a general vendor claim. The 120-task,
 human-adjudicated study remains unrun; the replacement six-task cohort described
 here is model-only, non-confirmatory feasibility work.
 
-The replacement cohort is additionally governed by
-[`FEASIBILITY-AMENDMENT-1.md`](FEASIBILITY-AMENDMENT-1.md); where it changes
-this document, the amendment controls.
+The replacement cohorts are additionally governed by
+[`FEASIBILITY-AMENDMENT-1.md`](FEASIBILITY-AMENDMENT-1.md) and
+[`FEASIBILITY-AMENDMENT-2.md`](FEASIBILITY-AMENDMENT-2.md); the later applicable
+amendment controls where it changes this document. No feasibility cohort is
+pooled with another.
 
 Before the original, subsequently aborted freeze, model calls were limited to
 content-free connectivity and isolation canaries. Earlier transient development

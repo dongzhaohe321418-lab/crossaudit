@@ -871,6 +871,7 @@ def test_freeze_and_call_plan_are_fail_closed() -> None:
     assert set(freeze["frozen"]["protocol_document_hashes"]) == {
         "experiment/v4/FEASIBILITY-REGISTRATION.md",
         "experiment/v4/FEASIBILITY-AMENDMENT-1.md",
+        "experiment/v4/FEASIBILITY-AMENDMENT-2.md",
         "experiment/v4/feasibility/CANARY-RECEIPT.json",
     }
     assert set(freeze["frozen"]["provider_runtime_bindings"]) == {
@@ -1357,6 +1358,107 @@ def test_codex_text_only_reasoning_and_agent_message_are_allowed(
     assert response["allowed_startup_notice_message_hashes"] == list(
         provider_module.CODEX_EXPECTED_STARTUP_NOTICE_MESSAGE_HASHES
     )
+
+
+def test_codex_tls_transport_failure_is_cell_level_and_dispatch_continues(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    stdout = "\n".join(json.dumps(event) for event in (
+        {"type": "thread.started", "thread_id": "transport-thread"},
+        {"type": "item.completed", "item": {
+            "id": provider_module.CODEX_CODE_MODE_FAIL_CLOSED_NOTICE_ITEM_ID,
+            "type": "error",
+            "message": provider_module.CODEX_CODE_MODE_FAIL_CLOSED_NOTICE,
+        }},
+        {"type": "turn.started"},
+        {"type": "error", "message": "stream unavailable"},
+        {"type": "item.completed", "item": {
+            "id": "transport-error", "type": "error", "message": "no response",
+        }},
+        {"type": "turn.completed", "usage": {
+            "input_tokens": 5, "output_tokens": 0,
+        }},
+    ))
+    stderr = (
+        "ERROR failed to connect to websocket: IO error: tls handshake eof, "
+        "url: wss://chatgpt.com/backend-api/codex/responses"
+    )
+    monkeypatch.setattr(
+        provider_module.subprocess, "run",
+        lambda *_args, **_kwargs: SimpleNamespace(
+            returncode=0, stdout=stdout, stderr=stderr,
+        ),
+    )
+    native = tmp_path / "codex-native"
+    native.write_bytes(b"")
+    monkeypatch.setattr(provider_module, "codex_native_binary", lambda _: native)
+    monkeypatch.setattr(provider_module.Path, "is_file", lambda self: True)
+    transport = provider_module.Provider("openai", "m", "codex")
+    later = FakeProvider("anthropic", "anthropic-safe-model")
+    journal = Journal(tmp_path / "transport.jsonl", "a" * 64)
+    calls = CallRunner(
+        journal, price_table(transport, later), cap=5, reserve=0.1, timeout=1,
+        provider_caps={"openai": 5, "anthropic": 5},
+    )
+
+    failed = calls.call(
+        call_id="transport", provider=transport, prompt=TASKS[0].brief,
+        schema=ARTIFACT_SCHEMA,
+        role="auditor", metadata={},
+    )
+    assert failed["status"] == "provider_error"
+    assert failed["response"]["transport_failure_evidence"] == {
+        "classification": "codex_websocket_tls_transport_failure",
+        "matched_stderr_marker_sha256": [hashlib.sha256(
+            provider_module.CODEX_TRANSPORT_STDERR_MARKERS[0].encode("utf-8")
+        ).hexdigest()],
+        "error_event_count": 2,
+        "automatic_retry": False,
+        "cohort_safety_stop": False,
+    }
+    assert failed["response"]["raw_envelope"]["discarded"] is True
+    assert calls.safety_stop_seen is False
+    continued = calls.call(
+        call_id="later", provider=later, prompt=TASKS[0].brief,
+        schema=ARTIFACT_SCHEMA,
+        role="auditor", metadata={},
+    )
+    assert continued["status"] == "valid"
+    assert continued["provider_invoked"] is True
+
+
+def test_codex_tls_marker_cannot_downgrade_an_action_event() -> None:
+    events = [
+        {"type": "thread.started", "thread_id": "t"},
+        {"type": "item.completed", "item": {
+            "id": provider_module.CODEX_CODE_MODE_FAIL_CLOSED_NOTICE_ITEM_ID,
+            "type": "error",
+            "message": provider_module.CODEX_CODE_MODE_FAIL_CLOSED_NOTICE,
+        }},
+        {"type": "turn.started"},
+        {"type": "item.completed", "item": {
+            "id": "danger", "type": "command_execution", "text": "x",
+        }},
+    ]
+    _, violations = provider_module.parse_codex_event_stream(
+        "\n".join(json.dumps(event) for event in events)
+    )
+    assert provider_module.codex_transport_failure_evidence(
+        events, violations, provider_module.CODEX_TRANSPORT_STDERR_MARKERS[0],
+    ) is None
+
+
+def test_direct_script_semantic_replay_import_path() -> None:
+    feasibility_dir = Path(__file__).resolve().parents[1] / "experiment/v4/feasibility"
+    proc = subprocess.run(
+        [sys.executable, "-c", (
+            "import structure; "
+            "r=structure.validate_structure([], {}); "
+            "assert not any('attempted relative import' in e for e in r['errors'])"
+        )],
+        cwd=feasibility_dir, capture_output=True, text=True, timeout=20,
+    )
+    assert proc.returncode == 0, proc.stderr
 
 
 def test_codex_exact_fail_closed_notice_is_rejected_after_content(

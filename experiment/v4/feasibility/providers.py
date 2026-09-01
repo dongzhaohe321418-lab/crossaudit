@@ -83,6 +83,9 @@ CODEX_EXPECTED_STARTUP_NOTICE_IDS = ("code_mode_host_disabled_fail_closed",)
 CODEX_EXPECTED_STARTUP_NOTICE_MESSAGE_HASHES = (
     hashlib.sha256(CODEX_CODE_MODE_FAIL_CLOSED_NOTICE.encode("utf-8")).hexdigest(),
 )
+CODEX_TRANSPORT_STDERR_MARKERS = (
+    "failed to connect to websocket: IO error: tls handshake eof",
+)
 NEUTRAL_SYSTEM_INSTRUCTION = (
     "Follow the user task. Do not use tools. Return only the object required by the "
     "supplied output schema."
@@ -349,6 +352,20 @@ def codex_invocation_policy(native: Path, model: str) -> dict[str, Any]:
                 "meaning": "disabled code-mode host is confirmed fail-closed",
             }],
             "unknown_or_other_error_event": "provider_event_policy_violation",
+            "transport_failure_downgrade": {
+                "status": "provider_error",
+                "raw_envelope": "discarded",
+                "automatic_retry": False,
+                "required_stderr_markers": list(CODEX_TRANSPORT_STDERR_MARKERS),
+                "required_event_shapes": [
+                    "top-level error",
+                    "item.completed/error",
+                ],
+                "forbidden_content": [
+                    "agent_message", "reasoning", "tool/action item",
+                    "malformed or unknown event",
+                ],
+            },
         },
     }
 
@@ -565,6 +582,62 @@ def parse_codex_event_stream(stdout: str) -> tuple[list[dict[str, Any]], list[di
     return events, violations
 
 
+def codex_transport_failure_evidence(
+    events: list[dict[str, Any]],
+    violations: list[dict[str, Any]],
+    stderr: str,
+) -> dict[str, Any] | None:
+    """Recognise a content-free Codex websocket/TLS failure.
+
+    This is deliberately narrower than the event parser. It permits a failed
+    call to remain a cell-level ITT provider error only when every violation is
+    an error-shaped event, the exact startup prefix was present, the stream has
+    no answer/reasoning/action item, and stderr contains a frozen transport
+    marker. Everything else remains a cohort-stopping policy violation.
+    """
+    matched_markers = [
+        marker for marker in CODEX_TRANSPORT_STDERR_MARKERS if marker in stderr
+    ]
+    if not violations or not matched_markers:
+        return None
+    allowed_signatures = {
+        ("event_type_not_allowlisted", "error", None),
+        ("item_type_not_allowlisted", "item.completed", "error"),
+    }
+    signatures = {
+        (row.get("reason"), row.get("event_type"), row.get("item_type"))
+        for row in violations
+    }
+    if not signatures.issubset(allowed_signatures):
+        return None
+    if any(row.get("line_number") is None for row in violations):
+        return None
+    if len(events) < 3 or [event.get("type") for event in events[:3]] != [
+        "thread.started", "item.completed", "turn.started",
+    ] or _codex_allowed_startup_notice_id(events[1]) is None:
+        return None
+    for event in events[3:]:
+        event_type = event.get("type")
+        if event_type == "error":
+            continue
+        if event_type == "item.completed" and isinstance(event.get("item"), dict) \
+                and event["item"].get("type") == "error":
+            continue
+        if event_type == "turn.completed":
+            continue
+        return None
+    return {
+        "classification": "codex_websocket_tls_transport_failure",
+        "matched_stderr_marker_sha256": [
+            hashlib.sha256(marker.encode("utf-8")).hexdigest()
+            for marker in matched_markers
+        ],
+        "error_event_count": len(violations),
+        "automatic_retry": False,
+        "cohort_safety_stop": False,
+    }
+
+
 @dataclass(frozen=True)
 class Provider:
     vendor: str
@@ -707,6 +780,30 @@ class Provider:
             None,
         )
         if event_policy_violations:
+            transport_evidence = codex_transport_failure_evidence(
+                events, event_policy_violations, proc.stderr,
+            )
+            if transport_evidence is not None:
+                return {
+                    "status": "provider_error",
+                    "exit_code": proc.returncode,
+                    "value": None,
+                    "usage": usage,
+                    "list_cost_usd": None,
+                    "models_observed": [],
+                    "model_identity_evidence": "requested_alias_only_unverified",
+                    "provider_request_id": thread_id,
+                    "transport_failure_evidence": transport_evidence,
+                    "discarded_raw_envelope_sha256": hashlib.sha256(
+                        proc.stdout.encode("utf-8")
+                    ).hexdigest(),
+                    "raw_envelope": {
+                        "discarded": True,
+                        "event_count": len(events),
+                        "reason": "strictly classified transport failure",
+                    },
+                    "stderr": proc.stderr[-4000:],
+                }
             return {
                 "status": "provider_event_policy_violation",
                 "exit_code": proc.returncode,
