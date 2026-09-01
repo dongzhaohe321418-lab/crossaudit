@@ -107,6 +107,33 @@ general cross-vendor or product claim. Read the
 [seven-point status contract](experiment/v4/SEVEN-POINT-COMPLETION.md). The
 registered 120-task, human-adjudicated confirmatory study remains unrun.
 
+### Sealed feasibility figures
+
+[![Configuration- and component-specific feasibility effects](paper/figures/figure5-v4-configuration-effects.png)](paper/figures/figure5-v4-configuration-effects.pdf)
+
+**Configuration and component effects.** The crossed C2/D0 cells retain both
+Generator–Auditor directions, while the DCL panels show that the observed D2
+gain is confined to natural outputs rather than the three controlled strata.
+Intervals are descriptive whole-task bootstrap intervals over six convenience
+tasks. [SVG](paper/figures/figure5-v4-configuration-effects.svg) ·
+[Source data](experiment/v4/figures/source-data.csv)
+
+[![Operational feasibility trade-offs](paper/figures/figure6-v4-operational-tradeoffs.png)](paper/figures/figure6-v4-operational-tradeoffs.pdf)
+
+**Operational trade-offs.** The hard gate repaired 2 of 9 initially wrong
+research-text sessions but consumed more calls, cost, and provider time;
+same- and cross-auditor whole-loop endpoints matched in this micro-cohort; and
+the structured ledger matched, rather than exceeded, the ordinary log on the
+primary proxy decisions. [SVG](paper/figures/figure6-v4-operational-tradeoffs.svg)
+· [Source data](experiment/v4/figures/source-data.csv)
+
+**Constitution exclusion.** Constitution contrasts are not plotted. The current
+feasibility scorer filters the C0/C1/C2 comparison to `repeat == 0`, whereas the
+registration states that C2 uses all three core repeats. Until that mismatch is
+resolved prospectively, the existing values are repeat-0 implementation
+diagnostics and cannot support a registered three-repeat Constitution-effect
+claim.
+
 ## Citing CrossAudit
 
 The protocol paper is [arXiv:2608.28631](https://arxiv.org/abs/2608.28631).

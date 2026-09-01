@@ -38,29 +38,47 @@ Before upload:
 The published v1 PDF has SHA-256
 `2283e0d3b00d7095852b641266d602d38afcc0e74ad0cc2ea3c84346837841cc`
 and is preserved at release tag `paper-v1.0.0`. The current replacement
-candidate is a different 22-page artefact: `paper/crossaudit-paper.pdf` has
-SHA-256 `8bf61ef2d248d2b35f7df6fe563093c2e89a5b027bb10a39bcac0973160016d1`
-and its source has SHA-256
-`a9c945aae48189b7bd4099b09949af9ceb0359a590a59aefab31f1fa121ca2ce`.
-`paper/HASHES.txt` binds those current candidate bytes. Do not replace or move
-the historical tag when uploading v2.
+candidate is a different 24-page artefact with six figures, four tables, and
+twenty-two references. Its PDF SHA-256 is
+`abf03342bdacf159b87cb31d134261c760bedb957fe68b969f4b874b85336afe`;
+the TeX source SHA-256 is
+`6f8767347eb665a998bc104fe2fd2a4e8dcc0bb0ba0f171582ddcf01b264e48b`.
+The Figure 5 and Figure 6 input-PDF digests are respectively
+`78bcc336947a1670f9fdaceeb5d96c0d0b9bafdcdfc6b05c6fc4ed9a4dd22d0d`
+and
+`c3bbb06461ae89c998f4d433a8bda25579f7b962042821d4450bb2c6dbe2d634`.
+`paper/HASHES.txt` binds those build inputs and the quantitative-figure
+provenance as one release set; regenerate it after any source, figure, or layout
+change. Do not replace or move the historical tag when uploading v2.
 
 ## What gets uploaded
 
-`crossaudit.tex` alone. The paper is fully self-contained: bibliography is an
-embedded `thebibliography`, every figure is TikZ drawn in-document, there are
-no `\input`/`\includegraphics` and no external assets. Re-verified 2026-08-03 by
-compiling the single file in an empty directory: two pdflatex passes, zero
-errors (TeX Live 2025; arXiv runs TeX Live, pdflatex path). The published v1 is
-19 pages; the current v2 candidate is **22 pages as of 2026-09-01**, after
-adding the sealed v4 feasibility results and Table~4. Re-count before submitting
-rather than trusting this line; a paper about self-description that
-misdescribes itself in its own metadata is an avoidable embarrassment.
+Upload one source bundle containing exactly these three build inputs, preserving
+the relative paths:
 
-No `.bbl`, no figures directory, no ancillary files needed. If arXiv's
-AutoTeX complains about anything, it will be package-environment drift; all
-packages used (mathptmx, helvet, microtype, xcolor, tikz, booktabs, array,
-enumitem, hyperref, caption) are standard TeX Live.
+```text
+crossaudit.tex
+figures/figure5-v4-configuration-effects.pdf
+figures/figure6-v4-operational-tradeoffs.pdf
+```
+
+The bibliography remains an embedded `thebibliography`; Figures 1--4 remain
+TikZ drawn in-document, while Figures 5--6 are Python-generated vector PDFs
+included with `\includegraphics`. The current bundle was re-verified in a clean
+temporary directory with two pdflatex passes and zero errors. The published v1
+is 19 pages; the current v2 candidate is **24 pages as of 2026-09-01**, after
+adding the sealed v4 feasibility results, Table~4, and Figures 5--6. Re-count
+from arXiv's own generated PDF before submitting rather than trusting this line;
+a paper about self-description that misdescribes itself in its own metadata is
+an avoidable embarrassment.
+
+No `.bbl`, PNG/SVG/TIFF previews, graphical-abstract exports, plotting scripts,
+QA overlays, or other ancillary files are needed for compilation. The two PDFs
+above are build inputs, not optional exports. If arXiv's current TeX processor
+complains, inspect its build log for package-environment or path drift. All
+packages used (geometry, amsmath, mathptmx, helvet, microtype, xcolor, graphicx,
+tikz, booktabs, array, enumitem, placeins, hyperref, caption) are standard TeX
+Live packages.
 
 ## Metadata for the submission form
 
@@ -68,7 +86,7 @@ enumitem, hyperref, caption) are standard TeX Live.
   Science
 - **Authors:** Zhaohe Dong (University of Cambridge), Yuhao Chen (University
   of Wisconsin–Madison)
-- **Comments:** 22 pages, 4 figures, 4 tables, 22 references. Reference
+- **Comments:** 24 pages, 6 figures, 4 tables, 22 references. Reference
   implementation, audit ledger, and experiment artefacts:
   https://github.com/dongzhaohe321418-lab/crossaudit
 - **Primary category:** cs.AI. Suggested cross-lists: cs.SE (the mechanism is
@@ -110,19 +128,21 @@ remains the committed, uncontrolled audits of this paper.
 
 1. arXiv account with an endorsed cs.AI submission path (institutional email
    usually suffices).
-2. Upload `paper/crossaudit.tex` as the replacement source; let AutoTeX build;
-   check the generated PDF is 22 pages and Figures 1–4 and Tables 1–4 render.
-   (Count from the AutoTeX build itself, not from this line: this file has now
-   twice carried a stale page count, which for this paper is not a forgivable
-   class of error.)
+2. Upload the three-file source bundle listed above as the replacement source,
+   keeping both PDFs under `figures/`; let arXiv build it and check that the
+   generated PDF is 24 pages and Figures 1--6 and Tables 1--4 all render.
+   (Count from arXiv's build itself, not from this line: this file has now twice
+   carried a stale page count, which for this paper is not a forgivable class of
+   error.)
 3. Paste the metadata above; submit before the 14:00 ET weekday cutoff to get
    the next announcement cycle.
 4. The identifier is assigned: `CITATION.cff` and both READMEs now cite
    `arXiv:2608.28631`. The repository About-field change remains an operator UI
    action if it has not already been made.
-5. Any later revision to `crossaudit.tex` that should reach arXiv is a
-   replacement (v2, v3, …): same single-file upload, and the ledger keeps the
-   mapping (commit ↔ arXiv version) honest in the commit message.
+5. Any later revision to the TeX or either included figure that should reach
+   arXiv is a replacement (v2, v3, …): upload the complete three-file build
+   bundle again, and keep the mapping (commit ↔ arXiv version) honest in the
+   ledger and commit message.
 
 ## What was deliberately not done
 

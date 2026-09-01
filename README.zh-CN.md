@@ -103,6 +103,29 @@ CrossAudit 是一套已在作者本人计算化学管线中每日运转的工作
 [七点状态契约](experiment/v4/SEVEN-POINT-COMPLETION.md)。注册的 120 任务、
 人类裁决确认性研究仍未运行。
 
+### 已封存的可行性结果图
+
+[![配置与组件层面的可行性效应](paper/figures/figure5-v4-configuration-effects.png)](paper/figures/figure5-v4-configuration-effects.pdf)
+
+**配置与组件效应。** C2/D0 的交叉设计保留生成者–审计者的两个方向；DCL
+分面进一步表明，观察到的 D2 增益仅来自自然输出，而非三个受控层。区间为基于
+六个便利任务整任务重采样得到的描述性 bootstrap 区间。
+[SVG](paper/figures/figure5-v4-configuration-effects.svg) ·
+[源数据](experiment/v4/figures/source-data.csv)
+
+[![运行可行性的收益与代价](paper/figures/figure6-v4-operational-tradeoffs.png)](paper/figures/figure6-v4-operational-tradeoffs.pdf)
+
+**运行权衡。** 硬门控修复了 9 个初始错误文本会话中的 2 个，但使用了更多调用、
+成本与供应商时间；同厂商与跨厂商审计在这个微型队列中的 whole-loop 终点相同；
+结构化账本在主要代理决策上与普通日志持平，并未超过普通日志。
+[SVG](paper/figures/figure6-v4-operational-tradeoffs.svg) ·
+[源数据](experiment/v4/figures/source-data.csv)
+
+**Constitution 排除说明。** 图中不展示 Constitution 对比。当前可行性评分器把
+C0/C1/C2 对比筛选为 `repeat == 0`，而注册文本规定 C2 使用全部三个核心重复。
+在这一口径冲突得到前瞻性解决之前，现有数值只能视为 repeat-0 实现诊断，不能
+据此宣称已得到注册口径下的三重复 Constitution 效应。
+
 ## 引用
 
 协议论文为 [arXiv:2608.28631](https://arxiv.org/abs/2608.28631)。已发布的 v1

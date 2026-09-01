@@ -1,6 +1,11 @@
-# Hash manifest for the paper artefacts at this revision.
-# 'Exact PDF' in section 4.5 means: the committed crossaudit-paper.pdf
-# matches these digests. Regenerate this file whenever either changes;
-# a release tag must never ship with a stale manifest.
-crossaudit.tex        sha256 a9c945aae48189b7bd4099b09949af9ceb0359a590a59aefab31f1fa121ca2ce
-crossaudit-paper.pdf  sha256 8bf61ef2d248d2b35f7df6fe563093c2e89a5b027bb10a39bcac0973160016d1
+# Hash manifest for the paper artefacts and quantitative-figure provenance at
+# this revision. 'Exact PDF' in section 4.5 means the committed paper and its
+# complete build inputs match these digests. Regenerate the manifest whenever
+# any listed file changes; a release tag must never ship with stale hashes.
+crossaudit.tex                                                        sha256 6f8767347eb665a998bc104fe2fd2a4e8dcc0bb0ba0f171582ddcf01b264e48b
+figures/figure5-v4-configuration-effects.pdf                         sha256 78bcc336947a1670f9fdaceeb5d96c0d0b9bafdcdfc6b05c6fc4ed9a4dd22d0d
+figures/figure6-v4-operational-tradeoffs.pdf                          sha256 c3bbb06461ae89c998f4d433a8bda25579f7b962042821d4450bb2c6dbe2d634
+crossaudit-paper.pdf                                                  sha256 abf03342bdacf159b87cb31d134261c760bedb957fe68b969f4b874b85336afe
+../experiment/v4/figures/plot_feasibility.py                          sha256 7b4c1a3b8c00b4557b36d02770d8609abd6603b97f544240675d8247a12d092e
+../experiment/v4/figures/source-data.csv                              sha256 5875ecb48c2fc5a45ed9337c97eb9f1b264f00e52288df076973bd3bfab1e548
+../experiment/v4/figures/qa/qa-summary.json                           sha256 c7fec32d52404d6bd9f598a114619ff9eeb7a6b28daa78f9e74c2b5ca1713ce2

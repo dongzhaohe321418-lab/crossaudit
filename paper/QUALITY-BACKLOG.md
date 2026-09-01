@@ -102,8 +102,9 @@
   镜像内姓名邮箱自查（清单在 SUBMISSION-PLAN §四）
 - ⏸ **D5. 官方 neurips_2026.sty 下载放入** `paper/submissions/neurips2026/`
   （沙盒下不了，你从 CFP 页下载，丢进目录即自动生效）
-- ⬜ **D6. arXiv 提交**：材料与逐步清单已备齐（`paper/ARXIV.md`——单文件
-  自包含已验证、表单元数据、1,894 字符压缩摘要、类目与许可建议）。
+- ⬜ **D6. arXiv 提交**：材料与逐步清单已备齐（`paper/ARXIV.md`——
+  `crossaudit.tex` 加两张外部矢量 PDF 的构建源包已做干净目录验证，并备有
+  表单元数据、正文摘要、类目与许可建议）。
   执行：**你上传**（账号 + 背书路径在你手里）；拿到 id 后 Claude 回填
   CITATION.cff 与双语 README 的引用行。
 

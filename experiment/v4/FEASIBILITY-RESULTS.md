@@ -97,10 +97,27 @@ are exactly where the shared deterministic checker is most consequential, so
 this result cannot be presented as an independent DCL efficacy estimate.
 
 The prospective C0/C1/C2 subset contained only `F-DATA-01` and `F-SCI-01`.
-C1-minus-C0 was zero on the recorded endpoints. C2-minus-C0 was -12.5 points
-for correct gating (-25 to 0) and +25 points for false blocking (0 to 50), with
-only two tasks. Those Constitution estimates are plumbing and measurement
-evidence, not a powered comparison and not coverage of the method domain.
+The machine summary reports a zero C1-minus-C0 contrast, a -12.5-point
+C2-minus-C0 correct-gate contrast (-25 to 0), and a +25-point false-block
+contrast (0 to 50). However, the feasibility scorer restricts this comparison
+to `repeat == 0`, whereas the registration states that C2 uses the three core
+repeats. Those outputs are therefore retained only as repeat-0 implementation
+diagnostics. They are excluded from the figure below and must not be described
+as registered three-repeat Constitution effects. The discrepancy must be
+resolved prospectively before a Constitution-effect analysis is interpreted.
+
+[![Figure 5: configuration and component effects](../../paper/figures/figure5-v4-configuration-effects.png)](../../paper/figures/figure5-v4-configuration-effects.pdf)
+
+**Figure 5 | Configuration- and component-specific feasibility effects.**
+Panels a and b preserve the four C2/D0 Generator–Auditor directions and their
+task-clustered pairing contrasts. Panels c and d isolate the DCL comparisons
+and show that the D2-minus-D0 gain is confined to natural outputs; the three
+controlled strata do not change. Error bars are descriptive 95% whole-task
+bootstrap intervals over six deterministic convenience tasks. D1 is a harness
+ceiling because the same checker defines the micro-task gold. Constitution
+contrasts are intentionally absent because of the repeat-0 versus registered
+three-repeat inconsistency above. [Vector figure](../../paper/figures/figure5-v4-configuration-effects.svg)
+and [source data](figures/source-data.csv) are available alongside the PDF.
 
 ### 3. Defensive production and Goodhart proxies
 
@@ -207,6 +224,20 @@ This verifies the feasibility integrity path, not the registered confirmatory
 one. The 120/180-task power design, opaque arm custody through
 `PRIMARY-LOCK.json`, human panel reliability, registered mixed-model/IPW
 sensitivities, and blinded nuisance-only sample-size procedure remain unrun.
+
+[![Figure 6: operational trade-offs](../../paper/figures/figure6-v4-operational-tradeoffs.png)](../../paper/figures/figure6-v4-operational-tradeoffs.pdf)
+
+**Figure 6 | Operational gains, costs, and unresolved boundaries.** Panel a
+shows the bounded P2 repair gain for research-text sessions; panel b shows its
+additional calls, cost, and provider time. Panel c keeps repair, final
+acceptability, new-defect, and unnecessary-change outcomes distinct despite
+matching same- and cross-auditor rates. Panel d shows that both richer history
+surfaces improve on final-only review, while the structured ledger does not
+outperform the ordinary log on the primary proxy decisions. These are
+configuration-specific feasibility measurements: the policy and whole-loop
+endpoints cluster over at most six tasks, ledger endpoints over seven fixed
+episodes, and proxy reviewers are not human participants. [Vector figure](../../paper/figures/figure6-v4-operational-tradeoffs.svg)
+and [source data](figures/source-data.csv) are available alongside the PDF.
 
 ## Completion classification
 

@@ -29,18 +29,53 @@ jobs:
           sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
             texlive-latex-base texlive-latex-recommended texlive-latex-extra \
             texlive-fonts-recommended texlive-pictures
-      - name: Compile twice
-        working-directory: paper
+      - name: Build and verify the arXiv source bundle
         run: |
-          pdflatex -interaction=nonstopmode crossaudit.tex > /dev/null
-          pdflatex -interaction=nonstopmode crossaudit.tex > /dev/null
-      - name: Assert zero LaTeX errors
-        working-directory: paper
-        run: |
-          if grep -qE '^!' crossaudit.log; then
-            echo "LaTeX reported errors:"; grep -nE '^!' -A3 crossaudit.log; exit 1
+          set -euo pipefail
+
+          paper_build_dir=$(mktemp -d)
+          mkdir -p "$paper_build_dir/figures"
+          cp paper/crossaudit.tex "$paper_build_dir/crossaudit.tex"
+          cp paper/figures/figure5-v4-configuration-effects.pdf \
+            "$paper_build_dir/figures/figure5-v4-configuration-effects.pdf"
+          cp paper/figures/figure6-v4-operational-tradeoffs.pdf \
+            "$paper_build_dir/figures/figure6-v4-operational-tradeoffs.pdf"
+
+          for pass in 1 2; do
+            if ! (
+              cd "$paper_build_dir"
+              pdflatex -halt-on-error -interaction=nonstopmode crossaudit.tex \
+                > "pdflatex-pass-${pass}.txt"
+            ); then
+              echo "pdflatex pass ${pass} failed; final output follows:"
+              tail -n 100 "$paper_build_dir/pdflatex-pass-${pass}.txt"
+              exit 1
+            fi
+          done
+
+          if grep -qE '^!' "$paper_build_dir/crossaudit.log"; then
+            echo "LaTeX reported errors:"
+            grep -nE '^!' -A3 "$paper_build_dir/crossaudit.log"
+            exit 1
           fi
-          grep -oE 'Output written on .*\([0-9]+ pages' crossaudit.log || true
+          if grep -q 'There were undefined references' "$paper_build_dir/crossaudit.log"; then
+            echo "LaTeX left undefined references after two passes."
+            exit 1
+          fi
+
+          pages=$(sed -nE 's/.*\(([0-9]+) pages,.*/\1/p' \
+            "$paper_build_dir/crossaudit.log" | tail -n 1)
+          figures=$(grep -cF '\@writefile{lof}{\contentsline {figure}' \
+            "$paper_build_dir/crossaudit.aux")
+          tables=$(grep -cF '\@writefile{lot}{\contentsline {table}' \
+            "$paper_build_dir/crossaudit.aux")
+          references=$(grep -cF '\bibitem{' "$paper_build_dir/crossaudit.tex")
+
+          echo "paper inventory: ${pages} pages, ${figures} figures, ${tables} tables, ${references} references"
+          test "$pages" -eq 24
+          test "$figures" -eq 6
+          test "$tables" -eq 4
+          test "$references" -eq 22
       - name: Assert the em-dash freeze
         run: |
           n=$(grep -c ' --- ' paper/crossaudit.tex)
