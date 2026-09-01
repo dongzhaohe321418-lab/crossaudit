@@ -12,6 +12,9 @@ dist/
 /checks.json
 **/checks.json
 
+# Stable OS lock used by the v4 feasibility runner; it contains no study data.
+**/.crossaudit-feasibility.lock
+
 # LaTeX build products — scoped to paper dirs so that *.log fixtures under
 # experiment/v3/partC/fixtures/ stay tracked.
 # crossaudit.pdf is the raw pdflatex output of crossaudit.tex; the tracked

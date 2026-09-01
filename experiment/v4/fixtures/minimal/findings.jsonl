@@ -1,0 +1,5 @@
+{"schema_version":"4.0","finding_id":"F-FP","audit_run_id":"R-C-A-B-0","severity":"BLOCKER","origin":"model","rule":"CA-X-001","location":"clean:1","status":"alleged","confidence":0.9,"blocked_scope":true}
+{"schema_version":"4.0","finding_id":"F-DAB0","audit_run_id":"R-D-A-B-0","severity":"BLOCKER","origin":"model","rule":"CA-X-001","location":"report:1","status":"alleged","confidence":0.9,"blocked_scope":true}
+{"schema_version":"4.0","finding_id":"F-DAB1","audit_run_id":"R-D-A-B-1","severity":"BLOCKER","origin":"model","rule":"CA-X-001","location":"report:1","status":"alleged","confidence":0.8,"blocked_scope":true}
+{"schema_version":"4.0","finding_id":"F-DBA0","audit_run_id":"R-D-B-A-0","severity":"BLOCKER","origin":"model","rule":"CA-X-001","location":"report:1","status":"alleged","confidence":0.75,"blocked_scope":true}
+{"schema_version":"4.0","finding_id":"F-DBB0","audit_run_id":"R-D-B-B-0","severity":"BLOCKER","origin":"model","rule":"CA-X-001","location":"report:1","status":"alleged","confidence":0.7,"blocked_scope":true}

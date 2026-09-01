@@ -1,0 +1,3 @@
+{"schema_version":"4.0","change_id":"CH-P0","revision_id":"REV-P0","label":"compliance_only","added_words":10,"deleted_words":0,"added_loc":2,"deleted_loc":0,"files_touched":1}
+{"schema_version":"4.0","change_id":"CH-P2-Q","revision_id":"REV-P2","label":"functional_improvement","added_words":20,"deleted_words":5,"added_loc":5,"deleted_loc":1,"files_touched":1}
+{"schema_version":"4.0","change_id":"CH-P2-C","revision_id":"REV-P2","label":"defensive_disclaimer","added_words":10,"deleted_words":0,"added_loc":1,"deleted_loc":0,"files_touched":1}

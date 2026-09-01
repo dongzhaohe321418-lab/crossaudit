@@ -1,0 +1,9 @@
+{"schema_version":"4.0","assignment_id":"LA-1","reviewer_id":"J1","session_id":"LS-J1","episode_id":"EP1","surface":"E0","attack_class":"stale_receipt","period":1,"order_seed":7}
+{"schema_version":"4.0","assignment_id":"LA-2","reviewer_id":"J1","session_id":"LS-J1","episode_id":"EP2","surface":"E1","attack_class":null,"period":2,"order_seed":7}
+{"schema_version":"4.0","assignment_id":"LA-3","reviewer_id":"J1","session_id":"LS-J1","episode_id":"EP3","surface":"E2","attack_class":"wrong_commit","period":3,"order_seed":7}
+{"schema_version":"4.0","assignment_id":"LA-4","reviewer_id":"J2","session_id":"LS-J2","episode_id":"EP1","surface":"E1","attack_class":"stale_receipt","period":1,"order_seed":8}
+{"schema_version":"4.0","assignment_id":"LA-5","reviewer_id":"J2","session_id":"LS-J2","episode_id":"EP2","surface":"E2","attack_class":null,"period":2,"order_seed":8}
+{"schema_version":"4.0","assignment_id":"LA-6","reviewer_id":"J2","session_id":"LS-J2","episode_id":"EP3","surface":"E0","attack_class":"wrong_commit","period":3,"order_seed":8}
+{"schema_version":"4.0","assignment_id":"LA-7","reviewer_id":"J3","session_id":"LS-J3","episode_id":"EP1","surface":"E2","attack_class":"stale_receipt","period":1,"order_seed":9}
+{"schema_version":"4.0","assignment_id":"LA-8","reviewer_id":"J3","session_id":"LS-J3","episode_id":"EP2","surface":"E0","attack_class":null,"period":2,"order_seed":9}
+{"schema_version":"4.0","assignment_id":"LA-9","reviewer_id":"J3","session_id":"LS-J3","episode_id":"EP3","surface":"E1","attack_class":"wrong_commit","period":3,"order_seed":9}

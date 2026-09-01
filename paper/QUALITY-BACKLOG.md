@@ -16,12 +16,14 @@
   （`check_corpus.py`）。干净集实测两个独立样本各 20 个增量：
   **有效报警 0/40**（CI [0%, 8.8%]），**引用未下发规则 3/40**（CI [1.6%, 20.4%]）。
   OpenAI 半边预检待你在 runner 上跑（`v3-preflight.yml`），沙箱不通该域名。
-- ✅ **A2. 真实部署数据写进 §4.2** —— 已挖掘完毕（`experiment/v3/real-ledger/`）：
+- ✅ **A2. 真实部署数据写进 §4.2** —— 已挖掘并写入（`experiment/v3/real-ledger/`）：
   7 周期、裁定 BLOCK×5→PASS_WITH_CAVEATS→PASS、发现数 7-4-3-2-1-1-0、
-  12/14 行为确认。§4.2 目前只有定性描述，应加这组数字 + 反事实一句：
-  "没有这条环，12 条已确认缺陷将无阻碍下行"。执行：Claude，随时可做。
-- ⬜ **A3. v3 跑完后改写 §4.3 定位** —— 把"本试验测分歧、不测判别力"的
-  告诫升级为"v3 测了判别力"；梯度图成为主证据图。执行：Claude，依赖 A1。
+  12/14 行为确认。只报告可观察事实：这些发现均在其所门禁的下游动作之前关闭；
+  该部署没有控制条件，因此不再加入“没有这条环就会全部下行”的反事实。
+- ⬜ **A3. successor study 跑完后按冻结结果改写 §4.4 定位** —— 只有完整执行、
+  盲评和预注册分析完成后，才以 v4 的配置级效应、误拦、净修复与成本替换旧 pilot
+  的主证据位置。零结果、方向相反结果和不确定区间同样照报；不得预先写成“测了判别力”
+  或暗示 cross-vendor 获胜。执行：Claude，依赖 A6 的全部结果门槛。
 - ⬜ **A4. （第四轮审计 EIC 建议）以 audits/ 自审链为实证重心** ——
   合成试验降级为可行性附录。决策点在你：主论文改不改由你定；
   workshop 两版按各自 CFP 口味取舍（Academia 版建议采纳）。
@@ -31,6 +33,21 @@
   ground truth 来自密封的变异日志；测量目标 = 逃过全部确定性工具、
   仅评审可捕获的语义 bug 份额（"歧义"的量化）。阻塞同 A1（keys+托管）。
   预注册方向性假设：隔离效应在代码上大于数据。
+
+- 🔒 **A6. CrossAudit v4 Causal Successor Study** —— 2026-09-01 已注册，尚未运行，
+  且本次论文修订前没有查看任何 v4 结果。权威设计为 `experiment/v4/REGISTRATION.md`，
+  统计分析、功效与停止规则分别由同目录的 `SAP.md`、`POWER.md`、
+  `STOPPING-RULES.md` 冻结。七条承诺逐项进入同一研究计划：
+  1. 实际模型产物上的 Generator×Auditor crossed assignment，只作配置级因果估计；
+  2. DCL、领域工具、规则、门禁和有界修订分别消融，不用一个 recall 代替全部作用；
+  3. broad 与 corpus-scoped Constitution 的精确度对照；
+  4. no-audit / shadow / hard-gate 的纵向防御性编程与 Goodhart 测量；
+  5. seeded、自然发生、clean、ambiguous-but-not-wrong 四类材料；
+  6. 初始产物→审核→修订→复审→最终产物的净修复与新缺陷分析；
+  7. final-only / ordinary log / CrossAudit ledger 的第三方重建与篡改检出实验。
+  全部比较以 task/increment 为独立单位，重复调用，盲法裁定，同时报告 recall、precision、
+  clean false-block、净修复、输出膨胀、人工时间、成本和延迟。注册与 harness 只是设计证据，
+  不得写成 cross-vendor、某项消融或 hard gate 已经有效。执行受冻结检查、凭据与盲评门槛约束。
 
 ## B. 图与表
 

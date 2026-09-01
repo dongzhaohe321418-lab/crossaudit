@@ -1,0 +1,181 @@
+{
+  "adapter_source": "experiment/v4/feasibility/providers.py",
+  "adapter_source_sha256": "6f721929413c90e555574235abb2cae16b79caaf13f1c5911bc05f88f0aaffd3",
+  "claim_boundary": "not cohort data and not evidence about audit efficacy",
+  "executed_utc": "2026-09-01T04:08:52+00:00",
+  "format_version": "v4-feasibility-canary-2",
+  "invocation": "Provider.call(prompt=<prompt_sha256>, schema=<schema_sha256>, role=isolation canary, timeout=300)",
+  "prompt_sha256": "f968dae03c42036abeca457224b097197797e232e30c7fde7791f370513011f4",
+  "providers": [
+    {
+      "cli": "claude",
+      "cli_version": {
+        "exit_code": 0,
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdout": "2.1.252 (Claude Code)"
+      },
+      "command_controls": [
+        "resolved-cli",
+        "safe-mode",
+        "restricted",
+        "tools-empty",
+        "strict-empty-mcp",
+        "stdin-prompt",
+        "no-session-persistence",
+        "json-schema",
+        "per-call-usd-cap-1"
+      ],
+      "elapsed_seconds": 4.859,
+      "exit_code": 0,
+      "list_cost_usd": 0.004351,
+      "model_identity_evidence": "provider_usage_metadata",
+      "model_usage_summary": {
+        "claude-haiku-4-5-20251001": {
+          "cost_usd": 0.0009729999999999999,
+          "input_tokens": 908,
+          "output_tokens": 13
+        },
+        "claude-sonnet-4-6": {
+          "cost_usd": 0.003378,
+          "input_tokens": 856,
+          "output_tokens": 54
+        }
+      },
+      "models_observed": [
+        "claude-haiku-4-5-20251001",
+        "claude-sonnet-4-6"
+      ],
+      "prompt_sha256": "f968dae03c42036abeca457224b097197797e232e30c7fde7791f370513011f4",
+      "provider_request_id_sha256": "318b2ce6c57f70056113595e24c800d6718171669e4825477ee982e8ba9f4dcc",
+      "raw_envelope_bytes": 2024,
+      "raw_envelope_sha256": "40bf08e7f445829543011cff33b22f937cfa61cce302316adaa4c7ac1b31c017",
+      "requested_model": "claude-sonnet-4-6",
+      "runtime_binding": {
+        "executables": {
+          "cli": {
+            "requested": "claude",
+            "resolved_path": "/Users/ericdong/.local/share/claude/versions/2.1.252",
+            "sha256": "b661c6a094fcc32656bf7c0071c5b45bf900b34d4f0a1ab3d78fd59aeba2c2c7",
+            "size_bytes": 197220928
+          }
+        },
+        "security_route_environment_binding_sha256": "a7006c94756eda8b230e5fc7febd20c445dfa5a4b97fd0eb41463e80b6ca2fbe"
+      },
+      "runtime_binding_stable_during_call": true,
+      "schema_sha256": "4528a3c79c4aaee242a31e586366657f8e9a3f11cc8d2cb040d9bf61ab1bbb63",
+      "secret_scan": {
+        "hits": {},
+        "patterns": [
+          "anthropic_key",
+          "openai_key",
+          "github_token",
+          "aws_access_key",
+          "private_key",
+          "named_api_key"
+        ]
+      },
+      "server_tool_use": {
+        "web_fetch_requests": 0,
+        "web_search_requests": 0
+      },
+      "status": "valid",
+      "unexpected_tool_event_count": 0,
+      "usage": {
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "input_tokens": 856,
+        "output_tokens": 54,
+        "thinking_tokens": 0
+      },
+      "value": {
+        "ok": true
+      },
+      "vendor": "anthropic"
+    },
+    {
+      "cli": "codex",
+      "cli_version": {
+        "exit_code": 0,
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdout": "codex-cli 0.151.0"
+      },
+      "command_controls": [
+        "resolved-native-binary",
+        "macos-deny-subsequent-process-exec",
+        "ephemeral",
+        "ignore-user-config",
+        "ignore-rules",
+        "read-only",
+        "stdin-prompt",
+        "json-schema"
+      ],
+      "elapsed_seconds": 9.846,
+      "exit_code": 0,
+      "list_cost_usd": null,
+      "model_identity_evidence": "requested_alias_only_unverified",
+      "models_observed": [],
+      "prompt_sha256": "f968dae03c42036abeca457224b097197797e232e30c7fde7791f370513011f4",
+      "provider_request_id_sha256": "12012ace0bc57a137a0def2abafb8fe9ccb41527fa13eec61c3c003946095eca",
+      "raw_envelope_bytes": 632,
+      "raw_envelope_sha256": "7eecca50e796632846f5f5a925069b13faf34bf29e30bbe09a5e6f95e7730edc",
+      "requested_model": "gpt-5.6-sol",
+      "runtime_binding": {
+        "executables": {
+          "cli": {
+            "requested": "codex",
+            "resolved_path": "/opt/homebrew/lib/node_modules/@openai/codex/bin/codex.js",
+            "sha256": "134063e133f0b4244fa3b251acf973d4fe4b4aeeacbdc135211bf480f59f1477",
+            "size_bytes": 7236
+          },
+          "native": {
+            "resolved_path": "/opt/homebrew/lib/node_modules/@openai/codex/node_modules/@openai/codex-darwin-arm64/vendor/aarch64-apple-darwin/bin/codex",
+            "sha256": "98491713ffb196061003ee148636e743997cc31d76144ba7c53462269896891d",
+            "size_bytes": 231563824
+          }
+        },
+        "security_route_environment_binding_sha256": "a7006c94756eda8b230e5fc7febd20c445dfa5a4b97fd0eb41463e80b6ca2fbe"
+      },
+      "runtime_binding_stable_during_call": true,
+      "schema_sha256": "4528a3c79c4aaee242a31e586366657f8e9a3f11cc8d2cb040d9bf61ab1bbb63",
+      "secret_scan": {
+        "hits": {},
+        "patterns": [
+          "anthropic_key",
+          "openai_key",
+          "github_token",
+          "aws_access_key",
+          "private_key",
+          "named_api_key"
+        ]
+      },
+      "server_tool_use": null,
+      "status": "valid",
+      "unexpected_tool_event_count": 0,
+      "usage": {
+        "cache_write_input_tokens": 0,
+        "cached_input_tokens": 0,
+        "input_tokens": 18988,
+        "output_tokens": 15,
+        "reasoning_output_tokens": 0
+      },
+      "value": {
+        "ok": true
+      },
+      "vendor": "openai"
+    }
+  ],
+  "purpose": "content-free final pre-freeze connectivity, schema, identity-evidence, runtime-binding and no-tool isolation recheck",
+  "schema": {
+    "additionalProperties": false,
+    "properties": {
+      "ok": {
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "ok"
+    ],
+    "type": "object"
+  },
+  "schema_sha256": "4528a3c79c4aaee242a31e586366657f8e9a3f11cc8d2cb040d9bf61ab1bbb63"
+}
