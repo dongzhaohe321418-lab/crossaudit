@@ -1,0 +1,16 @@
+{
+  "claim_boundary": "execution-feasibility; non-confirmatory; no vendor-population claim",
+  "completed_call_count": 472,
+  "created_utc": "2026-09-01T07:02:55+00:00",
+  "event_count": 2009,
+  "final_event_sha256": "74d42e499419ef8e1f8b86a234b659da5aa8a31b3a010b711212c4b03b969ea1",
+  "format_version": "v4-feasibility-outcome-free-seal-1",
+  "freeze_sha256": "01eb4a5c6318dd445a79f9bc9d0743955abe74d50d1b0f9c93fd4279b29e0f52",
+  "journal_bytes_sha256": "bfa0ded876cb649f7ab616060a3e76c9d32710ee84192cee7c3a3713d04f4c11",
+  "manifest_bytes_sha256": "4c02f729267029411816455c319056f0f85e123add4f87d719ccc621b3c14363",
+  "next_required_step": "Commit and push this seal with the exact manifest and journal to the network upstream before invoking score.py without --seal-only.",
+  "scheduled_call_count": 472,
+  "seal_sha256": "2c84ee4225f46115018be067cb8bbf501b192729062450c9237f9a69fe9ee060",
+  "structural_semantic_integrity_valid": true,
+  "summary_absent_at_creation": true
+}
