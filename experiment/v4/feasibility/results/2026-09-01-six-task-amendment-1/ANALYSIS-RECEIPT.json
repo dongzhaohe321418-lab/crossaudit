@@ -1,0 +1,16 @@
+{
+  "claim_boundary": "execution-feasibility; non-confirmatory; no vendor-population claim",
+  "cohort_seal_bytes_sha256": "2c437290ce53daa9e5dd6fad9761bfd7cce06e6731ee1ff1f520a97735790c44",
+  "created_utc": "2026-09-01T07:04:15+00:00",
+  "format_version": "v4-feasibility-analysis-receipt-1",
+  "freeze_sha256": "01eb4a5c6318dd445a79f9bc9d0743955abe74d50d1b0f9c93fd4279b29e0f52",
+  "network_remote_tip_at_analysis": "66fc51ae61cbb6223e019313d1d75bd17151a186",
+  "note": "Scientific analysis was generated only after the outcome-free cohort seal, manifest and journal were verified on the network upstream.",
+  "pre_analysis_freeze_commit": "45896d9523dda73ce7e34c6782f9cc42e3677af4",
+  "pre_analysis_seal_commit": "66fc51ae61cbb6223e019313d1d75bd17151a186",
+  "pre_dispatch_network_tip": "45896d9523dda73ce7e34c6782f9cc42e3677af4",
+  "receipt_sha256": "8a0786fc9742a4c36b194663b33b583b600b9c641fcb35d34bb2183bd088c195",
+  "schedule_finished": true,
+  "scientific_outputs_withheld": false,
+  "summary_bytes_sha256": "3471d390c9538da1e17c03d514dc57efeeb310ff0153d091a1e2f21f9d3e7134"
+}
