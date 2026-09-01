@@ -103,6 +103,13 @@ CrossAudit 是一套已在作者本人计算化学管线中每日运转的工作
 [七点状态契约](experiment/v4/SEVEN-POINT-COMPLETION.md)。注册的 120 任务、
 人类裁决确认性研究仍未运行。
 
+新的前瞻性 [v5 顶会确认性研究包](experiment/v5/) 没有在可行性结果产生后改写
+v4 注册，而是保留历史并另起设计：150--180 个独立任务、三家供应商、六个固定
+模型快照、完整 3x3 主矩阵、同厂不同模型对照、人类盲审 gold、C0/C1/C2 等量
+三重复、通用 VxV 整任务估计器，以及默认拒绝派发的冻结预检。中心场景 10,000
+次规划仿真在名义 8 个百分点情形下得到 99.65% 联合功效和 94.87% 区间覆盖率。
+压力场景与正式 bootstrap-t 校准仍是阻塞项；这不是已完成实验，也不是花费授权。
+
 ### 已封存的可行性结果图
 
 [![配置与组件层面的可行性效应](paper/figures/figure5-v4-configuration-effects.png)](paper/figures/figure5-v4-configuration-effects.pdf)
@@ -129,8 +136,10 @@ C0/C1/C2 对比筛选为 `repeat == 0`，而注册文本规定 C2 使用全部�
 ## 引用
 
 协议论文为 [arXiv:2608.28631](https://arxiv.org/abs/2608.28631)。已发布的 v1
-源码保存在 tag `paper-v1.0.0`；当前 `paper/` 与 `paper/HASHES.txt` 绑定的是
-加入已封存 v4 可行性结果的替换候选稿。引用元数据见 [`CITATION.cff`](CITATION.cff)。
+源码保存在 tag `paper-v1.0.0`。当前完整候选稿把供应商异质性重述为待检验的因果
+假设并加入 v5 设计；紧凑匿名的顶会 pre-results 稿位于
+[`paper/submissions/topconf2027/`](paper/submissions/topconf2027/)。二者都不是
+arXiv 记录的新发布版本；当前已发布版本的引用元数据见 [`CITATION.cff`](CITATION.cff)。
 
 ## 许可证
 

@@ -72,10 +72,24 @@ jobs:
           references=$(grep -cF '\bibitem{' "$paper_build_dir/crossaudit.tex")
 
           echo "paper inventory: ${pages} pages, ${figures} figures, ${tables} tables, ${references} references"
-          test "$pages" -eq 24
+          test "$pages" -eq 25
           test "$figures" -eq 6
-          test "$tables" -eq 4
+          test "$tables" -eq 5
           test "$references" -eq 22
+      - name: Build the anonymous top-conference pre-results manuscript
+        run: |
+          set -euo pipefail
+          cd paper/submissions/topconf2027
+          for pass in 1 2; do
+            pdflatex -halt-on-error -interaction=nonstopmode crossaudit-topconf.tex \
+              > "pdflatex-pass-${pass}.txt"
+          done
+          ! grep -qE '^!' crossaudit-topconf.log
+          ! grep -q 'There were undefined references' crossaudit-topconf.log
+          pages=$(sed -nE 's/.*\(([0-9]+) pages,.*/\1/p' \
+            crossaudit-topconf.log | tail -n 1)
+          echo "top-conference pre-results inventory: ${pages} pages"
+          test "$pages" -eq 6
       - name: Assert the em-dash freeze
         run: |
           n=$(grep -c ' --- ' paper/crossaudit.tex)

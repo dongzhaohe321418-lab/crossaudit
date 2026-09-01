@@ -154,6 +154,83 @@ def factorial_2x2_contrast(rows: list[dict[str, Any]], outcome: str,
     return report
 
 
+def factorial_v_by_v_contrast(rows: list[dict[str, Any]], outcome: str,
+                              generator_vendors: list[str],
+                              auditor_vendors: list[str], *, draws: int,
+                              seed: int, allow_incomplete: bool = False,
+                              compute_signflip: bool = True) -> dict[str, Any]:
+    """Cross-vendor minus matched-vendor contrast for a complete V x V panel.
+
+    Each task must contribute one already-collapsed row for every generator x
+    auditor vendor cell.  The diagonal is the matched-vendor reference and the
+    off-diagonal cells are averaged within generator before generators are
+    averaged.  That two-stage weighting prevents a vendor with more represented
+    auditor directions from silently dominating the estimand.
+
+    The function is deliberately separate from :func:`factorial_2x2_contrast`:
+    the frozen v4 two-vendor estimator remains byte-for-byte interpretable,
+    while prospective studies can support three or more included vendors.
+    """
+    generators = list(dict.fromkeys(generator_vendors))
+    auditors = list(dict.fromkeys(auditor_vendors))
+    if len(generators) < 2 or set(generators) != set(auditors):
+        raise ValueError(
+            "VxV cross-vendor contrast requires the same >=2 distinct vendor labels")
+    if len(generators) != len(generator_vendors) or len(auditors) != len(auditor_vendors):
+        raise ValueError("vendor label lists must not contain duplicates")
+
+    expected = set(itertools.product(generators, auditors))
+    scheduled: dict[str, set[tuple[str, str]]] = defaultdict(set)
+    cells: dict[str, dict[tuple[str, str], float]] = defaultdict(dict)
+    for row in rows:
+        task = row["task_id"]
+        key = (row["generator_vendor"], row["auditor_vendor"])
+        if key not in expected:
+            continue
+        if key in scheduled[task]:
+            raise ValueError(f"duplicate task-cell row for {task!r}, {key!r}")
+        scheduled[task].add(key)
+        value = row.get(outcome)
+        if value is not None:
+            cells[task][key] = float(value)
+
+    contrasts: dict[str, float] = {}
+    direction_contrasts: dict[str, dict[str, float]] = {}
+    incomplete: list[str] = []
+    for task, planned in sorted(scheduled.items()):
+        if planned != expected:
+            raise ValueError(
+                f"outcome {outcome!r} has incomplete VxV scheduled task {task!r}")
+        got = cells[task]
+        if set(got) != expected:
+            incomplete.append(task)
+            continue
+        per_generator: dict[str, float] = {}
+        for generator in generators:
+            matched = got[(generator, generator)]
+            cross = _mean(got[(generator, auditor)]
+                          for auditor in auditors if auditor != generator)
+            per_generator[generator] = cross - matched
+        direction_contrasts[task] = per_generator
+        contrasts[task] = _mean(per_generator.values())
+
+    if incomplete and not allow_incomplete:
+        raise ValueError(f"outcome {outcome!r} has incomplete VxV tasks: {incomplete}")
+    report = infer_task_contrasts(
+        contrasts, draws=draws, seed=seed, compute_signflip=compute_signflip)
+    report.update({
+        "outcome": outcome,
+        "estimand": "included_vendor_standardised_cross_minus_matched_vendor",
+        "vendor_count": len(generators),
+        "n_scheduled_tasks": len(scheduled),
+        "n_incomplete_tasks": len(incomplete),
+        "incomplete_task_ids": incomplete,
+        "direction_contrasts": direction_contrasts,
+        "claim_scope": "included_vendors_only",
+    })
+    return report
+
+
 def paired_level_contrast(rows: list[dict[str, Any]], *, task_field: str,
                           factor: str, low: str, high: str, outcome: str,
                           draws: int, seed: int) -> dict[str, Any]:

@@ -15,7 +15,7 @@
 \usepackage{enumitem}
 \usepackage{placeins}
 \usepackage[hidelinks]{hyperref}
-\hypersetup{pdftitle={CrossAudit: A Git-Native, Cross-Vendor Audit Loop for Agentic Science},
+\hypersetup{pdftitle={When Does Independent Audit Help Agentic Science? CrossAudit and a Causal Evaluation Framework},
   pdfauthor={Zhaohe Dong, Yuhao Chen},
   pdfkeywords={agentic science, AI scientist, scalable oversight, cross-vendor auditing, LLM-as-a-judge, self-preference bias, research integrity, human-in-the-loop}}
 \usepackage{caption}
@@ -38,7 +38,7 @@
 \newcommand{\rulename}[1]{\texttt{#1}}
 \newcommand{\tnotea}{$^{a}$}\newcommand{\tnoteb}{$^{b}$}\newcommand{\tnotec}{$^{c}$}
 
-\title{\textbf{CrossAudit: A Git-Native, Cross-Vendor Audit Loop\\for Agentic Science}}
+\title{\textbf{When Does Independent Audit Help Agentic Science?\\CrossAudit and a Causal Evaluation Framework}}
 \author{Zhaohe Dong\\
 \normalsize University of Cambridge\\
 \normalsize \texttt{zd314@cam.ac.uk}
@@ -51,11 +51,11 @@
 \maketitle
 
 \begin{abstract}
-\noindent An AI scientist should not grade its own homework. Yet in the systems we examined, review usually comes from the same model family or vendor as the work it judges. Model evaluators are known to favour their own generations; shared blind spots remain plausible but unproven. The supervision record often sits in platform logs that outsiders cannot replay.
+\noindent An AI scientist should not grade its own homework, but changing the grader does not by itself make the grade independent. Model evaluators can favour their own generations; whether same-model, same-family, same-vendor, and cross-vendor reviewers exhibit meaningfully different error correlation remains an empirical question. Supervision records also often sit in platform logs that outsiders cannot inspect.
 
-We present \textbf{CrossAudit}, a protocol for supervising autonomous research pipelines. Each increment is audited by an agent from a \emph{different} vendor against a versioned, human-authored rulebook. Reports, verdicts, disputes and rulings are git commits; raw model exchanges are not yet preserved. Scripted checks run first. Advisory judgement never gates: a model blocks only by citing a rule, cannot waive a deterministic failure, and unresolved blockers go to a person after bounded revision.
+We present \textbf{CrossAudit}, a protocol and evaluation framework for supervising autonomous research pipelines. In production, each increment is audited by an agent from a different declared vendor against a versioned, human-authored rulebook. Reports, verdicts, disputes and rulings are git commits; raw model exchanges are not yet preserved. Scripted checks run first. A model blocks only by citing a rule, cannot waive a deterministic failure, and unresolved blockers go to a person after bounded revision. We formalise the objective as net correction under false-block, revision-harm, model-cost, and human-attention constraints; vendor is one assignment factor, not a synonym for independence.
 
-We state eight invariants, describe a GitHub Actions/Python reference implementation, and report a live computational-chemistry deployment. We also report a seeded-defect trial (30 increments, 43 defects, one run per configuration) whose blinding a cross-vendor audit voided; we adopt the corrected results. A separately sealed v4 execution-feasibility cohort completed 542 scheduled calls and seven measurement modules on six deterministic convenience tasks. Its mixed, configuration-specific results are non-confirmatory and support no vendor-population claim. The trial shows that two vendors read the same rulebook differently, not that either is better. The strongest evidence remains the committed, uncontrolled audits of this paper.
+We state eight invariants, describe a GitHub Actions/Python reference implementation, and report a live computational-chemistry deployment. A sealed v4 execution-feasibility cohort completed 542 scheduled calls and seven measurement modules on six deterministic convenience tasks. It exposed direction heterogeneity, a Constitution-repeat estimand mismatch, DCL/gold circularity, and no structured-ledger advantage over an ordinary log on proxy decisions. These are non-confirmatory engineering findings, not evidence that cross-vendor review works. We therefore specify a prospective v5 study with 150--180 tasks, three vendors, six pinned models, same-model and same-vendor/different-model controls, three domains, human-blinded gold, and task-clustered inference. The paper's present contribution is the protocol, executable evaluation machinery, and falsifiable study design; efficacy remains unestablished.
 \end{abstract}
 
 \vspace{5pt}\noindent{\small\textbf{Keywords:} agentic science; AI scientist; scalable oversight; cross-vendor auditing; LLM-as-a-judge; self-preference bias; research integrity; human-in-the-loop.}
@@ -71,11 +71,11 @@ The relevant question, then, is not whether machine-generated science should be 
 
 \paragraph{Contributions.} We make five contributions.
 \begin{enumerate}[itemsep=1pt,topsep=3pt]
-  \item We articulate the \emph{same-source supervision problem} in agentic science: internal critique by same-vendor models is structurally exposed to correlated failure (\S\ref{sec:related}).
+  \item We separate same-model, same-family, same-vendor/different-model, and cross-vendor supervision, treating reduced error correlation as a hypothesis rather than a property supplied by a vendor label (\S\ref{sec:related}).
   \item We specify \textbf{CrossAudit}, a supervision protocol defined by eight invariants (vendor heterogeneity, ledger completeness, citation validity, determinism-first, bounded revision, graded interruption, receipt binding, fail-closed admission) that together specify a re-inspectable, third-party-auditable (up to self-declared vendor identity, \S\ref{sec:threat}) supervision history (\S\ref{sec:protocol}).
-  \item We describe a reference implementation requiring no infrastructure beyond two git repositories, a CI service, and two model API keys, together with a live deployment of a closely related variant in the first author's computational-chemistry pipeline, and we report what a second, product-oriented implementation of the same protocol taught us about the specification (\S\ref{sec:implementation}).
-  \item We register a causal successor and report a separate six-task, model-only execution-feasibility cohort that runs all seven proposed measurement modules, with an outcome-free pre-analysis seal and explicit non-confirmatory limits (\S\ref{sec:successor}).
-  \item We give an explicit threat model, including the attacks the protocol does \emph{not} withstand, and situate the design against plausible alternatives (\S\ref{sec:threat}--\S\ref{sec:discussion}).
+  \item We formulate audit value as net correction under false-block, revision-harm, model-cost, and human-attention constraints, yielding predictions that distinguish independence from auditor capability (\S\ref{sec:formal}).
+  \item We report a sealed six-task execution-feasibility cohort that runs seven measurement paths and, importantly, returns mixed and adverse boundaries rather than a universal cross-vendor advantage (\S\ref{sec:successor}).
+  \item We provide a prospective, executable three-vendor confirmatory package with a complete assignment matrix, same-vendor/different-model control, human reference panels, task-level estimands, power simulation, and fail-closed preflight (\S\ref{sec:v5design}).
 \end{enumerate}
 
 CrossAudit is deliberately limited in what it claims to establish. It does not certify scientific truth. No textual audit can. Instead, it records a narrower and directly inspectable property: that each increment in a machine-generated research record was evaluated against a named, versioned set of rules by a configured auditor from a second vendor, and that the resulting parsed decision was preserved in the ledger. The auditor has no write access to the increment's repository, although its vendor identity is currently self-declared (\S\ref{sec:threat}). The ledger is public wherever the operator chooses to publish it. At present it preserves parsed audit reports, while capture of the raw model requests and responses is planned for revision~2. We argue that this narrower guarantee is an appropriate first target for accountable machine science, much as continuous integration, not formal verification, became the principal quality-control mechanism in modern software development.
@@ -90,6 +90,8 @@ The pattern persists through the 2025 generation of research agents: Curie harde
 \paragraph{Why internal critique is not enough.} Panickssery et al.\ demonstrate that LLM evaluators recognise their own generations and rate them preferentially. Their fine-tuning experiments indicate that the capacity for self-recognition is what causes the inflation \cite{panickssery2024}. Zheng et al.\ catalogue further judge pathologies, including position, verbosity, and self-enhancement biases, even in strong models \cite{zheng2023}. A recent large-scale evaluation sharpens why these matter for supervision rather than for benchmarking: in a twenty-one-judge cohort, two production-deployed judges combine high test-retest reliability with severe position bias, and raw agreement overstates judge quality substantially once corrected for chance \cite{norman2026reliability}. A judge can therefore be thoroughly reproducible and still be wrong in a fixed direction, which is the one failure a supervision loop must not inherit. Two later studies qualify the self-preference finding rather than overturn it: much of the measured preference tracks genuine quality differences between generations \cite{chen2025selfpref}, and identity-blind re-tests leave roughly half of previously significant cases standing \cite{roytburg2026sanity}. The configuration CrossAudit forecloses is therefore a narrower target than the headline effect, and we treat foreclosing it as a structural precaution, not a quantified harm averted. These results concern single-model self-evaluation. We expect the mechanism to generalise. Models that share a training pipeline are likely to share stylistic priors and knowledge gaps, and this places a same-vendor critic at the wrong end of the bias distribution just when its judgement matters most. We call this the \emph{same-source supervision problem}. The remedy of drawing judges from different model families has precedent. Verga et al.\ score generations with a panel of evaluators drawn from three model families, expressly to dilute intra-model bias \cite{verga2024poll}, and the same intuition has begun to appear in developer tooling as cross-vendor code review.\footnote{E.g.\ MindStudio, ``Cross-Vendor AI Agent Review: Why Claude Should Review Codex's Code and Vice Versa'' (June 2026), \url{https://www.mindstudio.ai/blog/cross-vendor-ai-agent-review-claude-codex}, as accessed 30 July 2026, a workflow recommendation, without versioned rules, ledger, deterministic precedence, or escalation semantics.} CrossAudit's claim is not the heterogeneity idea itself but its packaging as a supervision protocol for research: versioned rules, a replayable ledger, deterministic precedence, and bounded escalation, run against a live pipeline. Cross-vendor pairing does not eliminate correlated error. Frontier models plausibly train on largely overlapping public corpora, so where the shared literature is wrong, both auditors can be confidently wrong together. What pairing does foreclose is the demonstrated configuration of the best-documented bias in this setting, self-preference, and it is intended to decorrelate vendor-idiosyncratic failure modes. What cross-vendor pairing cannot fix, a model-free layer must (\S\ref{sec:protocol}, \invariant{4}).
 
 \paragraph{Supervision as an artefact.} Software engineering solved an analogous trust problem not by making programmers infallible but by making the quality mechanisms \emph{inspectable}: version control, continuous integration, review trails. Reproducibility initiatives in science point in the same direction. The unit of trust is the auditable record, not the author's competence \cite{baker2016}. Deterministic screening of the research record also has its own lineage. statcheck recomputes reported statistics across the psychology literature \cite{nuijten2016statcheck}, and the Problematic Paper Screener runs mechanical detectors over millions of published papers \cite{cabanac2022pps}. Both are post-publication analogues of our deterministic check layer, which moves checks of that character upstream, before a claim ever leaves the repository. At the ledger end, blockchain-based research-integrity infrastructures pursue tamper-evidence with far heavier machinery.\footnote{E.g.\ the bloxberg consortium, \url{https://bloxberg.org}.} Our position is that git, which is ubiquitous, free, and already attached to CI, permissions, and issue tracking, is ledger enough for the supervision trail. CrossAudit transplants this inspectability stance to agentic science: the supervision history itself becomes a first-class, versioned, citable research artefact. Table~\ref{tab:related} compresses the comparison.
+
+\paragraph{Operational interpretation.} The vendor-level extrapolation above is a design hypothesis, not an empirical result. In the remainder of this paper, ``cross-vendor'' names an assignment that removes exact self-evaluation and may change error correlation; it does not certify independence. A causal evaluation must separately compare the same snapshot, a different snapshot from the same vendor, and snapshots from other vendors while holding the harness and information fixed.
 
 % ---------- 3 Protocol ----------
 
@@ -115,6 +117,23 @@ statcheck, PPS \cite{nuijten2016statcheck,cabanac2022pps} & -- & $\sim$ & $\sim$
 \bottomrule
 \end{tabular}
 \end{table}
+
+\section{When should heterogeneous audit help?}\label{sec:formal}
+
+Let $E_G$ denote a defect in a Generator artefact and $E_A$ the event that an Auditor fails to block it. The quantity that motivates separation is the conditional error association
+\begin{equation}
+\rho_{GA}=\operatorname{Corr}(E_G,E_A\mid X,M_G,M_A,H),
+\end{equation}
+where $X$ is the task, $M_G$ and $M_A$ are the resolved model configurations, and $H$ fixes the harness, prompt, information, and controller. A vendor label is not present in this definition: it is an observable assignment attribute that may change $\rho_{GA}$, auditor capability, both, or neither. Cross-vendor assignment is useful only when the reduction in correlated error is not offset by a weaker or miscalibrated Auditor.
+
+Gate accuracy is also an incomplete objective. Let $s$ denote a supervision condition. We define its operational value as
+\begin{equation}
+U(s)=v_r P_s(R)-c_bP_s(B_0)-c_nP_s(N)-c_uP_s(U)-c_mM_s-c_hH_s,
+\label{eq:utility}
+\end{equation}
+where $R$ is a defect correctly repaired, $B_0$ a clean artefact unnecessarily blocked or escalated, $N$ a new defect introduced during revision, $U$ an unnecessary change, $M_s$ model cost, and $H_s$ human attention. The weights are deployment-specific and cannot be estimated from gate accuracy alone; unless frozen prospectively, we report the components and their Pareto frontier rather than choosing weights after seeing results.
+
+This framing yields four falsifiable predictions. First, exact self-audit, same-vendor/different-model audit, and cross-vendor audit need not be ordered monotonically: capability and error association compete. Second, a deterministic check layer should help on mechanisable defects but may add no information when it also defines the gold label. Third, a broad Constitution can raise $P(B_0)$ even while increasing raw recall. Fourth, hard gating can increase $P(R)$ and simultaneously increase $P(N)$, $P(U)$, cost, or rule-surface adaptation. The evaluation therefore measures final net correction and clean burden, not defect recall in isolation.
 
 \section{The CrossAudit protocol}\label{sec:protocol}
 
@@ -435,7 +454,7 @@ The 120-task human-adjudicated confirmatory study remains unrun. We did, however
 Module & Observed result & Boundary exposed by the result \\
 \midrule
 Generator $\times$ Auditor & Cross-minus-same correct gate $+7.4$ points; false block $-11.1$ points & Direction-specific correct-gate changes were $+18.5$ and $-3.7$ points; no universal cross advantage \\
-DCL / Constitution & D2-minus-D0 correct gate $+18.8$ points; D2-minus-D1 $-7.6$ points and false block $+14.2$ points & The D2 gain over D0 was entirely in natural outputs; the two-task Constitution scorer used repeat 0 rather than the registered three-repeat collapse \\
+DCL / Constitution & D2-minus-D0 correct gate $+18.8$ points; D2-minus-D1 $-7.6$ points and false block $+14.2$ points & The D2 gain over D0 was confined to natural outputs; no Constitution effect is estimated because the frozen scorer used repeat 0 rather than the registered three-repeat collapse \\
 Defensive production & Text P2 repaired 2/9 initial errors; code visible/held-out checks were 4/4 in every arm & Text P2 used 56 vs 24 calls; code quality was ceiling-limited while 3/4 P1 and 3/4 P2 changes were compliance-only proxies \\
 Evidence mixture & 12 natural, 12 clean, 12 seeded, and 12 unusual-but-correct artefacts & Deterministic micro-task gold only; no real-repository replay or human panels \\
 Whole loop & Initial defect resolved in 12/12 same and 12/12 cross branches; final acceptable 11/12 in each & Each assignment still had 1/12 new defect and 3/12 unnecessary changes \\
@@ -467,6 +486,40 @@ The whole-loop result likewise separates nominal repair from net outcome. Across
 
 The confirmatory design still requires prompts, resolved model identifiers, randomisation, human adjudication, missing-data rules, multiplicity control, and power to be frozen before its own dispatch or outcome inspection. Repeated calls and task-clustered inference treat the increment, not each defect nested within it, as the independent unit. Auditor-assignment effects remain configuration-specific unless replicated across enough vendors and models to support a broader claim. The feasibility cohort establishes execution and measurement, not that cross-vendor review, any ablated component, or hard gating improves outcomes; null and adverse results remain reportable outcomes of the confirmatory design.
 
+\subsection{Prospective three-vendor confirmatory design}\label{sec:v5design}
+
+The v4 registration is preserved unchanged. Rather than retroactively repair a two-vendor design after inspecting its separate feasibility cohort, we specify an outcome-free v5 successor in \texttt{experiment/v5/}. It changes the scientific question from ``is cross-vendor better?'' to ``when does a more heterogeneous Auditor improve net correction under clean-burden and cost constraints?'' The design separates the same pinned snapshot (S0), a different snapshot from the same vendor (S1), and principal snapshots from the other two vendors (S2). It therefore identifies whether an apparent cross-vendor effect survives the most important missing control in v4: changing model without changing vendor.
+
+\begin{center}
+\footnotesize\setlength{\tabcolsep}{3pt}\renewcommand{\arraystretch}{0.96}
+\captionof{table}{Prospective v5 minimum design. Planned allocations, not efficacy evidence; dispatch remains fail-closed until all freeze gates pass.}
+\label{tab:v5design}
+\begin{tabular}{@{}p{37mm}p{105mm}@{}}
+\toprule
+Design element & Prospective requirement \\
+\midrule
+Independent tasks & 150 briefs, equally blocked over three domains; one blinded expansion to at most 180; at least 60 privacy-approved real-task/repository replays \\
+Model panel & Three vendors, six pinned snapshots: one principal Generator/Auditor and one alternate same-vendor Auditor per vendor \\
+Artefacts & Natural output plus verified-clean and exactly-one-mutant controlled siblings; unusual-but-correct hard negatives included \\
+Audit assignment & Complete principal 3$\times$3 Generator--Auditor matrix, S1 control, and three fresh-context repeats per required cell \\
+Human reference & Two independent blinded domain reviewers per item, third-person adjudication, separate Gold and Matching Panels; 30-item calibration with $\alpha_{\mathrm{Krippendorff}}\geq0.80$ and raw agreement $\geq0.85$ \\
+Primary gate & Cross-minus-S0 task-standardised correct-gate interval above zero \emph{and} clean unnecessary-escalation one-sided upper bound below $+5$ points \\
+Mechanisms & C0/C1/C2 each use three repeats; D0 model-only, D1 independently validated deterministic-only, D2 combined-blind; 60-task paired whole-loop subset \\
+Claim scope & Included configurations only; all directions and leave-one-vendor-out estimates mandatory; no vendor-population claim \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+For task $t$, the primary estimator first collapses repeats and fixed target strata, then computes
+\begin{equation}
+C_t=\frac{1}{3}\sum_g\left[\frac{1}{2}\sum_{a\neq g}Y_{tga}-Y_{tgg}\right].
+\end{equation}
+Whole-task bootstrap inference preserves clean/mutant siblings, generator outputs, and repeats inside the independent unit. A mixed-effects model with task and base-artefact intercepts and fixed generator, auditor, separation, domain, stratum, and defect-channel terms is a sensitivity analysis, not a replacement. Invalid or identity-unverified assigned calls remain incorrect gates and clean unnecessary escalations in the service-level intention-to-audit population.
+
+The planned ceiling is 24,930 model calls before separately authorised technical retries: 450 principal generations, 12,150 primary C2/D2 audits, 4,050 S1 controls, 6,480 C0/C1 additions on a 60-task controlled subset, and approximately 1,800 whole-loop calls. This ceiling is a reproducibility and safety limit, not spending authorisation. The machine-readable preflight deliberately refuses dispatch while model locks, monetary and token caps, human-hour capacity, privacy approvals, power output, panel manifests, and an independent 12-task dry-run receipt remain unset. The v5 package therefore makes the missing evidence executable without pretending it already exists.
+
+A 10,000-dataset central design simulation, which reads no observed outcomes, produced a Monte Carlo marginal effect of 7.998 points for the nominal eight-point scenario, 99.65\% conjunctive power, 94.87\% two-sided interval coverage, 2.49\% directional superiority type-I error (the lower tail of a two-sided 95\% interval), and 4.75\% non-inferiority-boundary type-I error. These values validate the central allocation under the current normal task-level design interval; they do not complete the power gate. The registered stress scenarios and calibration against the exact locked bootstrap-t interval remain required before freeze, and the machine-readable result states that limitation.
+
 \FloatBarrier
 
 \subsection{What a reader can check}\label{sec:artefacts}
@@ -475,12 +528,14 @@ The evidence collections are versioned, and they answer different questions. Exc
 
 The reference implementation carries the protocol as specified here, with the controller, the receipt verifier, and their regression tests. The evaluation directory carries the exploratory trial corpus, the frozen scorer, and the permutation null with its seed, so every number in \S\ref{sec:pilot} regenerates from a clean checkout. Its post-freeze v4 directory carries the confirmatory registration and analysis plan together with the separately registered feasibility amendments, frozen canary and price evidence, append-only journals, outcome-free seals, analysis receipts, machine-readable summaries, and the seven-point result report. The audit directory carries the cross-vendor reports written against this repository, and our dispositions on each one. That includes the findings that voided our own claims. The live deployment's supervision records are mined into the same repository in structurally redacted form: cycle identities, decisions, severities, rule citations, and finding lifecycles verbatim, scientific magnitudes masked.
 
+The prospective \texttt{experiment/v5/} directory is separately inspectable: it contains the three-vendor registration and SAP drafts, machine-readable 150--180-task design, exact-allocation power simulator, general V$\times$V task estimator, refusal preflight, and tests. It reads no v4 outcomes and remains visibly blocked rather than manufacturing a completed study from a design.
+
 % ---------- 5 Threat model ----------
 \section{Threat model and limitations}\label{sec:threat}
 
 Below is what CrossAudit withstands and what it does not.
 
-\paragraph{Self-preference and vendor-correlated error.} These are addressed by \invariant{1}. \emph{Corpus}-correlated error is not: where the shared literature is wrong or outdated, both vendors can agree confidently and wrongly. The mitigation is \invariant{4} for everything mechanisable; for what is not, it is the human's asynchronous reading of \texttt{ADVISORY} trails. This residual cannot be assumed reducible by adding more LLM auditors, because all of them plausibly train on largely overlapping public corpora.
+\paragraph{Self-preference and vendor-correlated error.} \invariant{1} excludes exact self-evaluation and records a declared cross-vendor assignment; it does not prove that vendor-correlated error is reduced. \emph{Corpus}-correlated error remains: where the shared literature is wrong or outdated, different vendors can agree confidently and wrongly. The mitigation is \invariant{4} for everything mechanisable; for what is not, it is the human's asynchronous reading of \texttt{ADVISORY} trails. This residual cannot be assumed reducible by adding more LLM auditors, because they plausibly train on substantially overlapping public corpora. The S0/S1/S2 design in \S\ref{sec:v5design} tests the narrower measurable effect.
 
 \paragraph{Prompt injection.} An increment could embed text addressing the Auditor. The Auditor runs toolless against a fixed reply schema, with increment content fenced as data; and because DCL verdicts are non-overridable, injection cannot waive the layer where hard defects are caught. Injection that shapes the \emph{LLM-side} report remains partially open, as it does for LLM-judge systems generally. This bullet describes the reference implementation; the deployed variant's tool-bearing auditor forgoes the toolless defence, a divergence \S\ref{sec:implementation} names together with its containment limits.
 
@@ -523,7 +578,7 @@ Below is what CrossAudit withstands and what it does not.
 
 \section{Conclusion}\label{sec:conclusion}
 
-CrossAudit reframes supervision of autonomous research from a platform feature into a public, versioned artefact produced by structurally independent reviewers. Its ingredients are plain: a second vendor, a rulebook with stable IDs, scripts that run before any model, a bounded loop, and git underneath. We chose them because a single researcher can adopt all of this without asking anyone's permission. The protocol's eight invariants are a deliberately small set. Together they buy structurally independent review, a re-inspectable history, and human authority at the boundary; everything else in this paper is reference detail, and the reference repositories are public. The six-task v4 cohort shows that the seven proposed measurements and their evidence chain can run together; it tests the machinery, not its general efficacy. An AI scientist should not grade its own homework. With two repositories and two API keys, it no longer has to.
+CrossAudit turns supervision of autonomous research from a hidden platform step into a versioned artefact with deterministic precedence, bounded revision, and explicit human authority. It does not turn a second vendor into an independent oracle. The six-task v4 cohort shows that the measurement and evidence chain can run, while its direction reversals, circular DCL ceiling, repeat mismatch, and proxy-ledger null result demonstrate why feasibility must not be reported as efficacy. The prospective v5 package makes the decisive comparison executable: same snapshot, same-vendor different snapshot, and cross-vendor audit over three domains and human-adjudicated tasks, judged by final net correction and clean burden. Until that study runs, the honest claim is a protocol and a falsifiable evaluation framework. An AI scientist should not grade its own homework; this work specifies how to test whether a different grader actually helps.
 
 \paragraph{Author contributions and the use of language models.} This paper was written with heavy use of the class of tools it proposes to supervise, and the division deserves stating rather than implying. The protocol, the invariants, the study designs and every judgement about what the evidence supports are the authors'. A large language model drafted most of the paper's prose from the authors' outlines and notes, wrote the bulk of the reference implementation and the analysis scripts under the authors' direction, and produced the figures. The authors verified each of the reported numbers against the committed artefacts, checked all twenty-two references against their source pages, and read and revised the text. Two limitations of that arrangement should be named. First, the same assistant that drafted the prose also ran an internal screen of the manuscript for machine-authored writing patterns; the screen is committed under \texttt{audits/}, and it is a same-source review of the kind \S\ref{sec:related} argues against. Second, that screen missed a bibliographic error the assistant had itself introduced days earlier, which an external reviewer then caught. We report both because a paper about supervising machine work has no standing to be vague about the machine work in itself.
 

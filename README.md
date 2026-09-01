@@ -107,6 +107,17 @@ general cross-vendor or product claim. Read the
 [seven-point status contract](experiment/v4/SEVEN-POINT-COMPLETION.md). The
 registered 120-task, human-adjudicated confirmatory study remains unrun.
 
+A new prospective [v5 top-conference confirmatory package](experiment/v5/)
+preserves that history rather than editing the v4 registration after feasibility
+outcomes existed. It specifies 150--180 independent tasks, three vendors, six
+pinned snapshots, a complete 3x3 principal matrix, same-vendor/different-model
+controls, human-blinded gold, equal three-repeat C0/C1/C2 ablations, a general
+VxV task estimator, and a fail-closed freeze preflight. A 10,000-dataset central
+planning simulation returned 99.65% conjunctive power and 94.87% interval
+coverage at the nominal eight-point scenario. Stress scenarios and exact
+bootstrap-t calibration remain blocking; the package is not a completed study
+or spending authorisation.
+
 ### Sealed feasibility figures
 
 [![Configuration- and component-specific feasibility effects](paper/figures/figure5-v4-configuration-effects.png)](paper/figures/figure5-v4-configuration-effects.pdf)
@@ -137,9 +148,12 @@ claim.
 ## Citing CrossAudit
 
 The protocol paper is [arXiv:2608.28631](https://arxiv.org/abs/2608.28631).
-The published v1 source is preserved at release tag `paper-v1.0.0`; `paper/`
-and `paper/HASHES.txt` now bind the replacement candidate that adds the sealed
-v4 feasibility results. Use [`CITATION.cff`](CITATION.cff) for citation metadata.
+The published v1 source is preserved at release tag `paper-v1.0.0`. The current
+full-paper candidate reframes vendor heterogeneity as a causal hypothesis and
+adds the v5 design; a compact anonymous pre-results manuscript is under
+[`paper/submissions/topconf2027/`](paper/submissions/topconf2027/). Neither is a
+new published version of the arXiv record. Use [`CITATION.cff`](CITATION.cff)
+for the currently published citation metadata.
 
 ## License
 

@@ -8,7 +8,7 @@ import pytest
 from tests.test_v4_helpers import V4  # noqa: F401  (installs v4 on sys.path)
 
 from cluster_inference import (clustered_ratio_difference, factorial_2x2_contrast,
-                               infer_task_contrasts)
+                               factorial_v_by_v_contrast, infer_task_contrasts)
 
 
 def rows_fixture():
@@ -45,6 +45,32 @@ def test_vendor_relabelling_and_row_order_do_not_change_estimate():
     b = factorial_2x2_contrast(renamed, "y", ["A", "B"], ["A", "B"], draws=20, seed=2)
     assert a["estimate"] == b["estimate"]
     assert a["ci95_bootstrap"] == b["ci95_bootstrap"]
+
+
+def test_known_three_vendor_task_standardised_contrast():
+    rows = []
+    for task, shift in (("T1", 0.0), ("T2", 0.2)):
+        for generator in "ABC":
+            for auditor in "ABC":
+                value = shift + (1.0 if generator != auditor else 0.0)
+                rows.append({"task_id": task, "generator_vendor": generator,
+                             "auditor_vendor": auditor, "y": value})
+    report = factorial_v_by_v_contrast(
+        rows, "y", list("ABC"), list("ABC"), draws=100, seed=9)
+    assert report["estimate"] == pytest.approx(1.0)
+    assert report["vendor_count"] == 3
+    assert report["claim_scope"] == "included_vendors_only"
+    assert report["direction_contrasts"]["T1"] == pytest.approx(
+        {"A": 1.0, "B": 1.0, "C": 1.0})
+
+
+def test_three_vendor_contrast_rejects_incomplete_panel():
+    rows = [{"task_id": "T1", "generator_vendor": g,
+             "auditor_vendor": a, "y": 1.0}
+            for g in "ABC" for a in "ABC"][:-1]
+    with pytest.raises(ValueError, match="incomplete VxV"):
+        factorial_v_by_v_contrast(
+            rows, "y", list("ABC"), list("ABC"), draws=0, seed=1)
 
 
 def test_duplicate_repeat_rows_are_rejected_as_pseudoreplication():
