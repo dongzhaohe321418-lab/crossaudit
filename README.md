@@ -155,6 +155,11 @@ adds the v5 design; a compact anonymous pre-results manuscript is under
 new published version of the arXiv record. Use [`CITATION.cff`](CITATION.cff)
 for the currently published citation metadata.
 
+The minimal PDFLaTeX source prepared for the next arXiv replacement is under
+[`paper/submissions/arxiv2026/`](paper/submissions/arxiv2026/). It is a
+self-contained US-Letter preprint bundle and is not a claim that a replacement
+has already been uploaded.
+
 ## License
 
 [MIT](LICENSE) © 2026 Zhaohe Dong

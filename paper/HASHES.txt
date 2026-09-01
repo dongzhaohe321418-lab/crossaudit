@@ -2,10 +2,12 @@
 # this revision. 'Exact PDF' in section 4.5 means the committed paper and its
 # complete build inputs match these digests. Regenerate the manifest whenever
 # any listed file changes; a release tag must never ship with stale hashes.
-crossaudit.tex                                                        sha256 5b9d8d270319db93306e03c329e537fc54717a2d2de3cff7afaf2aad76b1dc26
+crossaudit.tex                                                        sha256 a1452d1a18fbe4d316ff0a4af83b1e19f8f5dfbd49a6087cde5a9336c286f295
 figures/figure5-v4-configuration-effects.pdf                         sha256 78bcc336947a1670f9fdaceeb5d96c0d0b9bafdcdfc6b05c6fc4ed9a4dd22d0d
 figures/figure6-v4-operational-tradeoffs.pdf                          sha256 c3bbb06461ae89c998f4d433a8bda25579f7b962042821d4450bb2c6dbe2d634
-crossaudit-paper.pdf                                                  sha256 b83652c75959758bde79d48e49e1a2be574859bdfdf4c381a8e5d8284a25c680
+crossaudit-paper.pdf                                                  sha256 107c12af0cd04f9b4335ae1168b996cbcde433a1c77c598aacbc872e59f57437
+submissions/arxiv2026/source/main.tex                                 sha256 a1452d1a18fbe4d316ff0a4af83b1e19f8f5dfbd49a6087cde5a9336c286f295
+submissions/arxiv2026/CrossAudit-arxiv-ready.pdf                      sha256 107c12af0cd04f9b4335ae1168b996cbcde433a1c77c598aacbc872e59f57437
 submissions/topconf2027/crossaudit-topconf.tex                         sha256 3aa597a470b7f886b2125b90094c459ac5a803345bb95a94fc2b7a12e0fae2bc
 submissions/topconf2027/crossaudit-topconf.pdf                         sha256 7c467d1dcc900eb0ec983488664d34f03a6de2a3b51337760a032c94fcb24f6e
 ../experiment/v4/figures/plot_feasibility.py                          sha256 7b4c1a3b8c00b4557b36d02770d8609abd6603b97f544240675d8247a12d092e

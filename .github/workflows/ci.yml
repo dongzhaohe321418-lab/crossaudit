@@ -33,18 +33,23 @@ jobs:
         run: |
           set -euo pipefail
 
+          arxiv_source=paper/submissions/arxiv2026/source
+          python3 paper/check_arxiv_bundle.py
+          cmp paper/crossaudit.tex "$arxiv_source/main.tex"
+          test "$(find "$arxiv_source" -type f | wc -l)" -eq 3
+
           paper_build_dir=$(mktemp -d)
           mkdir -p "$paper_build_dir/figures"
-          cp paper/crossaudit.tex "$paper_build_dir/crossaudit.tex"
-          cp paper/figures/figure5-v4-configuration-effects.pdf \
+          cp "$arxiv_source/main.tex" "$paper_build_dir/main.tex"
+          cp "$arxiv_source/figures/figure5-v4-configuration-effects.pdf" \
             "$paper_build_dir/figures/figure5-v4-configuration-effects.pdf"
-          cp paper/figures/figure6-v4-operational-tradeoffs.pdf \
+          cp "$arxiv_source/figures/figure6-v4-operational-tradeoffs.pdf" \
             "$paper_build_dir/figures/figure6-v4-operational-tradeoffs.pdf"
 
-          for pass in 1 2; do
+          for pass in 1 2 3; do
             if ! (
               cd "$paper_build_dir"
-              pdflatex -halt-on-error -interaction=nonstopmode crossaudit.tex \
+              pdflatex -halt-on-error -interaction=nonstopmode main.tex \
                 > "pdflatex-pass-${pass}.txt"
             ); then
               echo "pdflatex pass ${pass} failed; final output follows:"
@@ -53,26 +58,31 @@ jobs:
             fi
           done
 
-          if grep -qE '^!' "$paper_build_dir/crossaudit.log"; then
+          if grep -qE '^!' "$paper_build_dir/main.log"; then
             echo "LaTeX reported errors:"
-            grep -nE '^!' -A3 "$paper_build_dir/crossaudit.log"
+            grep -nE '^!' -A3 "$paper_build_dir/main.log"
             exit 1
           fi
-          if grep -q 'There were undefined references' "$paper_build_dir/crossaudit.log"; then
-            echo "LaTeX left undefined references after two passes."
+          if grep -q 'There were undefined references' "$paper_build_dir/main.log"; then
+            echo "LaTeX left undefined references after three passes."
+            exit 1
+          fi
+          if grep -q 'Overfull \\hbox' "$paper_build_dir/main.log"; then
+            echo "LaTeX produced an overfull box."
+            grep -n 'Overfull \\hbox' "$paper_build_dir/main.log"
             exit 1
           fi
 
           pages=$(sed -nE 's/.*\(([0-9]+) pages,.*/\1/p' \
-            "$paper_build_dir/crossaudit.log" | tail -n 1)
+            "$paper_build_dir/main.log" | tail -n 1)
           figures=$(grep -cF '\@writefile{lof}{\contentsline {figure}' \
-            "$paper_build_dir/crossaudit.aux")
+            "$paper_build_dir/main.aux")
           tables=$(grep -cF '\@writefile{lot}{\contentsline {table}' \
-            "$paper_build_dir/crossaudit.aux")
-          references=$(grep -cF '\bibitem{' "$paper_build_dir/crossaudit.tex")
+            "$paper_build_dir/main.aux")
+          references=$(grep -cF '\bibitem{' "$paper_build_dir/main.tex")
 
           echo "paper inventory: ${pages} pages, ${figures} figures, ${tables} tables, ${references} references"
-          test "$pages" -eq 25
+          test "$pages" -eq 27
           test "$figures" -eq 6
           test "$tables" -eq 5
           test "$references" -eq 22
