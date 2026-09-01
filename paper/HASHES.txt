@@ -2,5 +2,5 @@
 # 'Exact PDF' in section 4.5 means: the committed crossaudit-paper.pdf
 # matches these digests. Regenerate this file whenever either changes;
 # a release tag must never ship with a stale manifest.
-crossaudit.tex        sha256 6ac9d07de9a43cb1d5ea8757dbdd55ad4c08bf61242db1968c15d402ab4e996e
-crossaudit-paper.pdf  sha256 2283e0d3b00d7095852b641266d602d38afcc0e74ad0cc2ea3c84346837841cc
+crossaudit.tex        sha256 a9c945aae48189b7bd4099b09949af9ceb0359a590a59aefab31f1fa121ca2ce
+crossaudit-paper.pdf  sha256 8bf61ef2d248d2b35f7df6fe563093c2e89a5b027bb10a39bcac0973160016d1

@@ -2,6 +2,8 @@
 
 **面向智能体科研（agentic science）的、以 Git 为账本的跨厂商审计环。**
 
+[![arXiv:2608.28631](https://img.shields.io/badge/arXiv-2608.28631-b31b1b.svg)](https://arxiv.org/abs/2608.28631)
+
 [English →](README.md)
 
 ---
@@ -93,9 +95,19 @@ you/demo-audit       ← 宪法 + 审计工作流 + 报告存放于此
 
 CrossAudit 是一套已在作者本人计算化学管线中每日运转的工作协议（Claude 系生成者、Codex 系审计者、算力在阿里云超算）。本仓库的参考实现刻意保持最小化；欢迎 Issue 与 PR——见 [CONTRIBUTING.md](CONTRIBUTING.md)。
 
+另行注册的 v4 执行可行性队列已经用真实供应商调用跑完全部七个后续研究模块：
+成功的 Amendment 2 在六个确定性便利任务上完成 542/542 次有效调用，已知成本
+为 12.1504115 美元，并在评分前完成网络可见的封存。这些只是非确认性、特定配置
+的探索性测量，不能支持“跨厂商普遍更优”或产品总体结论。详见
+[定量结果](experiment/v4/FEASIBILITY-RESULTS.md)与
+[七点状态契约](experiment/v4/SEVEN-POINT-COMPLETION.md)。注册的 120 任务、
+人类裁决确认性研究仍未运行。
+
 ## 引用
 
-协议论文见 `paper/`（发布 tag `paper-v1.0.0`，哈希清单 `paper/HASHES.txt`）；arXiv 编号公布后将更新于此。在此之前请按 [`CITATION.cff`](CITATION.cff) 引用。
+协议论文为 [arXiv:2608.28631](https://arxiv.org/abs/2608.28631)。已发布的 v1
+源码保存在 tag `paper-v1.0.0`；当前 `paper/` 与 `paper/HASHES.txt` 绑定的是
+加入已封存 v4 可行性结果的替换候选稿。引用元数据见 [`CITATION.cff`](CITATION.cff)。
 
 ## 许可证
 

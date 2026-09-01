@@ -40,8 +40,19 @@ frozen v1–v3 record.
 
 ## Current status
 
-**NOT YET RUN.** The documentation is registered, but the study is not dispatch
-ready. The following are intentionally null and blocking:
+**Execution-feasibility cohort: completed.** A separately registered,
+model-only six-task cohort has exercised all seven modules with real provider
+calls. Its successful Amendment 2 run scheduled and completed 542/542 valid
+calls at a known cost of USD 12.1504115, passed structural/semantic validation,
+was sealed and pushed before scoring, and produced a hash-bound analysis
+receipt. The full quantitative record and its limitations are in
+[`FEASIBILITY-RESULTS.md`](FEASIBILITY-RESULTS.md). Every point is classified
+`EXPLORATORY` at this scale; Amendment 1 remains a separate fail-closed
+infrastructure diagnostic and is not pooled.
+
+**Registered confirmatory study: NOT YET RUN.** The 120-task,
+human-adjudicated design is not dispatch ready. The following are intentionally
+null and blocking for that study:
 
 - exact provider endpoints and model snapshots;
 - randomisation seed commitment and blinded vendor-code custody;
@@ -51,8 +62,9 @@ ready. The following are intentionally null and blocking:
 - maximum calls, tokens, money, wall time, and human-review hours; and
 - panel membership/calibration and privacy approvals.
 
-The operator must freeze these fields without looking at v4 outcomes. A null
-field is not a default.
+The operator must freeze these fields without looking at confirmatory outcomes.
+Any change motivated by the feasibility outcomes must be prospectively recorded
+before confirmatory dispatch. A null field is not a default.
 
 ## Minimum causal core
 
@@ -96,3 +108,10 @@ Passing process checks is not a certification that a scientific conclusion is
 true. A receipt is hash-bound evidence of what the controller recorded, not
 provider-signed proof of model identity unless such an attestation actually
 exists.
+
+Allowed for the completed feasibility cohort:
+
+> In six deterministic convenience tasks, these two pinned configurations
+> produced the following descriptive effects and completed the registered
+> measurement paths; this is non-confirmatory and supports no vendor-population
+> claim.

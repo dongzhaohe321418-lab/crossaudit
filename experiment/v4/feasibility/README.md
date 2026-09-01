@@ -10,7 +10,12 @@ model-only cohort is non-confirmatory feasibility evidence.
 
 The replacement cohort is governed by
 [`FEASIBILITY-REGISTRATION.md`](../FEASIBILITY-REGISTRATION.md) and
-[`FEASIBILITY-AMENDMENT-1.md`](../FEASIBILITY-AMENDMENT-1.md).
+[`FEASIBILITY-AMENDMENT-1.md`](../FEASIBILITY-AMENDMENT-1.md). After Amendment
+1's fail-closed transport stop, the independently reported replacement is also
+governed by
+[`FEASIBILITY-AMENDMENT-2.md`](../FEASIBILITY-AMENDMENT-2.md). The cohorts are
+not pooled. See the complete
+[`FEASIBILITY-RESULTS.md`](../FEASIBILITY-RESULTS.md).
 
 The pilot covers all seven v4 design questions at feasibility scale:
 
@@ -27,6 +32,16 @@ The pilot covers all seven v4 design questions at feasibility scale:
    tamper challenges and Latin-square proxy-review allocation; and
 7. append-only execution records, intention-to-treat failures, frozen prices,
    latency and cost, and task-clustered descriptive scoring.
+
+## Completed cohort
+
+Amendment 2 completed 542 scheduled calls: 542 were provider-invoked and valid,
+with no unknown-cost or safety events, at a known cost of USD 12.1504115. The
+outcome-free journal was committed and pushed in `64bf673` before scoring; the
+analysis receipt and summary were then committed in `8d8dd18`. All seven
+questions are `EXPLORATORY` at this scale. The registered confirmatory study is
+still `NOT RUN`; see [`FEASIBILITY-RESULTS.md`](../FEASIBILITY-RESULTS.md) for
+the quantitative results, evidence hashes, and limitations.
 
 The defensive-production module includes both compact research JSON and a
 scientific-Python sub-cohort. The latter reports LOC, extra wrappers,
@@ -133,7 +148,7 @@ python experiment/v4/feasibility/run.py \
   --cost-cap-usd 40 \
   --anthropic-cap-usd 25 \
   --openai-cap-usd 40 \
-  --output experiment/v4/feasibility/results/2026-09-01-six-task-amendment-1
+  --output experiment/v4/feasibility/results/2026-09-01-six-task-amendment-2
 ```
 
 The complete six-task schedule permits at most 610 provider calls; successful
@@ -144,12 +159,15 @@ reduce unfavourable directions or repeats after looking at output.
 The live feasibility harness is currently macOS-local: the OpenAI adapter uses
 the native binary inside a `sandbox-exec` profile that forbids child processes,
 and the Anthropic adapter supplies an empty tool set plus restricted/strict MCP
-settings. Before the replacement freeze, `CANARY-RECEIPT.json` must contain the
-post-hardening, content-free canary receipt required by Amendment 1. The prior
-pre-hardening receipt and earlier transient checks are historical connectivity
-evidence only and do not satisfy this prerequisite. These controls do not
-constitute a portable production sandbox. The two CLIs must already be
-authenticated through their normal local login.
+settings. Before the Amendment 2 freeze, `CANARY-RECEIPT.json` must contain its
+post-amendment, content-free canary receipt. Amendment 2 permits only one
+byte-exact, content-free Codex WebSocket TLS-handshake startup failure to become
+a cell-level provider error with no retry; any model content, action, unknown
+event, malformed envelope, other stderr, identity drift, or possible secret
+still invokes the global safety stop. Prior receipts and the Amendment 1 run
+remain historical diagnostic evidence only and do not satisfy this prerequisite.
+These controls do not constitute a portable production sandbox. The two CLIs
+must already be authenticated through their normal local login.
 The runner stores no API key. Each call uses an ephemeral fresh context and no
 tools. `events.jsonl` is append-only and every event hashes its predecessor: a
 schedule event is flushed before dispatch, followed by one completion event.
@@ -209,7 +227,7 @@ needs to be sealed separately, use:
 
 ```bash
 python experiment/v4/feasibility/score.py \
-  --seal-only experiment/v4/feasibility/results/2026-09-01-six-task-amendment-1
+  --seal-only experiment/v4/feasibility/results/2026-09-01-six-task-amendment-2
 ```
 
 Before scoring, commit and push exactly the raw run and seal in a commit that is
@@ -218,9 +236,9 @@ distinct from the pre-dispatch freeze commit. Do not include `summary.json` or
 
 ```bash
 git add \
-  experiment/v4/feasibility/results/2026-09-01-six-task-amendment-1/run_manifest.json \
-  experiment/v4/feasibility/results/2026-09-01-six-task-amendment-1/events.jsonl \
-  experiment/v4/feasibility/results/2026-09-01-six-task-amendment-1/COHORT-SEAL.json
+  experiment/v4/feasibility/results/2026-09-01-six-task-amendment-2/run_manifest.json \
+  experiment/v4/feasibility/results/2026-09-01-six-task-amendment-2/events.jsonl \
+  experiment/v4/feasibility/results/2026-09-01-six-task-amendment-2/COHORT-SEAL.json
 git commit -m "Seal v4 feasibility cohort before analysis"
 git push
 ```
@@ -229,7 +247,7 @@ Only after that push may the endpoint scorer run:
 
 ```bash
 python experiment/v4/feasibility/score.py \
-  experiment/v4/feasibility/results/2026-09-01-six-task-amendment-1
+  experiment/v4/feasibility/results/2026-09-01-six-task-amendment-2
 ```
 
 Before calculating endpoints, the scorer reacquires the result lock and verifies

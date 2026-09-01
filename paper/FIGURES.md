@@ -8,7 +8,7 @@ generations live in git history, not in the tree.
 
 | Source | Tracked outputs | Role |
 |---|---|---|
-| `crossaudit.tex` | `crossaudit-paper.pdf` | The paper (14 pp). `crossaudit.pdf` is the raw build product and is gitignored; the tracked record is the `-paper` name. |
+| `crossaudit.tex` | `crossaudit-paper.pdf` | The paper (22 pp in the current v2 candidate; published v1 was 19 pp). `crossaudit.pdf` is the raw build product and is gitignored; the tracked record is the `-paper` name. |
 | `crossaudit-abstract-figure.tex` | `crossaudit-abstract-figure.pdf`, `.png` | Graphical abstract, **results-oriented**: problem → protocol → seeded-defect outcome, with the permutation floors as bar rules. Floors come from `experiment/results/NULLCHECK.json`; when those numbers change, this figure changes (see R1 in `audits/2026-07-31-sixth-audit-dispositions.md`). |
 | `graphical-abstract-v2.tex` | `crossaudit-graphical-abstract-v2.pdf`, `.png` | Graphical abstract, **protocol-oriented** (three-column loop). Submission-portal variant; carries no result numbers, so it does not depend on NULLCHECK. Supersedes the v1 `graphical-abstract.tex` family, removed from the tree 2026-07-31. |
 | `figure1-standalone.tex` | `figure1-standalone.pdf`, `crossaudit-figure1.png` | Figure 1 (clockwise protocol ring) as a standalone export; the in-paper copy is drawn by `crossaudit.tex` itself. |

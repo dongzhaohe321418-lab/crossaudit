@@ -1,13 +1,32 @@
 # CrossAudit v4 — Seven-Point Completion Contract
 
 **Registered:** 2026-09-01
-**Current state:** design documents created; all empirical completion boxes are
-unchecked because v4 has not run.
+**Current state:** all seven modules have been executed in a six-task,
+model-only feasibility cohort; the registered confirmatory study has not run.
 
 This file turns the seven proposed improvements into acceptance tests. “Done”
 means every required deliverable exists, validates, and is reported regardless
 of direction. A paper paragraph, an illustrative run, or an unbalanced subset
 does not satisfy a point.
+
+The unchecked boxes below remain the acceptance criteria for the registered
+120-task, human-adjudicated study. They are intentionally not checked on the
+basis of the smaller run. The separate feasibility classification is:
+
+| Point | Six-task feasibility | Registered confirmatory study |
+|---|---|---|
+| 1. Generator x auditor factorial | `EXPLORATORY` | `INCOMPLETE / NOT RUN` |
+| 2. DCL and Constitution ablations | `EXPLORATORY` | `INCOMPLETE / NOT RUN` |
+| 3. Defensive production | `EXPLORATORY` | `INCOMPLETE / NOT RUN` |
+| 4. Evidence mixture | `EXPLORATORY` | `INCOMPLETE / NOT RUN` |
+| 5. Whole-loop net outcome | `EXPLORATORY` | `INCOMPLETE / NOT RUN` |
+| 6. Ledger utility | `EXPLORATORY` | `INCOMPLETE / NOT RUN` |
+| 7. Repetition, integrity, inference, stopping | `EXPLORATORY` | `INCOMPLETE / NOT RUN` |
+
+The complete quantitative record is
+[`FEASIBILITY-RESULTS.md`](FEASIBILITY-RESULTS.md). Amendment 1 is retained as
+an independent fail-closed infrastructure diagnosis and is never pooled with
+the successful Amendment 2 cohort.
 
 ## Global preconditions
 
@@ -57,6 +76,11 @@ under intention-to-audit. If only two vendors run, the result is labelled
 included-vendor heterogeneity, and leave-one-vendor-out results. No population-
 vendor claim is permitted from two or three vendors.
 
+**Feasibility status: `EXPLORATORY`.** Amendment 2 completed the bidirectional
+2x2 with real provider calls, all four artefact strata, and three fresh C2
+repeats. See [Point 1 results](FEASIBILITY-RESULTS.md#1-generator-x-auditor-factorial).
+This does not satisfy the human-gold or sample-scale acceptance gates above.
+
 ## Point 2 — DCL and Constitution ablation
 
 **Original requirement:** determine which component contributes value, including
@@ -83,6 +107,11 @@ DCL on/off and no/broad/decidable rulebooks.
 Point 2 is incomplete if channels are compared on different artefacts, if C2
 adds defect families absent from C1, or if only raw recall is reported.
 
+**Feasibility status: `EXPLORATORY`.** D0/D1/D2 were reconstructed on the same
+artefacts, and C0/C1/C2 ran on the frozen two-task subset. See
+[Point 2 results](FEASIBILITY-RESULTS.md#2-dcl-and-constitution-ablations).
+The Constitution comparison has only two tasks, and D1 shares the gold checker.
+
 ## Point 3 — Defensive production and Goodhart measurement
 
 **Original requirement:** measure whether hard audit causes a generator to
@@ -107,6 +136,12 @@ optimise for passing the reviewer rather than for the task.
 Point 3 is complete only when compliance growth is evaluated beside independent
 quality. Length alone is not defensive production, and higher audit pass rate is
 not an independent quality measure.
+
+**Feasibility status: `EXPLORATORY`.** P0/P1/P2 ran for research text and
+scientific Python with held-out fixtures, bounded revisions, overhead metrics,
+and deterministic P0-relative change proxies. See
+[Point 3 results](FEASIBILITY-RESULTS.md#3-defensive-production-and-goodhart-proxies).
+There was no independent human quality or semantic-change panel.
 
 ## Point 4 — Controlled, natural, real, and clean evidence
 
@@ -135,6 +170,11 @@ Point 4 is incomplete if later generator compliance is treated as ground truth,
 if clean means merely “no seeded mutation”, or if natural recall is claimed from
 adjudicating only the findings auditors happened to emit.
 
+**Feasibility status: `EXPLORATORY`.** Natural, deterministic-clean, seeded,
+and unusual-but-correct strata were retained and reported separately. See
+[Point 4 results](FEASIBILITY-RESULTS.md#4-controlled-natural-clean-and-ambiguous-evidence).
+No real-task replay or human Gold/Matching Panel was part of this cohort.
+
 ## Point 5 — Whole-loop net outcome
 
 **Original requirement:** evaluate the full generate–audit–revise loop, not only
@@ -159,6 +199,12 @@ whether a reviewer emits findings.
 Point 5 is incomplete if “finding acknowledged”, “file changed”, or “later
 marked fixed” substitutes for independent verification that the defect was
 resolved without regression.
+
+**Feasibility status: `EXPLORATORY`.** All 24 prospective same/cross seeded
+branches completed with repair, final acceptability, new-defect,
+unnecessary-change, revision, latency, call, and cost fields. See
+[Point 5 results](FEASIBILITY-RESULTS.md#5-whole-loop-net-outcomes). Labels are
+deterministic micro-task proxies and human attention was not measured.
 
 ## Point 6 — Ledger utility experiment
 
@@ -185,6 +231,12 @@ not through auditor defect recall.
 Point 6 is incomplete if the structured ledger merely gives reviewers more
 substantive evidence than comparison surfaces without disclosure, or if ledger
 value is inferred from how many findings an LLM emitted.
+
+**Feasibility status: `EXPLORATORY`.** Seven episodes and 42 model-proxy
+reviews covered E0/E1/E2, six tamper challenges, calibration, reconstruction,
+raw latency, capped decision time, and resources. See
+[Point 6 results](FEASIBILITY-RESULTS.md#6-ledger-utility). This is not a
+randomised human-reviewer utility result.
 
 ## Point 7 — Repetition, blinding, inference, power, and stopping
 
@@ -218,9 +270,28 @@ Point 7 is incomplete if individual defects or repeats are treated as
 independent tasks, if arm identities are revealed before adjudication/analysis
 lock, or if the sample is extended after looking at the effect.
 
+**Feasibility status: `EXPLORATORY`.** Amendment 2 completed all frozen cells
+with 542/542 valid calls, 96 three-repeat cells, task-clustered descriptive
+intervals, hash-chain validation, an outcome-free pre-analysis seal, and a
+hash-bound analysis receipt. See
+[Point 7 results](FEASIBILITY-RESULTS.md#7-repetition-integrity-inference-and-stopping).
+The confirmatory power, human-panel, arm-custody, `PRIMARY-LOCK.json`, GLMM, and
+IPW requirements remain unrun.
+
 ## Completion declaration
 
 The eventual completion statement must list each point as `COMPLETE`,
 `INCOMPLETE`, or `EXPLORATORY`, link its immutable deliverables, and identify
 the commit/freeze manifest. A point cannot be declared complete by editing this
 checklist alone; the underlying evidence must validate.
+
+The present declaration is therefore:
+
+- Points 1--7: `EXPLORATORY` at six-task execution-feasibility scale.
+- Points 1--7: `INCOMPLETE / NOT RUN` for the registered confirmatory study.
+- Amendment 2 freeze: commit `59bf55b`, digest
+  `d4102a553395dad82b5e4147cb8a5e1e3f22d1fa2eea37b584a522bd8668830c`.
+- Outcome-free seal: commit `64bf673`, digest
+  `6f5a7e262995bfb8232544328f17d999d7ac9dbb12a30d8256abcd6ff200ba3a`.
+- Analysis: commit `8d8dd18`, receipt digest
+  `cf45634fd3382079d52fe80d8aa93408b274aa69eb67c14b244ff418a105ccb5`.

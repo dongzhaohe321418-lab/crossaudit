@@ -4,7 +4,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
-[![arXiv](https://img.shields.io/badge/arXiv-coming--soon-b31b1b.svg)](#citing-crossaudit)
+[![arXiv:2608.28631](https://img.shields.io/badge/arXiv-2608.28631-b31b1b.svg)](https://arxiv.org/abs/2608.28631)
 
 [中文文档 →](README.zh-CN.md)
 
@@ -97,9 +97,22 @@ The reference example is flavoured as computational chemistry, but nothing in th
 
 CrossAudit is a working protocol whose first live cycles are running in the author's own computational-chemistry pipeline (Claude-based generator, Codex-based auditor, compute on Alibaba Cloud HPC). The reference implementation here is deliberately minimal; issues and PRs are welcome — see [CONTRIBUTING.md](CONTRIBUTING.md).
 
+A separately registered v4 execution-feasibility cohort has now run all seven
+successor-study modules on six deterministic convenience tasks with model
+proxies. Its successful Amendment 2 cohort completed 542/542 valid provider
+calls at a known cost of USD 12.1504115 and was sealed on the network before
+scoring. These are non-confirmatory, configuration-specific measurements, not a
+general cross-vendor or product claim. Read the
+[quantitative results](experiment/v4/FEASIBILITY-RESULTS.md) and the
+[seven-point status contract](experiment/v4/SEVEN-POINT-COMPLETION.md). The
+registered 120-task, human-adjudicated confirmatory study remains unrun.
+
 ## Citing CrossAudit
 
-The protocol paper is in `paper/` (release tag `paper-v1.0.0`; hash manifest `paper/HASHES.txt`); the arXiv identifier will appear here once assigned. Until then, please cite via [`CITATION.cff`](CITATION.cff).
+The protocol paper is [arXiv:2608.28631](https://arxiv.org/abs/2608.28631).
+The published v1 source is preserved at release tag `paper-v1.0.0`; `paper/`
+and `paper/HASHES.txt` now bind the replacement candidate that adds the sealed
+v4 feasibility results. Use [`CITATION.cff`](CITATION.cff) for citation metadata.
 
 ## License
 
